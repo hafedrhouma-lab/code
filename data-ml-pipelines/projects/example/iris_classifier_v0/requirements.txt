@@ -1,0 +1,7 @@
+joblib==1.4.2
+mlflow==2.10.1
+numpy==1.26.4
+python-dotenv==1.0.1
+scikit_learn==1.4.2
+structlog==24.1.0
+keyrings.google-artifactregistry-auth==1.1.2

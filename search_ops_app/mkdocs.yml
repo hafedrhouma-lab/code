@@ -1,0 +1,26 @@
+site_name: Grocery Search Ops
+site_author: Hafed Rhouma
+repo_url: https://github.com/talabat-dhme/grocery-search-ops
+
+theme:
+    name: material
+    highlightjs: true
+    hljs_languages:
+        - yaml
+        - rust
+    features:
+        - navigation.tabs
+        - navigation.tabs.sticky
+        - navigation.instant
+
+markdown_extensions:
+    - mkdocs-click
+plugins:
+    - mkdocs-jupyter
+    - search
+    - git-revision-date-localized
+nav:
+    - How to: './app/how_to.md'
+    - Queries:
+        - 'SQL': './data_extracts/sql_query.md'
+

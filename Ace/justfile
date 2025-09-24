@@ -1,0 +1,175 @@
+#!/usr/bin/env -S just --justfile
+# ^ A shebang isn't required, but allows a justfile to be executed
+#   like a script, with `./justfile test`, for example.
+
+# Dirty way to exclude "standalone" services (NBA currently), which are updated/compuiles independently
+export ACE_SERVICES := `find . -maxdepth 2 -type f -name "bentofile.yaml" -exec sh -c 'basename $(dirname "$1")' sh {} \;`
+export ACE_SERVICES_REQS := `find . -maxdepth 2 -type f -name "requirements*.in"`
+
+export S3_SERVER_PORT := env_var_or_default("S3_SERVER_PORT", "9002")
+export S3_SERVER_HOST := env_var_or_default("S3_SERVER_HOST", "localhost")
+export S3_CONSOLE_PORT := env_var_or_default("S3_CONSOLE_PORT", "9003")
+export S3_ACCESS_KEY := env_var_or_default("S3_ACCESS_KEY", "s3_access_key")
+export S3_SECRET_KEY := env_var_or_default("S3_SECRET_KEY", "s3_secret_key")
+export S3_BUCKET_CONTENT_LOCAL_PATH := env_var_or_default("S3_BUCKET_CONTENT_LOCAL_PATH", "./tests/fixtures/s3")
+export S3_BUCKET_NAME := env_var_or_default("S3_BUCKET_NAME", "ace-" + STAGE)
+
+export LOG_LEVEL := env_var_or_default("LOG_LEVEL", "DEBUG")
+export STAGE := env_var_or_default("STAGE", "test")
+
+export PGPASSWORD := env_var_or_default("PGPASSWORD", "secret")
+export PG_MAIN_QUERY_TIMEOUT := "10000"
+export PG_BG_QUERY_TIMEOUT := "120000"
+export ACE_ADD_CONSOLE_RENDERER := "true"
+
+export USE_LIMA_CONTAINERD := env_var_or_default("USE_LIMA_CONTAINERD", "0")
+compose := if USE_LIMA_CONTAINERD == "1"  {"lima nerdctl compose"} else {"docker compose"}
+docker := if USE_LIMA_CONTAINERD == "1"  {"lima nerdctl"} else {"docker"}
+
+default:
+  just --list
+
+upgrade-pip:
+    pip install --upgrade pip wheel pip-tools keyring keyrings.google-artifactregistry-auth
+
+upgrade: upgrade-pip
+    pip-compile -v --resolver=backtracking --strip-extras --allow-unsafe \
+      --upgrade \
+      -o requirements-all.txt \
+      $ACE_SERVICES_REQS
+
+compile: upgrade-pip
+    pip-compile -v --resolver=backtracking --strip-extras --allow-unsafe \
+      -o requirements-all.txt \
+      $ACE_SERVICES_REQS
+
+compile-release service:
+    pip-compile -v --resolver=backtracking --no-strip-extras --no-allow-unsafe \
+      --constraint requirements-all.txt \
+      -o {{service}}/requirements.txt \
+      {{service}}/requirements.in
+
+upgrade-compile-all: upgrade sync compile-releases
+
+# Upgrade production requirements for all the services
+compile-releases:
+    for service in $ACE_SERVICES; do just compile-release $service; done
+
+sync:
+    pip-sync requirements-all.txt
+
+refresh-models:
+    find ./models -name '*.bentomodel' -exec bentoml models import {} \;
+
+build-bento-release service:
+    bentoml build -f {{service}}/bentofile.yaml --verbose .
+    bentoml containerize {{service}}:latest --platform=linux/amd64
+
+run-bento-release service:
+    docker run --rm --platform linux/amd64 -p 3000:3000 {{service}}:$(cat ~/bentoml/bentos/{{service}}/latest)
+
+# $> just why starlette
+# starlette==0.27.0
+# ├── fastapi==0.101.1 [requires: starlette>=0.27.0,<0.28.0]
+# │   └── fastapi-rfc7807==0.5.0 [requires: fastapi]
+# └── fastapi-rfc7807==0.5.0 [requires: starlette]
+why package:
+    pipdeptree -r -p {{package}}
+
+format:
+    ruff format .
+
+lint:
+    ruff .
+
+set-up-tests-infra:
+    docker-compose -f ./docker-compose.test.yml up -d
+    docker logs -f $(docker ps -a | grep 'minio/mc' | cut -f1 -d' ')
+
+run-tests-for-ci:
+    pytest --cov-report=term --cov-report=xml --cov-branch --cov -v
+    # Dirty way to fix Sonar, otherwise it does not recognise the coverage at all
+    # See https://community.sonarsource.com/t/sonar-on-github-actions-with-python-coverage-source-issue/36057
+    sed -i 's#<source>/home/runner/work/'$GIT_REPO'/'$GIT_REPO'#<source>/github/workspace#g' coverage.xml
+
+clear-pycache:
+    find . -type f -name '*.py[co]' -delete -o -type d -name __pycache__ -delete
+
+dev-api-profiling pid duration:
+    DURATION={{duration}} PORT=3000 STAGE=dev k6 run api.js
+    sudo py-spy record -o profile.svg --pid {{pid}}
+
+aws-dev-login:
+    saml2aws login -a tlb-dev-2
+
+aws-prod-login:
+    saml2aws login -a tlb-prd-2
+
+# Create ssh tunnel to access QA PG Ace DB
+db-tunnel-qa port="8384": aws-dev-login
+    tlbctl open-tunnel --environment qa --host talabat-qa-datascience-postgres-eu-west-2 --local-port {{port}}
+
+# Create background ssh tunnel to access QA PG Ace DB
+db-tunnel-qa-bg port="8384":
+    tlbctl open-tunnel --environment qa --host talabat-qa-datascience-postgres-eu-west-2 --local-port {{port}} &> /dev/null &
+
+db-tunnel-prod port="8384": aws-prod-login
+    tlbctl open-tunnel --environment prod --host talabat-prod-datascience-postgres-eu-west-2 --local-port {{port}}
+
+run-vendor-ranking-api-test-qa pgpassword loglevel="INFO":
+    STAGE=test_qa PYTHONPATH=$PWD \
+    LOG_LEVEL={{loglevel}} PGPASSWORD={{pgpassword}} python ./vendor_ranking/service.py
+
+ultron-api-profiling pid duration_sec="25" endpoint="/ultron/v1/items-to-purchase":
+    sudo py-spy record -o profile.svg --pid {{pid}} -d {{duration_sec}} -r 100 &
+    ACE_ENDPOINT_PATH={{endpoint}} DURATION={{duration_sec}} PORT=3000 STAGE=dev k6 run ./load_tests/ultron.js
+
+run-vendor-ranking-api: show-envs
+	PYTHONPATH=$PWD python ./vendor_ranking/service.py
+
+run-ultron-api:
+	PYTHONPATH=$PWD python ./ultron/service.py
+
+run-nba-api:
+	PYTHONPATH=$PWD python ./nba/service.py
+
+_create_dirs:
+    mkdir -p ./_mounts/pgadmin
+
+test-docker-env-up targets="" options="": test-docker-env-down _create_dirs
+	{{compose}} -f ./docker-compose.test.yml up {{targets}} {{options}} --remove-orphans
+
+test-docker-env-down: show-envs _create_dirs
+	{{compose}} -f ./docker-compose.test.yml down --volumes
+
+# run test Docker env: detached
+up-test-env targets="": (test-docker-env-up targets "-d")
+
+# run test Docker env: verbose
+up-test-env-verbose targets="": (test-docker-env-up targets "-V")
+
+run-test-dev opts="":
+	unset AWS_PROFILE
+	pytest --cov-report=term --cov-report=xml --cov-branch --cov {{opts}}
+
+# Print prepared docker compose yaml file
+test-docker-config:
+    {{compose}} -f ./docker-compose.test.yml config
+
+# Print env vars required for tests. Then such values can beused in IDE.
+show-envs:
+     printenv | sort | grep -E "S3_|ACE_|PG_|OPENAI_API_KEY|STAGE|LOG_LEVEL" | grep -wv "DIRENV_DIFF"
+
+mlflow-compose cmd="" targets="" options="":
+	{{compose}} -f ./docker-compose.test.yml -f ./mlops/mlflow/docker-compose.yml {{cmd}} {{targets}} {{options}}
+
+mlflow-compose-config: (mlflow-compose "config")
+mlflow-compose-build: (mlflow-compose "build" "mlflow")
+mlflow-compose-down: (mlflow-compose "down")
+mlflow-up targets="": mlflow-compose-down  (mlflow-compose "up" targets "--build")
+
+mlflowcli cmd="--help" options="":
+    {{docker}} exec -it $({{docker}} ps | grep library/mlflow | cut -f1 -d' ') mlflow {{cmd}} {{options}}
+
+jump-inside-mlflow-server cmd="--help" options="":
+    {{docker}} exec -it $({{docker}} ps | grep library/mlflow | cut -f1 -d' ') bash

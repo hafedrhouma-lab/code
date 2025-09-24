@@ -1,0 +1,63 @@
+export USE_LIMA_CONTAINERD := env_var_or_default("USE_LIMA_CONTAINERD", "1")
+export GCP_PROJECT := env_var_or_default("GCP_PROJECT", "tlb-data-dev")
+
+docker := if USE_LIMA_CONTAINERD == "1"  {"lima nerdctl"} else {"docker"}
+
+default:
+  @just --list
+
+gauth:
+    gcloud auth application-default login && gcloud config set project $GCP_PROJECT
+
+gconnect: gauth
+    gcloud container clusters get-credentials tlb-data-staging-algo-cluster-1 \
+        --region europe-west2 \
+        --project $GCP_PROJECT
+
+build-base-image_ platform:
+    {{docker}} build \
+      -f ./Dockerfile \
+      -t gcr.io/tlb-data-dev/data-ml-pipelines-base:latest \
+      --platform {{platform}} .
+
+[macos]
+build-base-image: (build-base-image_ "linux/arm64")
+
+[linux]
+build-base-image: (build-base-image_ "linux/amd64")
+
+start-pod-shell: gconnect
+    kubectl delete pod dam-train
+    kubectl run fs-test-scale \
+    --image=gcr.io/tlb-data-dev/data_algo_mlflow_base:latest --overrides='{"spec":{"containers":[{"name":"curl","image":"gcr.io/tlb-data-dev/featurestore:latest","resources":{"limits":{"cpu":"45000m","memory":"110G"}}}]}}'
+    sleep 40
+    kubectl exec -it fs-test-scale -- /bin/bash -c 'unset GOOGLE_APPLICATION_CREDENTIALS && export PROJECT_ID="tlb-data-dev" && . $VENV_PATH/bin/activate && cd registry/ && feast materialize 2024-05-15T00:00:00 2024-05-15T00:00:00 --views account_fg_2t_v3_fv'
+
+
+### api-testing ###
+
+# Build Single "use-case" Directory
+api-tests-build-dir DIRECTORY_PATH:
+    python ./base/api-testing/create_api_tests_script.py {{DIRECTORY_PATH}}
+
+# Run Single "use-case" Directory
+api-tests-run-dir DIRECTORY_PATH:
+    newman run {{DIRECTORY_PATH}}/collection.json
+
+# Build all directories
+api-tests-build:
+    python ./base/api-testing/create_api_tests_script.py
+
+# Run all directories
+api-tests-run:
+    ./base/api-testing/run_all_api_tests.sh
+
+# Build & Run Single "use-case" Directory
+api-tests-build-run-dir DIRECTORY_PATH:
+    python ./base/api-testing/create_api_tests_script.py {{DIRECTORY_PATH}}
+    newman run {{DIRECTORY_PATH}}/collection.json
+
+# Build & Run all "use-cases" (Not supported yet)
+api-tests-build-run:
+    python ./base/api-testing/create_api_tests_script.py
+    ./base/api-testing/run_all_api_tests.sh

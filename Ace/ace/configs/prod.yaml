@@ -1,0 +1,8 @@
+stage: prod
+
+storage:
+  s3:
+    server_port: null
+    server_host: null
+    access_key: null
+    secret_key: null

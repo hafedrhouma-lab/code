@@ -1,0 +1,24 @@
+version: 2.1
+
+setup: true
+
+orbs:
+  path-filtering: circleci/path-filtering@0.1.5
+
+workflows:
+  build-services:
+    jobs:
+      # See example on the orb's page: https://circleci.com/developer/orbs/orb/circleci/path-filtering
+      - path-filtering/filter:
+          tag: "3.11" # Python version
+          config-path: .circleci/services.yml
+          # See more about negative look-ahead regex: https://stackoverflow.com/a/899448/322079
+          # (not the best solution, but the only possible for CircleCI looks like)
+          mapping: |
+            (nba|(charts/nba))/.* build-nba true
+            (item_lifecycle|(charts/item-lifecycle))/.* build-item-lifecycle true
+            (ultron|(charts/ultron))/.* build-ultron true
+            (vendor_ranking|(charts/vendor-ranking))/.* build-vendor-ranking true
+            (menu_item_ranking|(charts/menu-item-ranking))/.* build-menu-item-ranking true
+            (.circleci|ace|bin)/.* build-shared true
+            requirements.* build-shared true

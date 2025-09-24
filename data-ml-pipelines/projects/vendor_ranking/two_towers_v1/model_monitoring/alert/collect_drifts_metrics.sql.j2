@@ -1,0 +1,39 @@
+WITH drift_data AS (
+    SELECT
+        test_date,
+        country_code,
+        ARRAY_AGG(DISTINCT column_name) AS drift_columns
+    FROM `data_playground.two_tower_data_drifts`
+    WHERE test_date = '{{ param_date }}' AND drift_detected = TRUE
+    GROUP BY test_date, country_code
+),
+target_drift AS (
+    SELECT
+        test_date,
+        country_code,
+        name,
+        description
+    FROM `data_playground.two_tower_target_drifts`
+    WHERE test_date = '{{ param_date }}' AND status = 'FAIL'
+),
+metrics AS (
+    SELECT
+        test_date,
+        country_code,
+        metric_id,
+        current_value
+    FROM `data_playground.two_tower_model_metrics`
+    WHERE test_date = '{{ param_date }}' AND metric_id = 'RecallTopKMetric'
+)
+
+SELECT
+    d.test_date,
+    d.country_code,
+    ARRAY_LENGTH(d.drift_columns) AS num_drift_columns,
+    d.drift_columns,
+    t.name AS target_drift_name,
+    t.description AS target_drift_description,
+    m.current_value AS recall_top_k_metric
+FROM drift_data d
+JOIN target_drift t ON d.test_date = t.test_date AND d.country_code = t.country_code
+JOIN metrics m ON d.test_date = m.test_date AND d.country_code = m.country_code

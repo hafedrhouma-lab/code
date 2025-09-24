@@ -1,0 +1,349 @@
+
+geographical:
+  "":
+    tag_id: geo_0
+    country_code: ['AE', 'EG']
+  Afghani:
+    tag_id: geo_1
+    country_code: ['AE']
+  African:
+    tag_id: geo_2
+    country_code: ['AE']
+  American:
+    tag_id: geo_3
+    country_code: ['AE', 'EG']
+  Arabic:
+    tag_id: geo_4
+    country_code: ['AE', 'EG']
+  Argentinian:
+    tag_id: geo_5
+    country_code: ['AE']
+  Asian:
+    tag_id: geo_6
+    country_code: ['AE', 'EG']
+  Bahraini:
+    tag_id: geo_7
+    country_code: ['AE']
+  Brazilian:
+    tag_id: geo_8
+    country_code: ['AE']
+  British:
+    tag_id: geo_9
+    country_code: ['AE']
+  Chinese:
+    tag_id: geo_10
+    country_code: ['AE', 'EG']
+  Egyptian:
+    tag_id: geo_11
+    country_code: ['AE', 'EG']
+  Emirati:
+    tag_id: geo_12
+    country_code: ['AE']
+  Filipino:
+    tag_id: geo_13
+    country_code: ['AE']
+  French:
+    tag_id: geo_14
+    country_code: ['AE',  'EG']
+  Georgian:
+    tag_id: geo_15
+    country_code: ['AE']
+  German:
+    tag_id: geo_16
+    country_code: ['AE']
+  Greek:
+    tag_id: geo_17
+    country_code: ['AE']
+  Indian:
+    tag_id: geo_18
+    country_code: ['AE', 'EG']
+  Indonesian:
+    tag_id: geo_19
+    country_code: ['AE', 'EG']
+  Iranian:
+    tag_id: geo_20
+    country_code: ['AE']
+  Iraqi:
+    tag_id: geo_21
+    country_code: ['AE']
+  Italian:
+    tag_id: geo_22
+    country_code: ['AE', 'EG']
+  Jamaican:
+    tag_id: geo_23
+    country_code: ['AE']
+  Japanese:
+    tag_id: geo_24
+    country_code: ['AE', 'EG']
+  Jordanian:
+    tag_id: geo_25
+    country_code: ['AE']
+  Korean:
+    tag_id: geo_26
+    country_code: ['AE']
+  Kuwaiti:
+    tag_id: geo_27
+    country_code: ['AE', 'EG']
+  Lebanese:
+    tag_id: geo_28
+    country_code: ['AE', 'EG']
+  Malaysian:
+    tag_id: geo_29
+    country_code: ['AE']
+  Mexican:
+    tag_id: geo_30
+    country_code: ['AE', 'EG']
+  Mongolian:
+    tag_id: geo_31
+    country_code: ['AE']
+  Moroccan:
+    tag_id: geo_32
+    country_code: ['AE']
+  Nepalese:
+    tag_id: geo_33
+    country_code: ['AE']
+  North Indian:
+    tag_id: geo_34
+    country_code: ['AE']
+  Pakistani:
+    tag_id: geo_35
+    country_code: ['AE']
+  Palestinian:
+    tag_id: geo_36
+    country_code: ['AE']
+  Peruvian:
+    tag_id: geo_37
+    country_code: ['AE']
+  Portuguese:
+    tag_id: geo_38
+    country_code: ['AE']
+  Russian:
+    tag_id: geo_39
+    country_code: ['AE']
+  Saudi:
+    tag_id: geo_40
+    country_code: ['AE']
+  Singaporean:
+    tag_id: geo_41
+    country_code: ['AE']
+  South Indian:
+    tag_id: geo_42
+    country_code: ['AE']
+  Spanish:
+    tag_id: geo_43
+    country_code: ['AE']
+  Sudanese:
+    tag_id: geo_44
+    country_code: ['AE']
+  Syrian:
+    tag_id: geo_45
+    country_code: ['AE', 'EG']
+  Thai:
+    tag_id: geo_46
+    country_code: ['AE', 'EG']
+  Tunisian:
+    tag_id: geo_47
+    country_code: ['AE']
+  Turkish:
+    tag_id: geo_48
+    country_code: ['AE']
+  Uzbek:
+    tag_id: geo_49
+    country_code: ['AE']
+  Vietnamese:
+    tag_id: geo_50
+    country_code: ['AE']
+  Yemeni:
+    tag_id: geo_51
+    country_code: ['AE']
+  Azerbaijani:
+    tag_id: geo_52
+    country_code: ['AE']
+  International:
+    tag_id: geo_53
+    country_code: ['EG']
+
+dish:
+  "":
+    tag_id: dish_0
+    country_code: ['AE', 'EG']
+  Acai:
+    tag_id: dish_1
+    country_code: ['AE']
+  Arabic Sweets:
+    tag_id: dish_2
+    country_code: ['AE']
+  Bagel:
+    tag_id: dish_3
+    country_code: ['AE']
+  Bakery:
+    tag_id: dish_4
+    country_code: ['EG']
+  Beverages:
+    tag_id: dish_5
+    country_code: ['EG']
+  Biryani:
+    tag_id: dish_6
+    country_code: ['AE']
+  Bowls:
+    tag_id: dish_7
+    country_code: ['AE']
+  Breakfast:
+    tag_id: dish_8
+    country_code: ['EG']
+  Bubble Tea:
+    tag_id: dish_9
+    country_code: ['AE']
+  Burger:
+    tag_id: dish_10
+    country_code: ['AE', 'EG']
+  Burrito:
+    tag_id: dish_11
+    country_code: ['AE']
+  Calzone:
+    tag_id: dish_12
+    country_code: ['AE']
+  Candy:
+    tag_id: dish_13
+    country_code: ['AE']
+  Chicken:
+    tag_id: dish_14
+    country_code: ['EG']
+  Chocolate:
+    tag_id: dish_15
+    country_code: ['EG']
+  Churros:
+    tag_id: dish_16
+    country_code: ['AE']
+  Coffee:
+    tag_id: dish_17
+    country_code: ['AE', 'EG']
+  Crepe:
+    tag_id: dish_18
+    country_code: ['EG']
+  Curry:
+    tag_id: dish_19
+    country_code: ['AE']
+  Desserts:
+    tag_id: dish_20
+    country_code: ['AE', 'EG']
+  Donuts:
+    tag_id: dish_21
+    country_code: ['AE', 'EG']
+  Falafel:
+    tag_id: dish_22
+    country_code: ['AE', 'EG']
+  Fast Food:
+    tag_id: dish_23
+    country_code: ['EG']
+  Fish and Chips:
+    tag_id: dish_24
+    country_code: ['AE']
+  Foul:
+    tag_id: dish_25
+    country_code: ['AE', 'EG']
+  Fried Chicken:
+    tag_id: dish_26
+    country_code: ['AE', 'EG']
+  Frozen Yogurt:
+    tag_id: dish_27
+    country_code: ['AE']
+  Grilled Chicken:
+    tag_id: dish_28
+    country_code: ['AE']
+  Grills:
+    tag_id: dish_29
+    country_code: ['EG']
+  Hot Dog:
+    tag_id: dish_30
+    country_code: ['AE']
+  Ice Cream:
+    tag_id: dish_31
+    country_code: ['AE', 'EG']
+  Kebab:
+    tag_id: dish_32
+    country_code: ['AE']
+  Koshary:
+    tag_id: dish_33
+    country_code: ['AE', 'EG']
+  Manaqeesh:
+    tag_id: dish_34
+    country_code: ['AE', 'EG']
+  Mandi:
+    tag_id: dish_35
+    country_code: ['AE', 'EG']
+  Matcha:
+    tag_id: dish_36
+    country_code: ['AE']
+  Milkshakes:
+    tag_id: dish_37
+    country_code: ['AE']
+  Noodles:
+    tag_id: dish_38
+    country_code: ['AE', 'EG']
+  Nuts:
+    tag_id: dish_39
+    country_code: ['EG']
+  Pancakes:
+    tag_id: dish_40
+    country_code: ['AE']
+  Pasta:
+    tag_id: dish_41
+    country_code: ['AE', 'EG']
+  Pies:
+    tag_id: dish_42
+    country_code: ['AE', 'EG']
+  Pizza:
+    tag_id: dish_43
+    country_code: ['AE', 'EG']
+  Poke:
+    tag_id: dish_44
+    country_code: ['AE']
+  Popcorn:
+    tag_id: dish_45
+    country_code: ['AE']
+  Ramen:
+    tag_id: dish_46
+    country_code: ['AE']
+  Salad:
+    tag_id: dish_47
+    country_code: ['AE', 'EG']
+  Sandwiches:
+    tag_id: dish_48
+    country_code: ['AE']
+  Seafood:
+    tag_id: dish_49
+    country_code: ['AE', 'EG']
+  Shawerma:
+    tag_id: dish_50
+    country_code: ['AE', 'EG']
+  Smoothies:
+    tag_id: dish_51
+    country_code: ['AE']
+  Snacks:
+    tag_id: dish_52
+    country_code: ['AE']
+  Soup:
+    tag_id: dish_53
+    country_code: ['AE']
+  Steak:
+    tag_id: dish_54
+    country_code: ['AE']
+  Streat Food:
+    tag_id: dish_55
+    country_code: ['EG']
+  Sushi:
+    tag_id: dish_56
+    country_code: ['AE', 'EG']
+  Tacos:
+    tag_id: dish_57
+    country_code: ['AE', 'EG']
+  Tea:
+    tag_id: dish_58
+    country_code: ['AE']
+  Waffles:
+    tag_id: dish_59
+    country_code: ['AE', 'EG']
+  Wings:
+    tag_id: dish_60
+    country_code: ['AE']

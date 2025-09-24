@@ -1,0 +1,10 @@
+external_apis:
+  openai_api_key: ${oc.env:OPENAI_API_KEY}
+  dh_qcommerce_api_endpoint: ${oc.env:DH_QCOMMERCE_API_ENDPOINT,https://disco.deliveryhero.io/search/qcommerce/api/v4/product}
+
+openai_cache:
+  semantic_cache_model: ${oc.env:SEMANTIC_CACHE_MODEL,paraphrase-multilingual-MiniLM-L12-v2}
+
+storage:
+  postgres:
+    main_query_timeout: ${oc.env:PG_MAIN_QUERY_TIMEOUT,9000}  # millisecond

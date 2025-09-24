@@ -1,0 +1,11 @@
+SELECT DISTINCT
+   ac_ven_unique.chain_id
+  ,dc.chain_name as chain_name
+  --,ac_ven_unique.rating
+  --,ac_ven_unique.monthly_successful_orders monthly_orders
+  ,ac_ven_unique.address_geohash
+  ,ac_ven_unique.vendor_id
+FROM `tlb-data-prod.data_platform.ese_account_vendor_delivery` ac_ven_unique
+INNER JOIN `tlb-data-prod.data_platform.dim_chain` dc using (chain_id)
+WHERE
+    ac_ven_unique.country_code = "{{ country_code }}"

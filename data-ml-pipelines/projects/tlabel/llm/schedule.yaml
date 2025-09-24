@@ -1,0 +1,144 @@
+# Configure each DAG under a unique key
+# ex: tlabel_llm_train, tlabel_llm_predict, ...
+
+# DAG #1:
+tlabel_llm_predict_ae_geo_init_load: # should follow the pattern: <project_name>_<model_name>_<script_name>
+  enable_dag: True
+  schedule_interval: "@once"
+  owner: "Algorithms, Abdullah Salama"
+  tasks_group:
+    - task_group_name: "batch_tagging"
+      gke_tasks:
+        - task_id: "task_id_1"
+          node_pool: "algo-generic-node-pool"
+          commands:
+            - "python"
+            - "predict.py"
+            - "--country_code=AE"
+            - "--category=geographical"
+            - "--batch_size=50"
+            - "--overwrite"
+
+# DAG #2:
+tlabel_llm_predict_ae_geo_incremental: # should follow the pattern: <project_name>_<model_name>_<script_name>
+  enable_dag: True
+  schedule_interval: "0 10 * * *"
+  owner: "Algorithms, Abdullah Salama"
+  tasks_group:
+    - task_group_name: "batch_tagging"
+      gke_tasks:
+        - task_id: "task_id_1"
+          node_pool: "algo-generic-node-pool"
+          commands:
+            - "python"
+            - "predict.py"
+            - "--country_code=AE"
+            - "--category=geographical"
+            - "--batch_size=50"
+
+
+# DAG #3:
+tlabel_llm_predict_eg_geo_init_load: # should follow the pattern: <project_name>_<model_name>_<script_name>
+  enable_dag: True
+  schedule_interval: "@once"
+  owner: "Algorithms, Abdullah Salama"
+  tasks_group:
+    - task_group_name: "batch_tagging"
+      gke_tasks:
+        - task_id: "task_id_1"
+          node_pool: "algo-generic-node-pool"
+          commands:
+            - "python"
+            - "predict.py"
+            - "--country_code=EG"
+            - "--category=geographical"
+            - "--batch_size=50"
+            - "--overwrite"
+
+# DAG #4:
+tlabel_llm_predict_eg_geo_incremental: # should follow the pattern: <project_name>_<model_name>_<script_name>
+  enable_dag: True
+  schedule_interval: "0 12 * * *"
+  owner: "Algorithms, Abdullah Salama"
+  tasks_group:
+    - task_group_name: "batch_tagging"
+      gke_tasks:
+        - task_id: "task_id_1"
+          node_pool: "algo-generic-node-pool"
+          commands:
+            - "python"
+            - "predict.py"
+            - "--country_code=EG"
+            - "--category=geographical"
+            - "--batch_size=50"
+
+# DAG #5:
+tlabel_llm_predict_ae_dish_init_load: # should follow the pattern: <project_name>_<model_name>_<script_name>
+  enable_dag: True
+  schedule_interval: "@once"
+  owner: "Algorithms, Abdullah Salama"
+  tasks_group:
+    - task_group_name: "batch_tagging"
+      gke_tasks:
+        - task_id: "task_id_1"
+          node_pool: "algo-generic-node-pool"
+          commands:
+            - "python"
+            - "predict.py"
+            - "--country_code=AE"
+            - "--category=dish"
+            - "--batch_size=50"
+            - "--overwrite"
+
+# DAG #6:
+tlabel_llm_predict_ae_dish_incremental: # should follow the pattern: <project_name>_<model_name>_<script_name>
+  enable_dag: True
+  schedule_interval: "0 10 * * *"
+  owner: "Algorithms, Abdullah Salama"
+  tasks_group:
+    - task_group_name: "batch_tagging"
+      gke_tasks:
+        - task_id: "task_id_1"
+          node_pool: "algo-generic-node-pool"
+          commands:
+            - "python"
+            - "predict.py"
+            - "--country_code=AE"
+            - "--category=dish"
+            - "--batch_size=50"
+
+
+# DAG #7:
+tlabel_llm_predict_eg_dish_init_load: # should follow the pattern: <project_name>_<model_name>_<script_name>
+  enable_dag: True
+  schedule_interval: "@once"
+  owner: "Algorithms, Abdullah Salama"
+  tasks_group:
+    - task_group_name: "batch_tagging"
+      gke_tasks:
+        - task_id: "task_id_1"
+          node_pool: "algo-generic-node-pool"
+          commands:
+            - "python"
+            - "predict.py"
+            - "--country_code=EG"
+            - "--category=dish"
+            - "--batch_size=50"
+            - "--overwrite"
+
+# DAG #8:
+tlabel_llm_predict_eg_dish_incremental: # should follow the pattern: <project_name>_<model_name>_<script_name>
+  enable_dag: True
+  schedule_interval: "0 12 * * *"
+  owner: "Algorithms, Abdullah Salama"
+  tasks_group:
+    - task_group_name: "batch_tagging"
+      gke_tasks:
+        - task_id: "task_id_1"
+          node_pool: "algo-generic-node-pool"
+          commands:
+            - "python"
+            - "predict.py"
+            - "--country_code=EG"
+            - "--category=dish"
+            - "--batch_size=50"

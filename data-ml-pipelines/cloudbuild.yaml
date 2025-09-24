@@ -1,0 +1,28 @@
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - '--network=cloudbuild'
+      - '--build-arg'
+      - 'GCP_PROJECT=$PROJECT_ID'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/algo-master-image:latest'
+      - .
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - 'gcr.io/$PROJECT_ID/algo-master-image:latest'
+  # Steps to install Python dependencies and run the Python script to check and validate schedule.yaml and push the manifest to gcs
+  - name: 'python:3.8'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        pip install pyyaml google-cloud-storage cookiecutter &&
+        python dag_generation/dag_generator.py
+    env:
+      - 'PROJECT_ID=$PROJECT_ID'
+images:
+  - 'gcr.io/$PROJECT_ID/algo-master-image:latest'
+options:
+  logging: CLOUD_LOGGING_ONLY

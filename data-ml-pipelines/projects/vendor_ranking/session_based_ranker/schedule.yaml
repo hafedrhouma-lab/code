@@ -1,0 +1,409 @@
+# Configure each DAG under a unique key
+# ex: vendor_ranking_hf_transformers_train, vendor_ranking_hf_transformers_predict, ...
+
+vendor_ranking_session_based_ranker_offline_embeddings:
+  enable_dag: True
+  schedule_interval: "0 4 * * *"
+  owner: "Algorithms, Muhammad Anas"
+
+  tasks_group:
+    - task_group_name: "session_based_v1_offline_embeddings_ae"
+      sql_sensors:
+        - task_id: "data_feature_store_account_orders_sensor_ae" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "account_orders"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_account_performance_sensor_ae" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "account_performance"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_account_engagement_sensor_ae" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "account_engagement"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_account_impressions_sensor_ae" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "account_impressions"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+      gke_tasks:
+        - task_id: "offline_embeddings_gke_task_ae" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "offline_embeddings.py"
+            - "--country=AE"
+            - "--initial_load=False"
+
+
+    - task_group_name: "session_based_v1_offline_embeddings_kw"
+      sql_sensors:
+        - task_id: "data_feature_store_account_orders_sensor_kw"
+          enable: True
+          table_name: "account_orders"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_account_performance_sensor_kw"
+          enable: True
+          table_name: "account_performance"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_account_engagement_sensor_kw"
+          enable: True
+          table_name: "account_engagement"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_account_impressions_sensor_kw"
+          enable: True
+          table_name: "account_impressions"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+      gke_tasks:
+        - task_id: "offline_embeddings_gke_task_kw"
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "offline_embeddings.py"
+            - "--country=KW"
+            - "--initial_load=False"
+
+
+    - task_group_name: "session_based_v1_offline_embeddings_bh"
+      sql_sensors:
+        - task_id: "data_feature_store_account_orders_sensor_bh"
+          enable: True
+          table_name: "account_orders"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_account_performance_sensor_bh"
+          enable: True
+          table_name: "account_performance"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_account_engagement_sensor_bh"
+          enable: True
+          table_name: "account_engagement"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_account_impressions_sensor_bh"
+          enable: True
+          table_name: "account_impressions"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+      gke_tasks:
+        - task_id: "offline_embeddings_gke_task_bh"
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "offline_embeddings.py"
+            - "--country=BH"
+            - "--initial_load=False"
+
+
+    - task_group_name: "session_based_v1_offline_embeddings_om"
+      sql_sensors:
+        - task_id: "data_feature_store_account_orders_sensor_om"
+          enable: True
+          table_name: "account_orders"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_account_performance_sensor_om"
+          enable: True
+          table_name: "account_performance"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_account_engagement_sensor_om"
+          enable: True
+          table_name: "account_engagement"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_account_impressions_sensor_om"
+          enable: True
+          table_name: "account_impressions"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+      gke_tasks:
+        - task_id: "offline_embeddings_gke_task_om"
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "offline_embeddings.py"
+            - "--country=OM"
+            - "--initial_load=False"
+
+
+    - task_group_name: "session_based_v1_offline_embeddings_jo"
+      sql_sensors:
+        - task_id: "data_feature_store_account_orders_sensor_jo"
+          enable: True
+          table_name: "account_orders"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_account_performance_sensor_jo"
+          enable: True
+          table_name: "account_performance"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_account_engagement_sensor_jo"
+          enable: True
+          table_name: "account_engagement"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_account_impressions_sensor_jo"
+          enable: True
+          table_name: "account_impressions"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+      gke_tasks:
+        - task_id: "offline_embeddings_gke_task_jo"
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "offline_embeddings.py"
+            - "--country=JO"
+            - "--initial_load=False"
+
+
+    - task_group_name: "session_based_v1_offline_embeddings_iq"
+      sql_sensors:
+        - task_id: "data_feature_store_account_orders_sensor_iq"
+          enable: True
+          table_name: "account_orders"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_account_performance_sensor_iq"
+          enable: True
+          table_name: "account_performance"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_account_engagement_sensor_iq"
+          enable: True
+          table_name: "account_engagement"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_account_impressions_sensor_iq"
+          enable: True
+          table_name: "account_impressions"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+      gke_tasks:
+        - task_id: "offline_embeddings_gke_task_iq"
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "offline_embeddings.py"
+            - "--country=IQ"
+            - "--initial_load=False"
+
+
+    - task_group_name: "session_based_v1_offline_embeddings_qa"
+      sql_sensors:
+        - task_id: "data_feature_store_account_orders_sensor_qa"
+          enable: True
+          table_name: "account_orders"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_account_performance_sensor_qa"
+          enable: True
+          table_name: "account_performance"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_account_engagement_sensor_qa"
+          enable: True
+          table_name: "account_engagement"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_account_impressions_sensor_qa"
+          enable: True
+          table_name: "account_impressions"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+      gke_tasks:
+        - task_id: "offline_embeddings_gke_task_qa"
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "offline_embeddings.py"
+            - "--country=QA"
+            - "--initial_load=False"
+
+
+    - task_group_name: "session_based_v1_offline_embeddings_eg"
+      sql_sensors:
+        - task_id: "data_feature_store_account_orders_sensor_eg"
+          enable: True
+          table_name: "account_orders"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_account_performance_sensor_eg"
+          enable: True
+          table_name: "account_performance"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_account_engagement_sensor_eg"
+          enable: True
+          table_name: "account_engagement"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_account_impressions_sensor_eg"
+          enable: True
+          table_name: "account_impressions"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+      gke_tasks:
+        - task_id: "offline_embeddings_gke_task_eg"
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "offline_embeddings.py"
+            - "--country=EG"
+            - "--initial_load=False"
+
+  online_store_materialization:
+    # Required: List of BigQuery tables to materialize to the online feature store
+    tables:
+      - "account_embeddings_session_based_all_fv" # Set here your BigQuery table ID to be materialized to the online feature store
+    # Optional - Additional environment variables to pass to the container
+    additional_env_vars:
+      # Only KEY NUM_CHUNKS is allowed
+      NUM_CHUNKS: 20
+      ENABLE_AUTOSCALE: TRUE
+    # Optional - Resources to allocate to the container
+    container_resources:
+      requests:
+        memory: "80Gi"
+        cpu: "5000m"
+      limits:
+        memory: "80Gi"
+        cpu: "5000m"

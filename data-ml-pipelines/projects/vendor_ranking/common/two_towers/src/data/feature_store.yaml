@@ -1,0 +1,63 @@
+project: tlb_feature_store
+# By default, the registry is a file (but can be turned into a more scalable SQL-backed registry)
+# On GCP, minimally you should create a GCS bucket for a remote file registry
+# See https://docs.feast.dev/getting-started/concepts/registry for details
+registry:
+#  path: gs://tlb-data-dev-data-algorithms-content-optimization/feature_store/registry/registry.pb
+  path: gs://${PROJECT_ID}-data-algorithms-content-optimization/feature_store/registry/registry.pb
+  cache_ttl_seconds: 120
+
+provider: gcp
+
+
+offline_store:
+  type: bigquery
+  project_id: ${PROJECT_ID}
+#  project_id: tlb-data-dev
+
+#batch_engine: materialization_engine.DynamoDBCustomMaterializationEngine
+
+# See https://docs.feast.dev/reference/online-stores/dynamodb
+#online_store:
+#   type: online_store.DynamoDBCustomOnlineStore
+#   region: eu-west-2
+#   table_name_template: ace_
+#   batch_size: 40
+#
+entity_key_serialization_version: 2
+
+#for local testing
+#online_store:
+#  type: sqlite
+#  path: data/online_store.db
+
+#online_store:
+#  type: postgres
+#  host: localhost
+#  port: 5455     # Adjusted port to match the mapped port (5455 instead of 5432)
+#  database: pgdb   # Adjusted database name to match the one set in the Docker command
+#  db_schema: public
+#  user: admin   # Adjusted user to match the one set in the Docker command
+#  password: admin   # Adjusted password to match the one set in the Docker command
+#  pgvector_enabled: true
+
+
+
+# See https://docs.feast.dev/reference/online-stores/postgres
+#online_store:
+#    type: postgres
+#    host: ${PG_HOST}
+#    port: !!int ${PG_PORT}
+#    database: ${PG_DATABASE}
+#    db_schema: ${PG_SCHEMA}
+#    user: ${PG_LOGIN}
+#    password: ${PG_PASSWORD}
+#    sslmode: verify-ca
+#    sslkey_path: /path/to/client-key.pem
+#    sslcert_path: /path/to/client-cert.pem
+#    sslrootcert_path: /path/to/server-ca.pem
+
+# See https://docs.feast.dev/reference/online-stores/redis
+#online_store:
+#   type: redis
+#   connection_string: "talabat-qa-datascience-redis-eu-west-2.xvzdot.ng.0001.euw2.cache.amazonaws.com:6379"

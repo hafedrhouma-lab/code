@@ -1,0 +1,7 @@
+name: item_ranking_content_based
+conda_env: conda.yaml
+entry_points:
+  main:
+    command: "PYTHONPATH=../.. python main.py"
+  predict:
+    command: "PYTHONPATH=../.. python predict.py"

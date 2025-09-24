@@ -1,0 +1,4 @@
+.direnv/
+._s3_data/
+.inference_model_artifacts/
+._mounts/

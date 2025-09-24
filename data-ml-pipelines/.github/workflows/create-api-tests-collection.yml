@@ -1,0 +1,39 @@
+name: Create Api Tests Collection
+
+on:
+  pull_request:
+    branches: [master, main, prod, qa, develop]
+
+jobs:
+  create-api-tests-collection-file:
+    name: API Tests collection file creation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          # Required to commit back compiled files...
+          ref: ${{ github.head_ref }}
+          # Built-in GITHUB_TOKEN does not trigger actions again, so the PR status won't be updated (checks won't be
+          # reported for the last commit), see
+          # https://github.com/stefanzweifel/git-auto-commit-action#commits-made-by-this-action-do-not-trigger-new-workflow-runs
+          token: ${{ secrets.MERGE_GITHUB_TOKEN }}
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: pip install -r ./base/api-testing/requirements.txt
+      - name: Set execute permissions
+        run: chmod +x ./base/api-testing/create_api_tests_script.py
+      - name: Run API Tests Collection File Creation Script
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
+          USER_AGENT_SECRET: ${{ secrets.USER_AGENT_SECRET }}
+        run: python ./base/api-testing/create_api_tests_script.py
+      - name: Commit API Tests Collection File
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: 'chore: sync api-tests collection file'

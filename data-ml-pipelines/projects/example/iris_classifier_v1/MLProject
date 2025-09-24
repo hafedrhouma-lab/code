@@ -1,0 +1,7 @@
+name: example_iris_classifier_v1
+python_env: python_env.yaml
+entry_points:
+  main:
+    command: "PYTHONPATH=../../.. python main.py"
+  predict:
+    command: "PYTHONPATH=../../.. python predict.py"

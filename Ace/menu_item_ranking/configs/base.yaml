@@ -1,0 +1,36 @@
+ranking:
+  two_towers:
+    default_countries: [ "ae", "bh", "eg", "iq", "jo", "kw", "om", "qa" ]
+    countries:
+      v2: [ "ae", ]
+
+  logic:
+    default:
+      default: "placeholder"
+      countries_logic:
+        placeholder: [ "bh", "om" ]
+ 
+    control:
+      default: "placeholder"
+      countries_logic:
+        placeholder: [ "bh", "om" ]
+ 
+ 
+    # That section makes config management more convenient.
+    # Here are all available countries' short aliases, which can be used in other config sections.
+    available_countries:
+      UAE: "ae"
+      Bahrain: "bh"
+      Egypt: "eg"
+      Iraq: "iq"
+      Jordan: "jo"
+      Kuwait: "kw"
+      Lebanon: "lb"
+      Oman: "om"
+      Qatar: "qa"
+      KSA: "sa"
+
+storage:
+  postgres:
+    background_query_timeout: ${oc.env:PG_BG_QUERY_TIMEOUT,120000}  # millisecond
+    main_query_timeout: ${oc.env:PG_MAIN_QUERY_TIMEOUT,150}  # millisecond

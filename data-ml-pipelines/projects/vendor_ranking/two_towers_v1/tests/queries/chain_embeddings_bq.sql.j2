@@ -1,0 +1,7 @@
+SELECT
+    chain_id, embeddings
+FROM
+    `tlb-data-prod.data_feature_store.chain_embeddings_two_tower_mlf_all`
+WHERE
+    country_code="{{ country_code }}"
+    AND DATE(feature_timestamp)="{{ test_date }}"

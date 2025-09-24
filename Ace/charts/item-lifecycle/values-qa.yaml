@@ -1,0 +1,72 @@
+service:  # HTTP API
+  istio:
+    ingress:
+      routes:
+        match:
+          - host: ace-qa.dhhmena.com
+            prefix: "/item_lifecycle/"
+
+  environmentVars:
+    NEW_RELIC_APP_NAME:
+      value: ace-item-lifecycle-qa
+    ACE_LOGS_SQS_QUEUE_URL:
+      value: https://sqs.eu-west-2.amazonaws.com/690772145391/talabat-qa-ace-api-logs-request
+    ACE_LOGS_SAMPLE_PERCENTAGE:
+      value: "100"
+    LOG_LEVEL:
+      value: "DEBUG"
+
+  externalSecret:
+    dataVars:
+      NEW_RELIC_LICENSE_KEY:
+        key: /sre/nr/qa/license_key
+
+  serviceAccount:
+    annotations:
+      eks.amazonaws.com/role-arn: "arn:aws:iam::690772145391:role/talabat-qa-datascience-ace"
+
+  horizontalPodAutoscaler:
+    enabled: true
+    # QA is now 3 clusters, not one... Oh
+    # See https://github.com/talabat-dhme/argo-deploy/pull/149/files
+    minReplicas: 3
+    maxReplicas: 30
+
+  verticalPodAutoscaler:
+    enabled: false
+
+observability:
+  apmName: "ace-item-lifecycle-qa"
+  alertPolicies:
+    alertPolicy1:
+      name: "ace-item-lifecycle-qa"
+      incidentPreference: PER_CONDITION
+      notification:
+        slackChannelIds:
+          - C05AZQ9JML6 # tlb-ace-alerts-qa
+      goldenSignals:
+        #------- Golden Signals Alerts -------#
+        apdex:
+          enabled: true
+          thresholdCritical:
+            operator: BELOW
+            thresholdValue: 0.8
+            thresholdDuration: 300
+            thresholdOccurrences: AT_LEAST_ONCE
+          thresholdWarning:
+            operator: BELOW
+            thresholdValue: 0.9
+            thresholdDuration: 300
+            thresholdOccurrences: AT_LEAST_ONCE
+        errorRate:
+          enabled: true
+          thresholdCritical:
+            operator: ABOVE
+            thresholdValue: 2
+            thresholdDuration: 300
+            thresholdOccurrences: ALL
+          thresholdWarning:
+            operator: ABOVE
+            thresholdValue: 1
+            thresholdDuration: 300
+            thresholdOccurrences: ALL

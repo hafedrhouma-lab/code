@@ -1,0 +1,63 @@
+name: Sync Back to Develop
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sync-branches:
+    runs-on: [self-hosted, global-runner]
+    name: Syncing branches
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      - name: Opening pull request
+        id: sync
+        uses: tretuna/sync-branches@1.2.0
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FROM_BRANCH: 'main'
+          TO_BRANCH: 'develop'
+          PULL_REQUEST_TITLE: 'Automatic Main to Develop Sync'
+
+      - name: Get Pull Request Number
+        id: get-pr-number
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { data: pulls } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              base: 'develop', // PRs targeting the 'develop' branch
+              head: `${context.repo.owner}:main` // PRs coming from the 'main' branch
+            });
+
+            if (pulls.length === 0) {
+              throw new Error('No open pull request found for the sync.');
+            }
+
+            const prNumber = pulls[0].number; // Get the PR number of the first match
+            core.setOutput('pr_number', prNumber);
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Auto-merge the PR
+        if: success()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const prNumber = process.env.PR_NUMBER || ${{ steps.get-pr-number.outputs.pr_number }};
+            await github.rest.pulls.merge({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber,
+              merge_method: "merge", 
+            });

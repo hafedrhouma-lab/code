@@ -1,0 +1,8 @@
+name: example_iris_classifier_test
+channels:
+  - defaults
+dependencies:
+  - python=3.11
+  - pip
+  - pip:
+    - -r requirements.txt

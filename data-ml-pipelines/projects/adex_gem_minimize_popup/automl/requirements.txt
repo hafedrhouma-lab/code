@@ -1,0 +1,13 @@
+tensorflow==2.8.0
+struct2tensor==0.39.0
+tensorflow-addons==0.16.1
+mlflow==1.16.0
+protobuf==3.19.0
+numpy==1.26.4
+google-cloud-storage
+python-dotenv
+structlog
+cloudpickle
+google-cloud-bigquery
+pyyaml
+pandas-gbq

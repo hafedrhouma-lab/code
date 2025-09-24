@@ -1,0 +1,76 @@
+{
+  "engine": "gpt-3.5-turbo-0613",
+  "max_tokens": 256,
+  "temperature": 0,
+  "functions": [
+            {
+                "name": "items_semantic_search",
+                "description": "Search for relevant grocery and food dishes",
+                "parameters": {
+                                "type": "object",
+                                "properties": {
+                                    "items_to_search": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "search_term": {
+                                                    "type": "string",
+                                                    "description": "The search term for the item the user is looking for",
+                                                    "examples": ["coffee", "pasta", "healthy meal"]
+                                                },
+                                                "verticals": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "enum": ["food", "grocery"],
+                                                        "description": "The categories where the search term is relevant",
+                                                        "examples": ["food", "grocery"]
+                                                    },
+                                                    "description": "Array of categories relevant to the search term"
+                                                },
+                                                "sort_by": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "number_of_orders": {
+                                                            "type": "string",
+                                                            "enum": ["asc", "desc"],
+                                                            "description": "The sorting order based on the number of orders",
+                                                            "examples": ["asc", "desc"]
+                                                        },
+                                                        "price": {
+                                                            "type": "string",
+                                                            "enum": ["asc", "desc"],
+                                                            "description": "The sorting order based on the price",
+                                                            "examples": ["asc", "desc"]
+                                                        }
+                                                    },
+                                                    "description": "Object that contains the parameters for sorting the search results"
+                                                },
+                                                "filter_by": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "price": {
+                                                            "type": "string",
+                                                            "description": "The price filter for the search results",
+                                                            "examples": ["x < 30", "x > 50"]
+                                                        }
+                                                    },
+                                                    "description": "Object that contains the parameters for filtering the search results"
+                                                },
+                                                "past_orders_only": {
+                                                    "type": "boolean",
+                                                    "description": "Indicator if only items from past orders should be returned",
+                                                    "examples": [true, false]
+                                                }
+                                            },
+                                            "required": ["search_term", "verticals"]
+                                        }
+                                    }
+                                },
+                                "required": ["items_to_search"]
+                            }
+            }
+        ],
+  "function_call":"auto"
+}

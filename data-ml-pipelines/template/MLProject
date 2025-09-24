@@ -1,0 +1,7 @@
+name: <project_name>_<model_name>
+python_env: python_env.yaml
+entry_points:
+  main:
+    command: "PYTHONPATH=../.. python main.py"
+  predict:
+    command: "PYTHONPATH=../.. python predict.py"

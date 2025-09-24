@@ -1,0 +1,130 @@
+service:  # HTTP API
+  tribe: datascience
+  squad: fraud
+  env: dev # Set on deploy
+
+  # We do not use DataDog anyway, and currently (1.4.0) it results to an invalid generated YAML ("env:" is doubled)
+  datadog:
+    enabled: false
+
+  image:
+    tag: latest # Set on deploy
+    repository: 457710302499.dkr.ecr.eu-west-2.amazonaws.com/ace/api
+  containerPort: 3000 # The service runs by a non-root user, so it cannot listen on port 80 (see Dockerfile)
+#  command: ["newrelic-admin", "run-program"]
+  # Run the API directly (there are no BentoML model runners)
+#  args: ["python3", "src/ace/bentoml/http_api_server.py", "."]
+
+  environmentVars:
+    STAGE:
+      value: dev # Set on deploy
+    NEW_RELIC_APP_NAME:
+      value: ace-dev.dhhmena.com
+  envFrom:
+    - secretRef:
+        name: ace-nba-secrets
+
+  externalSecret:
+    enabled: true
+    backendType: systemManager
+    name: ace-nba-secrets
+    dataVars:
+      PGHOST:
+        key: /datascience/ace/db/ro/hostname
+      PGUSER:
+        key: /datascience/ace/app/db/username
+      PGPASSWORD:
+        key: /datascience/ace/app/db/password
+      PGDATABASE:
+        key: /datascience/ace/db/dbname
+      NEW_RELIC_LICENSE_KEY:
+        key: /sre/nr/dev/license_key
+
+  resources:
+    limits:
+      memory: 2Gi
+    requests:
+      # Looks like that "predict" function is a bottleneck, so we need to decrease CPU to keep the amount of concurrent
+      # requests low per pod (but spawn many pods, see HPA below)
+      cpu: 500m
+      memory: 1Gi
+
+  startupProbe:
+    # See https://deliveryhero.slack.com/archives/CLZ106T0Q/p1683711563096479 on how this override works
+    tcpSocket: null
+    httpGet:
+      path: /readyz
+      port: 3000
+    initialDelaySeconds: 30 # Wait for the model artifacts to be downloaded, data to be loaded in memory, etc.
+    periodSeconds: 5
+    timeoutSeconds: 1
+    failureThreshold: 10
+  readinessProbe:
+    httpGet:
+      path: /readyz
+      port: 3000
+    timeoutSeconds: 1
+    periodSeconds: 10
+    successThreshold: 1
+    failureThreshold: 1
+  livenessProbe:
+    # See https://deliveryhero.slack.com/archives/CLZ106T0Q/p1683711563096479 on how this override works
+    tcpSocket: null
+    httpGet:
+      path: /readyz
+      port: 3000
+    timeoutSeconds: 5
+    periodSeconds: 15
+    failureThreshold: 5
+
+  serviceAccount:
+    create: true
+    annotations:
+      eks.amazonaws.com/role-arn: "arn:aws:iam::690772145391:role/talabat-dev-datascience-ace"
+
+  horizontalPodAutoscaler:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 10
+    metrics:
+      - type: Resource
+        resource:
+          name: cpu
+          target:
+            type: Utilization
+            averageUtilization: 65
+
+  # Vertical Pod autoscaling can recommend values for CPU and memory requests and limits,
+  # see https://goldilocks-dashboard.dhhmena.com/dashboard
+  verticalPodAutoscaler:
+    enabled: true
+
+  service:
+    type: ClusterIP
+    port: 80
+  ingress:
+    enabled: false
+  podAnnotations:
+    sidecar.istio.io/inject: "true"
+  istio:
+    enabled: true
+    ingress:
+      routes:
+        mainPort: 80
+        match:
+          - host: ace-dev.dhhmena.com
+            prefix: "/nba/" # see https://confluence.deliveryhero.com/pages/viewpage.action?spaceKey=TAL&title=Istio+Traffic+Management
+    holdApplicationUntilProxyStarts: true
+    resources:
+      enabled: true
+      limits:
+        memory: 1024Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+    retries:
+      attempts: 15
+      retryOn: gateway-error,connect-failure,refused-stream
+    trafficPolicy:
+      loadBalancer:
+        simple: LEAST_CONN

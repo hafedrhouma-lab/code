@@ -1,0 +1,5 @@
+streamlit~=1.18
+notebook~=7.0
+seaborn==0.11.2
+
+types-tensorflow~=2.12

@@ -1,0 +1,22 @@
+stage: ${oc.env:STAGE,qa}
+
+storage:
+  s3:
+    server_port: ${oc.env:S3_SERVER_PORT,9002}
+    server_host: ${oc.env:S3_SERVER_HOST,localhost}
+    access_key: ${oc.env:S3_ACCESS_KEY,s3_access_key}
+    secret_key: ${oc.env:S3_SECRET_KEY,s3_secret_key}
+    bucket_name: ${oc.env:S3_BUCKET_NAME,talabat-${stage}-ace-airflow-eu-west-2}
+  postgres:
+    host: ${oc.env:PGHOST,localhost}
+    port: ${oc.env:PGPORT,5432}
+    user: ${oc.env:PGUSER,postgres}
+    password: ${oc.env:PGPASSWORD,secret}
+    database: ${oc.env:PGDATABASE,ace_${stage}}
+    connection_timeout: ${oc.env:PG_CONNECTION_TIMEOUT,10}
+    background_query_timeout: ${oc.env:PG_BG_QUERY_TIMEOUT,120000}  # millisecond
+    main_query_timeout: ${oc.env:PG_MAIN_QUERY_TIMEOUT,250}  # millisecond
+
+logging:
+  level: ${oc.env:LOG_LEVEL,INFO}
+  add_console_renderer:  ${oc.env:ACE_ADD_CONSOLE_RENDERER,false}

@@ -1,0 +1,11 @@
+# See https://docs.bentoml.org/en/latest/concepts/bento.html#files-to-exclude
+
+__pycache__
+*.py[cod]
+*$py.class
+.ipynb_checkpoints
+
+fixtures
+
+.direnv
+venv

@@ -1,0 +1,3 @@
+ranking:
+  two_towers:
+    default_countries: [ "ae", "qa" ]

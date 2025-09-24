@@ -1,0 +1,16 @@
+SELECT
+    ch_emb.chain_id,
+    json_extract_array(ch_emb.embeddings) as chain_embeddings
+    FROM `tlb-data-prod.data_platform.ese_chain_embeddings_history` ch_emb
+    WHERE DATE(ch_emb.dwh_entry_timestamp) = "{{ embedding_date }}"
+    AND chain_id in
+    ( 
+        SELECT distinct chain_id
+        FROM `tlb-data-prod.data_platform.fct_order` f
+        join `tlb-data-prod.data_platform.dim_location` l on f.location_id = l.location_id
+        where f.country_iso = "{{ country_code }}" and order_date < "{{ embedding_date }}"
+        AND is_successful
+        AND vertical = "food"
+        AND not is_guest
+        AND not is_test
+    )

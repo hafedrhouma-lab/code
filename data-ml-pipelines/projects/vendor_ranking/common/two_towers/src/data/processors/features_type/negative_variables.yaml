@@ -1,0 +1,9 @@
+column_types:
+  - column_name: chain_name
+    dtype: str
+  - column_name: chain_freq_area_ids
+    dtype: str
+  - column_name: chain_id
+    dtype: str
+  - column_name: chain_actual_tpro_orders_pct
+    dtype: float32

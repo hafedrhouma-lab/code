@@ -1,0 +1,20 @@
+#!/usr/bin/env -S just --justfile
+# ^ A shebang isn't required, but allows a justfile to be executed
+#   like a script, with `./justfile test`, for example.
+
+export GCP_PIP_SECRET := env_var_or_default("GCP_PIP_SECRET", "secret")
+
+
+default: upgrade compile
+
+upgrade:
+    pip-compile -v --resolver=backtracking --strip-extras --allow-unsafe \
+      --upgrade \
+      -o requirements-all.txt \
+      requirements*.in
+
+compile:
+    pip-compile -v --resolver=backtracking --no-strip-extras --no-allow-unsafe \
+      --constraint requirements-all.txt \
+      -o requirements.txt \
+      requirements.in

@@ -1,0 +1,25 @@
+column_types:
+  - column_name: account_log_avg_gmv_eur
+    dtype: float32
+  - column_name: account_is_tpro
+    dtype: float32
+  - column_name: chain_id
+    dtype: str
+  - column_name: delivery_area_id
+    dtype: str
+  - column_name: order_hour
+    dtype: int
+  - column_name: order_weekday
+    dtype: int
+  - column_name: sample_weight
+    dtype: int
+  - column_name: freq_chains
+    dtype: str
+  - column_name: freq_clicks
+    dtype: str
+  - column_name: geohash6
+    dtype: str
+  - column_name: prev_clicks
+    dtype: str
+  - column_name: user_prev_chains
+    dtype: str

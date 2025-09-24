@@ -1,0 +1,12 @@
+SELECT
+    op.order_id,
+    op.account_id,
+    op.chain_id,
+    op.country_code,
+    op.feature_timestamp AS event_timestamp,
+FROM {{ orders_profile_table }} op
+LEFT JOIN {{ chain_profile_table }} cp
+ON op.chain_id = cp.chain_id and op.country_code = cp.country_code and op.feature_timestamp = cp.feature_timestamp
+WHERE op.feature_timestamp BETWEEN "{{ start_date }}" AND "{{ end_date }}"
+AND op.country_code = "{{ country_code }}"
+AND (vertical = 'food' or secondary_verticals like '%Food%')

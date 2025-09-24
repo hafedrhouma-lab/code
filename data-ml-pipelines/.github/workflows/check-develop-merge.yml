@@ -1,0 +1,73 @@
+name: Enforce Feature Branch Merges to Develop First
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check-feature-merged-to-develop:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Git
+        run: |
+          git fetch --all # Fetch all branches to ensure they are available locally
+
+      - name: Ensure feature branch is merged into develop
+        id: check-merge
+        run: |
+          BASE_BRANCH=develop
+          FEATURE_BRANCH=${{ github.event.pull_request.head.ref }}
+
+          # Ensure both branches exist locally
+          git checkout $BASE_BRANCH
+          git checkout $FEATURE_BRANCH
+
+          # Check if FEATURE_BRANCH commits are already in develop
+          MISSING_COMMITS=$(git log $FEATURE_BRANCH --not $BASE_BRANCH --oneline || true)
+
+          if [ ! -z "$MISSING_COMMITS" ]; then
+            echo "missing_commits<<EOF" >> $GITHUB_ENV
+            echo "$MISSING_COMMITS" >> $GITHUB_ENV
+            echo "EOF" >> $GITHUB_ENV
+            echo "feature_branch=$FEATURE_BRANCH" >> $GITHUB_ENV
+            exit 1
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Post a comment on the PR with missing commits
+        if: failure()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const missingCommits = process.env.missing_commits;
+            const prNumber = context.payload.pull_request.number;
+            const featureBranch = process.env.feature_branch;
+            const repoUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}`;
+            const conflictFixLink = `${repoUrl}/compare/develop...${featureBranch}`;
+            const commentBody = `
+            🚨 **Missing Commits in Develop** 🚨
+            This feature branch has commits that are not in the \`develop\` branch.
+            Please merge the feature branch into \`develop\` before merging into \`main\`.
+            
+            **To resolve this, visit the following link to compare and fix the conflicts:**  
+            👉 [Compare and Fix Conflicts](${conflictFixLink})
+            
+            **Missing commits:**
+            \`\`\`
+            ${missingCommits}
+            \`\`\`
+            `;
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body: commentBody,
+            });
+            

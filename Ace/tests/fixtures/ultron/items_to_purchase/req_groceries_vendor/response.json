@@ -1,0 +1,47 @@
+[
+    {
+        "original_search": "fish",
+        "items": [
+            {
+                "name": "Al Islami White Fish Fillet 1 kg",
+                "metadata": {
+                    "global_vendor_id": "33a90dda-10d3-48c1-96b9-ae37c358ffa0",
+                    "global_product_id": "5890e591-4ac6-433f-b719-b4e806c3e916",
+                    "product_sku": ""
+                }
+            },
+            {
+                "name": "Freshly Foods Japanese Panko Crumbed Fish Fillet 250 g",
+                "metadata": {
+                    "global_vendor_id": "33a90dda-10d3-48c1-96b9-ae37c358ffa0",
+                    "global_product_id": "0d9a56b9-4a8f-400b-8777-10456b6c5f17",
+                    "product_sku": ""
+                }
+            },
+            {
+                "name": "Asmak Sea Bream Fillet Turkey 200 g",
+                "metadata": {
+                    "global_vendor_id": "33a90dda-10d3-48c1-96b9-ae37c358ffa0",
+                    "global_product_id": "e584e8e2-c691-4672-9190-9c9edcf3092f",
+                    "product_sku": ""
+                }
+            },
+            {
+                "name": "Freshly Foods Premium Extra Large Peeled & Deveined Shrimps 400 g",
+                "metadata": {
+                    "global_vendor_id": "33a90dda-10d3-48c1-96b9-ae37c358ffa0",
+                    "global_product_id": "1187811b-0c2e-4ac7-bd26-3afe8209fe6f",
+                    "product_sku": ""
+                }
+            },
+            {
+                "name": "Asmak Calamari Rings India 300 g",
+                "metadata": {
+                    "global_vendor_id": "33a90dda-10d3-48c1-96b9-ae37c358ffa0",
+                    "global_product_id": "83078305-ac05-4827-b7a7-5cf8a64fe892",
+                    "product_sku": ""
+                }
+            }
+        ]
+    }
+]

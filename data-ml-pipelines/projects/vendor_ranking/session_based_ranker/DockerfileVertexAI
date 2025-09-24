@@ -1,0 +1,32 @@
+FROM us-docker.pkg.dev/deeplearning-platform-release/gcr.io/pytorch-cu121.2-2.py310
+
+# Create directories for SQL and source code
+RUN mkdir -p /base
+RUN mkdir -p /projects
+
+# Set the working directory
+WORKDIR ./
+
+# Copy source files
+COPY base /base
+COPY projects /projects
+COPY credentials.json /credentials.json
+COPY requirements.txt /requirements.txt
+
+# Set environment variables for Google Cloud credentials and MLFlow
+ENV GOOGLE_APPLICATION_CREDENTIALS=/credentials.json
+ENV MLFLOW_TRACKING_URI=https://data.talabat.com/api/public/mlflow
+ENV GOOGLE_CLOUD_PROJECT=tlb-data-dev
+ENV PROJECT_ID=tlb-data-dev
+
+# Install dependencies and create conda environment
+RUN conda update -n base -c defaults conda && \
+    conda create -n session_based_ranker python=3.9.18
+
+RUN /bin/bash -c "source activate session_based_ranker && \
+    # conda install pytorch=2.4.0 pytorch-cuda=12.4 -c pytorch -c nvidia && \
+    pip install cloudml-hypertune && \
+    pip install --no-cache-dir -r /projects/vendor_ranking/session_based_ranker/requirements.txt"
+
+# Set the entrypoint to run the Python script
+ENTRYPOINT ["conda", "run", "-n", "session_based_ranker", "python", "-m", "projects.vendor_ranking.session_based_ranker.main_hpt"]

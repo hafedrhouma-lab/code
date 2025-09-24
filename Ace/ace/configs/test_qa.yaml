@@ -1,0 +1,20 @@
+# config for local development:
+# 1) Run docker compose
+# 2) Start local Ace API
+# 3) Connect to QA database (but not the one from docker compose)
+stage: test
+
+logging:
+  level: ${oc.env:LOG_LEVEL,DEBUG}
+
+storage:
+  postgres:
+    database: ace_qa
+    host: localhost
+    port: ${oc.env:PGPORT,5433}
+    user: ${oc.env:PGUSER,pgsrv_ace_qa_app}
+    password: ${oc.env:PGPASSWORD}
+    connection_timeout: 10
+
+  s3:
+    bucket_name: ${oc.env:S3_BUCKET_NAME,ace-${stage}}

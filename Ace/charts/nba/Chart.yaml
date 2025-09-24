@@ -1,0 +1,9 @@
+apiVersion: v2
+name: ace-nba
+version: 1.0.0-dev
+home: https://github.com/talabat-dhme/Ace
+
+dependencies:
+  - name: service
+    version: ^1.16
+    repository: https://talabat-dhme.github.io/helm-charts

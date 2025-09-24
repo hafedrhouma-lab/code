@@ -1,0 +1,15 @@
+WITH vendor_area_ids AS (
+  SELECT DISTINCT area_id
+  FROM (
+    SELECT CAST(area_id AS STRING) AS area_id
+    FROM `tlb-data-dev.data_platform_personalization.training_chains_features`,
+        UNNEST(SPLIT(chain_freq_area_ids, ' ')) AS area_id
+  )
+)
+
+SELECT ARRAY(
+  SELECT area_id
+  FROM (
+    SELECT area_id FROM vendor_area_ids
+  )
+) AS unique_area_ids;

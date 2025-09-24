@@ -1,0 +1,16 @@
+os:
+    descritpion: User's operating system
+    type: List of string
+    value: ["Android", "iOS"]
+language:
+    descritpion: User's query language
+    type: List of string
+    value: ["english", "arabic", "unknown"]
+search_type:
+    descritpion: User's query search tab
+    type: List of string
+    value: ["item_search", "store_search"]
+store_type:
+    descritpion: User's choosen type of vendor (sub_vertical)
+    type: List of string
+    value: ["darkstore", "marketplace"]

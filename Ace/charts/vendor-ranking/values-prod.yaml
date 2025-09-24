@@ -1,0 +1,209 @@
+service:  # HTTP API
+  istio:
+    ingress:
+      routes:
+        match:
+          - host: ace.talabat.com
+            prefix: "/vendor_ranking/"
+
+  environmentVars:
+    NEW_RELIC_APP_NAME:
+      value: ace-vendor-ranking-prod
+    ACE_LOGS_SQS_QUEUE_URL:
+      value: https://sqs.eu-west-2.amazonaws.com/457710302499/talabat-prod-ace-api-logs-request
+    ACE_LOGS_SAMPLE_PERCENTAGE:
+      value: "25"
+
+  externalSecret:
+    dataVars:
+      NEW_RELIC_LICENSE_KEY:
+        key: /sre/nr/prod/license_key
+
+  serviceAccount:
+    annotations:
+      eks.amazonaws.com/role-arn: "arn:aws:iam::457710302499:role/talabat-prod-datascience-ace"
+
+  horizontalPodAutoscaler:
+    minReplicas: 5 # Scale down at night
+    maxReplicas: 150 # Max 200, as per current SRE's limits (but remember that we have 2 clusters)
+
+  podDisruptionBudget:
+    enabled: true
+
+  # An example: https://github.com/talabat-dhme/Nexus/blob/main/chart/nexus-state-api/values-prod.yaml
+  argoRollouts:
+    enabled: true
+    strategy: canary
+    autoPromotionEnabled: true
+    steps: |-
+      - setWeight: 25
+      - pause:
+          duration: 150s
+      - setWeight: 50
+      - pause:
+          duration: 150s
+      - setWeight: 75
+      - pause:
+          duration: 150s
+    preview:
+      enabled: true
+    rolloutAnalysis:
+      enabled: true
+      measurementDuration: 90
+      latency: 5
+      status4xx:
+        failurePercentageThreshold: 1
+      status5xx:
+        failurePercentageThreshold: 1
+      newRelicAnomalies:
+        appName: ace-vendor-ranking-prod
+
+observability:
+  apmName: "ace-vendor-ranking-prod"
+  alertPolicies:
+    alertPolicy1:
+      name: "ace-vendor-ranking-prod"
+      incidentPreference: PER_CONDITION
+      notification:
+        opsgenieTeams:
+          - Talabat_Ace
+        slackChannelIds:
+          - C053078HRLH # tlb_ace_alerts
+      conditions:
+        #------- INFRA Alerts---------#
+# Also a _working_ query:
+#   FROM Metric
+#   SELECT average(k8s.container.cpuUsedCores) / average(k8s.container.cpuRequestedCores)
+#   WHERE k8s.containerName = 'ace-vendor-ranking' SINCE 1 day ago TIMESERIES
+#        condition1:
+#          name: 'High CPU usage (Vendor Ranking)'
+#          query: FROM Metric SELECT max(k8s.container.cpuCoresUtilization)
+#            WHERE k8s.clusterName = 'talabat-prod-eks-cluster'
+#            AND appName = 'ace-vendor-ranking-prod'
+#            AND k8s.deploymentName = 'ace-vendor-ranking'
+#            AND k8s.namespaceName = 'datascience'
+#          thresholdCritical:
+#            operator: ABOVE
+#            thresholdDuration: 300
+#            thresholdOccurrences: ALL
+#            thresholdValue: 90
+#          thresholdType: STATIC
+        condition2:
+          name: 'High Memory usage (Vendor Ranking)'
+          query: FROM Metric 
+            SELECT max(k8s.container.memoryWorkingSetBytes) / max(k8s.container.memoryLimitBytes) * 100
+            WHERE k8s.containerName = 'ace-vendor-ranking'
+          thresholdCritical:
+            operator: ABOVE
+            thresholdDuration: 300
+            thresholdOccurrences: ALL
+            thresholdValue: 80
+          thresholdType: STATIC
+        condition3:
+          name: 'Guest users (two tower) AE'
+          query: FROM Transaction SELECT filter(count(*), WHERE `ace.vendor_ranking.2towers.unknown_user` = 1 AND appName = 'ace-vendor-ranking-prod' AND ace.vendor_ranking.country = 'AE') / filter(count(*), WHERE ace.vendor_ranking.country = 'AE') WHERE appName = 'ace-vendor-ranking-prod'
+          thresholdCritical:
+            operator: ABOVE
+            thresholdDuration: 300
+            thresholdOccurrences: ALL
+            thresholdValue: 0.25
+          thresholdWarning:
+            operator: ABOVE
+            thresholdDuration: 300
+            thresholdOccurrences: ALL
+            thresholdValue: 0.2
+          thresholdType: STATIC
+        condition4:
+          name: 'Guest users (two tower) EG'
+          query: FROM Transaction SELECT filter(count(*), WHERE `ace.vendor_ranking.2towers.unknown_user` = 1 AND appName = 'ace-vendor-ranking-prod' AND ace.vendor_ranking.country = 'EG') / filter(count(*), WHERE ace.vendor_ranking.country = 'EG') WHERE appName = 'ace-vendor-ranking-prod'
+          thresholdCritical:
+            operator: ABOVE
+            thresholdDuration: 300
+            thresholdOccurrences: ALL
+            thresholdValue: 0.25
+          thresholdWarning:
+            operator: ABOVE
+            thresholdDuration: 300
+            thresholdOccurrences: ALL
+            thresholdValue: 0.2
+          thresholdType: STATIC
+        condition5:
+          name: 'Guest users (two tower) JO'
+          query: FROM Transaction SELECT filter(count(*), WHERE `ace.vendor_ranking.2towers.unknown_user` = 1 AND appName = 'ace-vendor-ranking-prod' AND ace.vendor_ranking.country = 'JO') / filter(count(*), WHERE ace.vendor_ranking.country = 'JO') WHERE appName = 'ace-vendor-ranking-prod'
+          thresholdCritical:
+            operator: ABOVE
+            thresholdDuration: 300
+            thresholdOccurrences: ALL
+            thresholdValue: 0.25
+          thresholdWarning:
+            operator: ABOVE
+            thresholdDuration: 300
+            thresholdOccurrences: ALL
+            thresholdValue: 0.2
+          thresholdType: STATIC
+        condition6:
+          name: 'Guest users (two tower) QA'
+          query: FROM Transaction SELECT filter(count(*), WHERE `ace.vendor_ranking.2towers.unknown_user` = 1 AND appName = 'ace-vendor-ranking-prod' AND ace.vendor_ranking.country = 'QA') / filter(count(*), WHERE ace.vendor_ranking.country = 'QA') WHERE appName = 'ace-vendor-ranking-prod'
+          thresholdCritical:
+            operator: ABOVE
+            thresholdDuration: 300
+            thresholdOccurrences: ALL
+            thresholdValue: 0.25
+          thresholdWarning:
+            operator: ABOVE
+            thresholdDuration: 300
+            thresholdOccurrences: ALL
+            thresholdValue: 0.2
+          thresholdType: STATIC
+        condition7:
+          name: 'Guest users (two tower) KW'
+          query: FROM Transaction SELECT filter(count(*), WHERE `ace.vendor_ranking.2towers.unknown_user` = 1 AND appName = 'ace-vendor-ranking-prod' AND ace.vendor_ranking.country = 'KW') / filter(count(*), WHERE ace.vendor_ranking.country = 'KW') WHERE appName = 'ace-vendor-ranking-prod'
+          thresholdCritical:
+            operator: ABOVE
+            thresholdDuration: 300
+            thresholdOccurrences: ALL
+            thresholdValue: 0.25
+          thresholdWarning:
+            operator: ABOVE
+            thresholdDuration: 300
+            thresholdOccurrences: ALL
+            thresholdValue: 0.2
+          thresholdType: STATIC
+      goldenSignals:
+        #------- Golden Signals Alerts -------#
+        apdex:
+          enabled: true
+          thresholdCritical:
+            operator: BELOW
+            thresholdValue: 0.8
+            thresholdDuration: 300
+            thresholdOccurrences: AT_LEAST_ONCE
+          thresholdWarning:
+            operator: BELOW
+            thresholdValue: 0.9
+            thresholdDuration: 300
+            thresholdOccurrences: AT_LEAST_ONCE
+        responseTime:
+          enabled: true
+          thresholdCritical:
+            operator: ABOVE
+            thresholdValue: 300
+            thresholdDuration: 300
+            thresholdOccurrences: AT_LEAST_ONCE
+          thresholdWarning:
+            operator: ABOVE
+            thresholdValue: 200
+            thresholdDuration: 300
+            thresholdOccurrences: AT_LEAST_ONCE
+        errorRate:
+          enabled: true
+          thresholdCritical:
+            operator: ABOVE
+            thresholdValue: 2
+            thresholdDuration: 300
+            thresholdOccurrences: ALL
+          thresholdWarning:
+            operator: ABOVE
+            thresholdValue: 1
+            thresholdDuration: 300
+            thresholdOccurrences: ALL

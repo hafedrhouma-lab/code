@@ -1,0 +1,68 @@
+{
+    "example_iris_classifier_v1_train": {
+        "project_name": "example",
+        "model_name": "iris_classifier_v1",
+        "schedule_interval": "0 3 * * Fri",
+        "owner": "Algorithms, Fadi Nader",
+        "node_pool": "ese_node_pool",
+        "commands": [
+            "python",
+            "main.py"
+        ],
+        "sql_sensor": {
+            "sensor_priority": true,
+            "table_name": "fct_order_info",
+            "dataset_name": "data_platform",
+            "sensor_properties": {
+                "event_date_column": "order_date",
+                "event_date": "current_date()-1",
+                "lower_bound": 5
+            }
+        },
+        "image": "gcr.io/tlb-data-dev/algo-master-image:latest"
+    },
+    "example_iris_classifier_v1_predict": {
+        "project_name": "example",
+        "model_name": "iris_classifier_v1",
+        "schedule_interval": "0 4 * * Mon",
+        "owner": "Algorithms, Fadi Nader",
+        "node_pool": "ese_node_pool",
+        "commands": [
+            "python",
+            "predict.py"
+        ],
+        "sql_sensor": {
+            "sensor_priority": false,
+            "table_name": "fct_order_info",
+            "dataset_name": "data_platform",
+            "sensor_properties": {
+                "event_date_column": "order_date",
+                "event_date": "current_date()-100",
+                "lower_bound": 10
+            }
+        },
+        "image": "gcr.io/tlb-data-dev/algo-master-image:latest"
+    },
+    "example_iris_classifier_v1_predict2": {
+        "project_name": "example",
+        "model_name": "iris_classifier_v1",
+        "schedule_interval": "0 4 * * Mon",
+        "owner": "Algorithms, Fadi Nader",
+        "node_pool": "ese_node_pool",
+        "commands": [
+            "python",
+            "predict_test.py"
+        ],
+        "sql_sensor": {
+            "sensor_priority": false,
+            "table_name": "fct_order_info",
+            "dataset_name": "data_platform",
+            "sensor_properties": {
+                "event_date_column": "order_date",
+                "event_date": "current_date()-1",
+                "lower_bound": 10
+            }
+        },
+        "image": "gcr.io/tlb-data-dev/algo-master-image:latest"
+    }
+}

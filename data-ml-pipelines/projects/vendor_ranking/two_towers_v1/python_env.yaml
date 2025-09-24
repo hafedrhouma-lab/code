@@ -1,0 +1,6 @@
+python: "3.9.18"
+build_dependencies:
+  - pip
+  - wheel
+dependencies:
+  - -r requirements.txt

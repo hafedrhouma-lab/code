@@ -1,0 +1,60 @@
+--aggregate are precomputed in created table
+
+SELECT
+    query_entered,
+    SUM(number_sessions) AS number_sessions,
+    SUM(number_search) AS number_search,
+    SUM(number_session_atc)/SUM(number_sessions)*100 AS ATC_percentage,
+    SUM(number_session_buying)/SUM(number_sessions)*100 AS CVR_percentage,
+    SUM(nb_searches_zr)/SUM(number_search)*100 AS ZRR_percentage
+FROM
+    `tlb-data-dev.data_playground_grocery.queries_performances_in_vendor_search_streamlit`
+WHERE
+    date >= '{{user_selected_values.get("date_start")}}'
+AND
+    user_selected_country='{{user_selected_values.get("country")}}'
+{% if user_selected_values.get("meta").get("city") %}
+AND
+    user_selected_city='{{user_selected_values.get("meta").get("city")}}'
+{% endif %}
+{% if user_selected_values.get("meta").get("area") %}
+AND
+    area_name='{{user_selected_values.get("meta").get("area")}}'
+{% endif %}
+{% if user_selected_values.get("meta").get("store_name") %}
+AND
+    chain_name_en='{{user_selected_values.get("meta").get("store_name")}}'
+{% endif %}
+AND
+    (
+    {%- for os in user_selected_values.get("os") %}
+    OS='{{os}}'
+    {%- if not loop.last -%}
+        OR
+    {%- endif -%}
+    {%- endfor %}
+    )
+AND
+    (
+    {%- for language in user_selected_values.get("language") %}
+    search_query_lang='{{language}}'
+    {%- if not loop.last -%}
+        OR
+    {%- endif -%}
+    {%- endfor %}
+    )
+AND
+    (
+    {%- for store_type in user_selected_values.get("store_type") %}
+    store_type='{{store_type}}'
+    {%- if not loop.last -%}
+        OR
+    {%- endif -%}
+    {%- endfor %}
+    )
+AND
+    LENGTH(query_entered)>2
+AND
+    LOWER(trim(query_entered)) NOT IN ('na','')
+GROUP BY
+  query_entered

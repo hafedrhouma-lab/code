@@ -1,0 +1,8 @@
+name: two_tower_v1
+channels:
+  - defaults
+dependencies:
+  - python==3.9.18
+  - pip
+  - pip:
+      - -r requirements.txt

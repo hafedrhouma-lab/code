@@ -1,0 +1,12 @@
+name: example_iris_classifier_v1
+channels:
+  - defaults
+dependencies:
+  - python=3.11
+  - pip
+  - wheel
+  - pip:
+      - -r requirements.txt
+#  - pip:
+#    - --extra-index-url https://europe-west2-python.pkg.dev/tlb-data-dev/content-optimization/simple/
+#    - tutils_talabat==6.0.0

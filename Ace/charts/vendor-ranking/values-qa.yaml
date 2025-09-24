@@ -1,0 +1,132 @@
+service:  # HTTP API
+  istio:
+    ingress:
+      routes:
+        match:
+          - host: ace-qa.dhhmena.com
+            prefix: "/vendor_ranking/"
+
+  environmentVars:
+    NEW_RELIC_APP_NAME:
+      value: ace-vendor-ranking-qa
+    ACE_LOGS_SQS_QUEUE_URL:
+      value: https://sqs.eu-west-2.amazonaws.com/690772145391/talabat-qa-ace-api-logs-request
+    ACE_LOGS_SAMPLE_PERCENTAGE:
+      value: "100"
+    LOG_LEVEL:
+      value: "DEBUG"
+
+  externalSecret:
+    dataVars:
+      NEW_RELIC_LICENSE_KEY:
+        key: /sre/nr/qa/license_key
+
+  serviceAccount:
+    annotations:
+      eks.amazonaws.com/role-arn: "arn:aws:iam::690772145391:role/talabat-qa-datascience-ace"
+
+observability:
+  apmName: "ace-vendor-ranking-qa"
+  alertPolicies:
+    alertPolicy1:
+      name: "ace-vendor-ranking-qa"
+      incidentPreference: PER_CONDITION
+      notification:
+        slackChannelIds:
+          - C05AZQ9JML6 # tlb-ace-alerts-qa
+        condition1:
+          name: 'Guest users (two tower) AE'
+          query: FROM Transaction SELECT filter(count(*), WHERE `ace.vendor_ranking.2towers.unknown_user` = 1 AND appName = 'ace-vendor-ranking-qa' AND ace.vendor_ranking.country = 'AE') / filter(count(*), WHERE ace.vendor_ranking.country = 'AE') WHERE appName = 'ace-vendor-ranking-qa'
+          thresholdCritical:
+            operator: ABOVE
+            thresholdDuration: 300
+            thresholdOccurrences: ALL
+            thresholdValue: 0.25
+          thresholdWarning:
+            operator: ABOVE
+            thresholdDuration: 300
+            thresholdOccurrences: ALL
+            thresholdValue: 0.2
+          thresholdType: STATIC
+        condition2:
+          name: 'Guest users (two tower) EG'
+          query: FROM Transaction SELECT filter(count(*), WHERE `ace.vendor_ranking.2towers.unknown_user` = 1 AND appName = 'ace-vendor-ranking-qa' AND ace.vendor_ranking.country = 'EG') / filter(count(*), WHERE ace.vendor_ranking.country = 'EG') WHERE appName = 'ace-vendor-ranking-qa'
+          thresholdCritical:
+            operator: ABOVE
+            thresholdDuration: 300
+            thresholdOccurrences: ALL
+            thresholdValue: 0.25
+          thresholdWarning:
+            operator: ABOVE
+            thresholdDuration: 300
+            thresholdOccurrences: ALL
+            thresholdValue: 0.2
+          thresholdType: STATIC
+        condition3:
+          name: 'Guest users (two tower) JO'
+          query: FROM Transaction SELECT filter(count(*), WHERE `ace.vendor_ranking.2towers.unknown_user` = 1 AND appName = 'ace-vendor-ranking-qa' AND ace.vendor_ranking.country = 'JO') / filter(count(*), WHERE ace.vendor_ranking.country = 'JO') WHERE appName = 'ace-vendor-ranking-qa'
+          thresholdCritical:
+            operator: ABOVE
+            thresholdDuration: 300
+            thresholdOccurrences: ALL
+            thresholdValue: 0.25
+          thresholdWarning:
+            operator: ABOVE
+            thresholdDuration: 300
+            thresholdOccurrences: ALL
+            thresholdValue: 0.2
+          thresholdType: STATIC
+        condition4:
+          name: 'Guest users (two tower) QA'
+          query: FROM Transaction SELECT filter(count(*), WHERE `ace.vendor_ranking.2towers.unknown_user` = 1 AND appName = 'ace-vendor-ranking-qa' AND ace.vendor_ranking.country = 'QA') / filter(count(*), WHERE ace.vendor_ranking.country = 'QA') WHERE appName = 'ace-vendor-ranking-qa'
+          thresholdCritical:
+            operator: ABOVE
+            thresholdDuration: 300
+            thresholdOccurrences: ALL
+            thresholdValue: 0.25
+          thresholdWarning:
+            operator: ABOVE
+            thresholdDuration: 300
+            thresholdOccurrences: ALL
+            thresholdValue: 0.2
+          thresholdType: STATIC
+        condition5:
+          name: 'Guest users (two tower) KW'
+          query: FROM Transaction SELECT filter(count(*), WHERE `ace.vendor_ranking.2towers.unknown_user` = 1 AND appName = 'ace-vendor-ranking-qa' AND ace.vendor_ranking.country = 'KW') / filter(count(*), WHERE ace.vendor_ranking.country = 'KW') WHERE appName = 'ace-vendor-ranking-qa'
+          thresholdCritical:
+            operator: ABOVE
+            thresholdDuration: 300
+            thresholdOccurrences: ALL
+            thresholdValue: 0.25
+          thresholdWarning:
+            operator: ABOVE
+            thresholdDuration: 300
+            thresholdOccurrences: ALL
+            thresholdValue: 0.2
+          thresholdType: STATIC
+      goldenSignals:
+        #------- Golden Signals Alerts -------#
+        apdex:
+          enabled: true
+          thresholdCritical:
+            operator: BELOW
+            thresholdValue: 0.8
+            thresholdDuration: 300
+            thresholdOccurrences: AT_LEAST_ONCE
+          thresholdWarning:
+            operator: BELOW
+            thresholdValue: 0.9
+            thresholdDuration: 300
+            thresholdOccurrences: AT_LEAST_ONCE
+        errorRate:
+          enabled: true
+          thresholdCritical:
+            operator: ABOVE
+            thresholdValue: 2
+            thresholdDuration: 300
+            thresholdOccurrences: ALL
+          thresholdWarning:
+            operator: ABOVE
+            thresholdValue: 1
+            thresholdDuration: 300
+            thresholdOccurrences: ALL

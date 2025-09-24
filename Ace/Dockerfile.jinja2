@@ -1,0 +1,80 @@
+# syntax=docker/dockerfile:1.5
+
+{% extends "base.j2" %}
+
+{% block SETUP_BENTO_BASE_IMAGE %}
+{{ super() }}
+
+# Originally from SETUP_BENTO_ENVARS, but we need it sooner
+ARG BENTO_PATH={{ bento__path }}
+ENV BENTO_PATH=$BENTO_PATH
+ENV BENTOML_HOME={{ bento__home }}
+
+ARG ACE_SERVICE_NAME
+
+WORKDIR $BENTO_PATH
+
+# Actually the cache should be already there... But no. See base_debian.j2 and bento__enable_buildkit variable.
+ENV DEBIAN_FRONTEND=noninteractive
+RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    apt-get update -q -y && \
+    apt-get install -q -y --no-install-recommends --allow-remove-essential \
+        ca-certificates tzdata bash
+# NO build-essential and other stuff. We don't need them for the Python packages we use (wheels are available).
+
+# Only requirements, not all the code (to properly cache the layer)
+COPY env/python env/python
+# The same command BentoML uses, but with proper caching
+RUN --mount=type=cache,target=/root/.cache/pip,sharing=locked \
+    --mount=type=secret,id=GOOGLE_APPLICATION_CREDENTIALS \
+    export PIP_ROOT_USER_ACTION=ignore && \
+    python3 -m pip install --upgrade pip wheel keyring keyrings.google-artifactregistry-auth && \
+    export GOOGLE_APPLICATION_CREDENTIALS="/run/secrets/GOOGLE_APPLICATION_CREDENTIALS" && \
+    bash -euxo pipefail {{ bento__path }}/env/python/install.sh
+{% endblock %}
+
+{% block SETUP_BENTO_COMPONENTS %}
+# Skip this one, as it is placed AFTER the copy of all the code, so cannot be cached
+{% endblock %}
+
+{% block SETUP_BENTO_ENVARS %}
+
+# Block SETUP_BENTO_ENVARS
+# This one also setups WORKDIR and copies the code, which we need to separate... Anyway we do not use any env vars in
+# our bentos (via bentofile.yaml).
+
+COPY . .
+RUN chown -R {{ bento__user }}:{{ bento__user }} $BENTOML_HOME
+
+# Get the latest root certificates and timezone database on every build (so we can just rebuild the image to update
+# them)
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    set -eux && \
+    apt-get update -q -y && \
+    apt-get install -q -y --no-install-recommends \
+        ca-certificates tzdata
+
+# For CodeStream, see https://docs.newrelic.com/docs/codestream/how-use-codestream/performance-monitoring/#buildsha
+ENV NEW_RELIC_METADATA_COMMIT=$COMMIT_SHA
+ENV NEW_RELIC_CONFIG_FILE="${BENTO_PATH}/src/${ACE_SERVICE_NAME}/newrelic-agent.ini"
+
+ENV BENTOML_DO_NOT_TRACK=True
+ENV BENTOML_CONFIG="${BENTO_PATH}/src/bentoml_configuration.yaml"
+
+ENV PYTHONPATH="${PYTHONPATH}:{{ bento__path }}/src"
+{% endblock %}
+
+{% block SETUP_BENTO_ENTRYPOINT %}
+{{ super() }}
+
+# See https://docs.newrelic.com/docs/apm/agents/python-agent/installation/install-python-agent-docker/
+# See https://docs.bentoml.org/en/latest/guides/containerization.html#entrypoint
+# We need to preserve the original entrypoint, so we can use BentoML runner as usual
+# (in the end we initialize New Relic agent in the app anyway)
+#ENTRYPOINT ["python3"]
+
+CMD ["python3", "{{ bento__path }}/src/ace/bentoml/server.py", "{{ bento__path }}"]
+{% endblock %}

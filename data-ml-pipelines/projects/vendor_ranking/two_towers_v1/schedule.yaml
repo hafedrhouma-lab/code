@@ -1,0 +1,1504 @@
+
+vendor_ranking_two_tower_v1_chain_embeddings:  # Key for the training DAG. Use 'train1', 'train2', etc., for additional training DAGs if needed.
+  enable_dag: true
+  schedule_interval: "0 4 * * *"
+  owner: "Algorithms, Hafed Rhouma"
+
+  tasks_group:
+    - task_group_name: "two_tower_v1_chain_embeddings_qa"
+      sql_sensors:
+        - task_id: "data_feature_store_chain_orders_sensor_qa" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_orders"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_profile_sensor_qa" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_profile"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_menu_sensor_qa" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_menu"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_performance_sensor_qa" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_performance"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_delivery_sensor_qa"
+          enable: True
+          table_name: "chain_delivery"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_orders_profile_sensor_qa"
+
+          enable: True
+          table_name: "orders_profile"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+      gke_tasks:
+        - task_id: "chain_embeddings_gke_task_qa" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "chain_embeddings.py"
+            - "--country=QA"
+        - task_id: "cold_start_chains_embeddings_gke_task_qa" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "cold_start_chains_embeddings.py"
+            - "--country=QA"
+        - task_id: "cold_start_with_c_d_chains_embeddings_gke_task_qa" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "cold_start_chains_embeddings_with_c_d.py"
+            - "--country=QA"
+    - task_group_name: "two_tower_v1_chain_embeddings_om"
+      sql_sensors:
+        - task_id: "data_feature_store_chain_orders_sensor_om" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_orders"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_profile_sensor_om" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_profile"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_menu_sensor_om" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_menu"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_performance_sensor_om" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_performance"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_delivery_sensor_om"
+          enable: True
+          table_name: "chain_delivery"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_orders_profile_sensor_om"
+
+          enable: True
+          table_name: "orders_profile"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+      gke_tasks:
+        - task_id: "chain_embeddings_gke_task_om" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "chain_embeddings.py"
+            - "--country=OM"
+        - task_id: "cold_start_chains_embeddings_gke_task_om" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "cold_start_chains_embeddings.py"
+            - "--country=OM"
+        - task_id: "cold_start_with_c_d_chains_embeddings_gke_task_om" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "cold_start_chains_embeddings_with_c_d.py"
+            - "--country=OM"
+    - task_group_name: "two_tower_v1_chain_embeddings_kw"
+      sql_sensors:
+        - task_id: "data_feature_store_chain_orders_sensor_kw" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_orders"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_profile_sensor_kw" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_profile"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_menu_sensor_kw" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_menu"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_performance_sensor_kw" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_performance"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_delivery_sensor_kw"
+          enable: True
+          table_name: "chain_delivery"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_orders_profile_sensor_kw"
+
+          enable: True
+          table_name: "orders_profile"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+      gke_tasks:
+        - task_id: "chain_embeddings_gke_task_kw" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "chain_embeddings.py"
+            - "--country=KW"
+        - task_id: "cold_start_chains_embeddings_gke_task_kw" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "cold_start_chains_embeddings.py"
+            - "--country=KW"
+        - task_id: "cold_start_with_c_d_chains_embeddings_gke_task_kw" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "cold_start_chains_embeddings_with_c_d.py"
+            - "--country=KW"
+    - task_group_name: "two_tower_v1_chain_embeddings_jo"
+      sql_sensors:
+        - task_id: "data_feature_store_chain_orders_sensor_jo" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_orders"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_profile_sensor_jo" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_profile"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_menu_sensor_jo" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_menu"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_performance_sensor_jo" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_performance"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_delivery_sensor_jo"
+          enable: True
+          table_name: "chain_delivery"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_orders_profile_sensor_jo"
+
+          enable: True
+          table_name: "orders_profile"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+      gke_tasks:
+        - task_id: "chain_embeddings_gke_task_jo" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "chain_embeddings.py"
+            - "--country=JO"
+        - task_id: "cold_start_chains_embeddings_gke_task_jo" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "cold_start_chains_embeddings.py"
+            - "--country=JO"
+        - task_id: "cold_start_with_c_d_chains_embeddings_gke_task_jo" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "cold_start_chains_embeddings_with_c_d.py"
+            - "--country=JO"
+    - task_group_name: "two_tower_v1_chain_embeddings_ae"
+      sql_sensors:
+        - task_id: "data_feature_store_chain_orders_sensor_ae" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_orders"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_profile_sensor_ae" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_profile"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_menu_sensor_ae" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_menu"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_performance_sensor_ae" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_performance"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_delivery_sensor_ae"
+          enable: True
+          table_name: "chain_delivery"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_orders_profile_sensor_ae"
+
+          enable: True
+          table_name: "orders_profile"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+      gke_tasks:
+        - task_id: "chain_embeddings_gke_task_ae" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "chain_embeddings.py"
+            - "--country=AE"
+        - task_id: "cold_start_chains_embeddings_gke_task_ae" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "cold_start_chains_embeddings.py"
+            - "--country=AE"
+        - task_id: "cold_start_with_c_d_chains_embeddings_gke_task_ae" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "cold_start_chains_embeddings_with_c_d.py"
+            - "--country=AE"
+    - task_group_name: "two_tower_v1_chain_embeddings_bh"
+      sql_sensors:
+        - task_id: "data_feature_store_chain_orders_sensor_bh" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_orders"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_profile_sensor_bh" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_profile"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_menu_sensor_bh" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_menu"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_performance_sensor_bh" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_performance"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_delivery_sensor_bh"
+          enable: True
+          table_name: "chain_delivery"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_orders_profile_sensor_bh"
+
+          enable: True
+          table_name: "orders_profile"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+      gke_tasks:
+        - task_id: "chain_embeddings_gke_task_bh" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "chain_embeddings.py"
+            - "--country=BH"
+        - task_id: "cold_start_chains_embeddings_gke_task_bh" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "cold_start_chains_embeddings.py"
+            - "--country=BH"
+        - task_id: "cold_start_with_c_d_chains_embeddings_gke_task_bh" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "cold_start_chains_embeddings_with_c_d.py"
+            - "--country=BH"
+    - task_group_name: "two_tower_v1_chain_embeddings_iq"
+      sql_sensors:
+        - task_id: "data_feature_store_chain_orders_sensor_iq" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_orders"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_profile_sensor_iq" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_profile"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_menu_sensor_iq" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_menu"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_performance_sensor_iq" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_performance"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_delivery_sensor_iq"
+          enable: True
+          table_name: "chain_delivery"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_orders_profile_sensor_iq"
+
+          enable: True
+          table_name: "orders_profile"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+      gke_tasks:
+        - task_id: "chain_embeddings_gke_task_iq" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "chain_embeddings.py"
+            - "--country=IQ"
+        - task_id: "cold_start_chains_embeddings_gke_task_iq" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "cold_start_chains_embeddings.py"
+            - "--country=IQ"
+        - task_id: "cold_start_with_c_d_chains_embeddings_gke_task_iq" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "cold_start_chains_embeddings_with_c_d.py"
+            - "--country=IQ"
+    - task_group_name: "two_tower_v1_chain_embeddings_eg"
+      sql_sensors:
+        - task_id: "data_feature_store_chain_orders_sensor_eg" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_orders"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_profile_sensor_eg" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_profile"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_menu_sensor_eg" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_menu"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_performance_sensor_eg" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_performance"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_delivery_sensor_eg"
+          enable: True
+          table_name: "chain_delivery"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_orders_profile_sensor_eg"
+
+          enable: True
+          table_name: "orders_profile"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+      gke_tasks:
+        - task_id: "chain_embeddings_gke_task_eg" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "chain_embeddings.py"
+            - "--country=EG"
+        - task_id: "cold_start_chains_embeddings_gke_task_eg" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "cold_start_chains_embeddings.py"
+            - "--country=EG"
+        - task_id: "cold_start_with_c_d_chains_embeddings_gke_task_eg" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "cold_start_chains_embeddings_with_c_d.py"
+            - "--country=EG"
+
+vendor_ranking_end_to_end_tests:  # Key for the training DAG. Use 'train1', 'train2', etc., for additional training DAGs if needed.
+  enable_dag: true
+  schedule_interval: "0 4 * * *"
+  owner: "Algorithms, Hafed Rhouma"
+
+  tasks_group:
+    - task_group_name: "two_tower_v1_chain_embeddings_om"
+      sql_sensors:
+        - task_id: "data_feature_store_account_orders_sensor_om" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "account_orders"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+        - task_id: "data_feature_store_chain_embeddings_sensor_om" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_embeddings_two_tower_mlf_all"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+      gke_tasks:
+        - task_id: "user_embedding_tests_gke_task_om" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "tests/user_embedding.py"
+            - "--country=OM"
+        - task_id: "ranking_tests_gke_task_om" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "tests/ranking.py"
+            - "--country=OM"
+        - task_id: "ranking_chains_no_embeddings_tests_gke_task_om" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "tests/ranking_chains_no_embeddings.py"
+            - "--country=OM"
+        - task_id: "guest_features_tests_gke_task_om" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "tests/guest_features.py"
+            - "--country=OM"
+    - task_group_name: "two_tower_v1_chain_embeddings_ae"
+      sql_sensors:
+        - task_id: "data_feature_store_account_orders_sensor_ae" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "account_orders"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+        - task_id: "data_feature_store_chain_embeddings_sensor_ae" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_embeddings_two_tower_mlf_all"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+      gke_tasks:
+        - task_id: "user_embedding_tests_gke_task_ae" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "tests/user_embedding.py"
+            - "--country=AE"
+        - task_id: "ranking_tests_gke_task_ae" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "tests/ranking.py"
+            - "--country=AE"
+        - task_id: "ranking_chains_no_embeddings_tests_gke_task_ae" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "tests/ranking_chains_no_embeddings.py"
+            - "--country=AE"
+        - task_id: "guest_features_tests_gke_task_ae" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "tests/guest_features.py"
+            - "--country=AE"
+
+vendor_ranking_model_monitoring_create_bq_tables:  # Key for the training DAG. Use 'train1', 'train2', etc., for additional training DAGs if needed.
+  enable_dag: true
+  schedule_interval: '0 0 31 12 *'
+  owner: "Algorithms, Hafed Rhouma"
+
+  tasks_group:
+    - task_group_name: "vendor_ranking_model_monitoring_create_bq_tables_all"
+      gke_tasks:
+        - task_id: "vendor_ranking_model_monitoring_create_bq_tables_task" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "model_monitoring/bq/create_monitoring_tables.py"
+
+vendor_ranking_model_monitoring:  # Key for the training DAG. Use 'train1', 'train2', etc., for additional training DAGs if needed.
+  enable_dag: true
+  schedule_interval: "0 4 * * *"
+  owner: "Algorithms, Hafed Rhouma"
+
+  tasks_group:
+    - task_group_name: "vendor_ranking_model_monitoring_ae"
+      sql_sensors:
+        - task_id: "data_feature_store_chain_orders_sensor_ae" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_orders"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_profile_sensor_ae" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_profile"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_menu_sensor_ae" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_menu"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_performance_sensor_ae" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_performance"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_delivery_sensor_ae"
+          enable: True
+          table_name: "chain_delivery"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_orders_profile_sensor_ae"
+          enable: True
+          table_name: "orders_profile"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+      gke_tasks:
+        - task_id: "model_monitoring_gke_task_ae" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "model_monitoring/main.py"
+            - "--country=AE"
+        - task_id: "model_monitoring_alert_gke_task_ae" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "model_monitoring/alert/drift_monitor.py"
+            - "--country=AE"
+
+    - task_group_name: "vendor_ranking_model_monitoring_kw"
+      sql_sensors:
+        - task_id: "data_feature_store_chain_orders_sensor_kw" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_orders"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_profile_sensor_kw" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_profile"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_menu_sensor_kw" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_menu"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_performance_sensor_kw" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_performance"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_delivery_sensor_kw"
+          enable: True
+          table_name: "chain_delivery"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_orders_profile_sensor_kw"
+          enable: True
+          table_name: "orders_profile"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+      gke_tasks:
+        - task_id: "model_monitoring_gke_task_kw" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "model_monitoring/main.py"
+            - "--country=KW"
+        - task_id: "model_monitoring_alert_gke_task_kw" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "model_monitoring/alert/drift_monitor.py"
+            - "--country=KW"
+
+    - task_group_name: "vendor_ranking_model_monitoring_qa"
+      sql_sensors:
+        - task_id: "data_feature_store_chain_orders_sensor_qa" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_orders"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_profile_sensor_qa" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_profile"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_menu_sensor_qa" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_menu"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_performance_sensor_qa" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_performance"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_delivery_sensor_qa"
+          enable: True
+          table_name: "chain_delivery"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_orders_profile_sensor_qa"
+          enable: True
+          table_name: "orders_profile"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+      gke_tasks:
+        - task_id: "model_monitoring_gke_task_qa" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "model_monitoring/main.py"
+            - "--country=QA"
+        - task_id: "model_monitoring_alert_gke_task_qa" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "model_monitoring/alert/drift_monitor.py"
+            - "--country=QA"
+
+    - task_group_name: "vendor_ranking_model_monitoring_bh"
+      sql_sensors:
+        - task_id: "data_feature_store_chain_orders_sensor_bh" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_orders"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_profile_sensor_bh" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_profile"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_menu_sensor_bh" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_menu"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_performance_sensor_bh" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_performance"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_delivery_sensor_bh"
+          enable: True
+          table_name: "chain_delivery"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_orders_profile_sensor_bh"
+          enable: True
+          table_name: "orders_profile"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+      gke_tasks:
+        - task_id: "model_monitoring_gke_task_bh" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "model_monitoring/main.py"
+            - "--country=BH"
+        - task_id: "model_monitoring_alert_gke_task_bh" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "model_monitoring/alert/drift_monitor.py"
+            - "--country=BH"
+
+    - task_group_name: "vendor_ranking_model_monitoring_om"
+      sql_sensors:
+        - task_id: "data_feature_store_chain_orders_sensor_om" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_orders"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_profile_sensor_om" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_profile"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_menu_sensor_om" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_menu"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_performance_sensor_om" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_performance"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_delivery_sensor_om"
+          enable: True
+          table_name: "chain_delivery"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_orders_profile_sensor_om"
+          enable: True
+          table_name: "orders_profile"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+      gke_tasks:
+        - task_id: "model_monitoring_gke_task_om" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "model_monitoring/main.py"
+            - "--country=OM"
+        - task_id: "model_monitoring_alert_gke_task_om" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "model_monitoring/alert/drift_monitor.py"
+            - "--country=OM"
+
+    - task_group_name: "vendor_ranking_model_monitoring_jo"
+      sql_sensors:
+        - task_id: "data_feature_store_chain_orders_sensor_jo" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_orders"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_profile_sensor_jo" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_profile"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_menu_sensor_jo" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_menu"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_performance_sensor_jo" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_performance"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_delivery_sensor_jo"
+          enable: True
+          table_name: "chain_delivery"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_orders_profile_sensor_jo"
+          enable: True
+          table_name: "orders_profile"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+      gke_tasks:
+        - task_id: "model_monitoring_gke_task_jo" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "model_monitoring/main.py"
+            - "--country=JO"
+        - task_id: "model_monitoring_alert_gke_task_jo" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "model_monitoring/alert/drift_monitor.py"
+            - "--country=JO"
+
+    - task_group_name: "vendor_ranking_model_monitoring_iq"
+      sql_sensors:
+        - task_id: "data_feature_store_chain_orders_sensor_iq" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_orders"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_profile_sensor_iq" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_profile"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_menu_sensor_iq" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_menu"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_performance_sensor_iq" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_performance"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_delivery_sensor_iq"
+          enable: True
+          table_name: "chain_delivery"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_orders_profile_sensor_iq"
+          enable: True
+          table_name: "orders_profile"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+      gke_tasks:
+        - task_id: "model_monitoring_gke_task_iq" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "model_monitoring/main.py"
+            - "--country=IQ"
+        - task_id: "model_monitoring_alert_gke_task_iq" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "model_monitoring/alert/drift_monitor.py"
+            - "--country=IQ"
+
+    - task_group_name: "vendor_ranking_model_monitoring_eg"
+      sql_sensors:
+        - task_id: "data_feature_store_chain_orders_sensor_eg" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_orders"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_profile_sensor_eg" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_profile"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_menu_sensor_eg" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_menu"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_performance_sensor_eg" # Unique ID for the sensor. Must be unique within the DAG.
+          enable: True
+          table_name: "chain_performance"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_chain_delivery_sensor_eg"
+          enable: True
+          table_name: "chain_delivery"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+        - task_id: "data_feature_store_orders_profile_sensor_eg"
+          enable: True
+          table_name: "orders_profile"
+          dataset_name: "data_feature_store"
+          sensor_properties:
+            event_date_column: "feature_timestamp"
+            event_date: "current_date() - 1"
+            lower_bound: null
+
+      gke_tasks:
+        - task_id: "model_monitoring_gke_task_eg" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "model_monitoring/main.py"
+            - "--country=EG"
+        - task_id: "model_monitoring_alert_gke_task_eg" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "model_monitoring/alert/drift_monitor.py"
+            - "--country=EG"
+
+vendor_ranking_training_eg:
+  enable_dag: true
+  schedule_interval: "0 4 * * 1"
+  owner: "Algorithms, Hafed Rhouma"
+
+  tasks_group:
+    - task_group_name: "vendor_ranking_training_eg"
+      gke_tasks:
+        - task_id: "vendor_ranking_prepare_data_gke_task_eg"
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "data_prepare.py"
+            - "--country=EG"
+        - task_id: "vendor_ranking_train_gke_task_eg"
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "main_train.py"
+            - "--country=EG"
+        - task_id: "vendor_ranking_promote_gke_task_eg"
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "model_selection/model_promotion.py"
+            - "--country=EG"
+
+vendor_ranking_training_ae:
+  enable_dag: true
+  schedule_interval: "0 4 * * 1"
+  owner: "Algorithms, Hafed Rhouma"
+
+  tasks_group:
+    - task_group_name: "vendor_ranking_training_ae"
+      gke_tasks:
+        - task_id: "vendor_ranking_prepare_data_gke_task_ae"
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "data_prepare.py"
+            - "--country=AE"
+        - task_id: "vendor_ranking_train_gke_task_ae"
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "main_train.py"
+            - "--country=AE"
+        - task_id: "vendor_ranking_promote_gke_task_ae"
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "model_selection/model_promotion.py"
+            - "--country=AE"
+
+vendor_ranking_training_kw:
+  enable_dag: true
+  schedule_interval: "0 4 * * 1"
+  owner: "Algorithms, Hafed Rhouma"
+
+  tasks_group:
+    - task_group_name: "vendor_ranking_training_kw"
+      gke_tasks:
+        - task_id: "vendor_ranking_prepare_data_gke_task_kw"
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "data_prepare.py"
+            - "--country=KW"
+        - task_id: "vendor_ranking_train_gke_task_kw"
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "main_train.py"
+            - "--country=KW"
+        - task_id: "vendor_ranking_promote_gke_task_kw"
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "model_selection/model_promotion.py"
+            - "--country=KW"
+
+vendor_ranking_training_qa:
+  enable_dag: true
+  schedule_interval: "0 4 * * 1"
+  owner: "Algorithms, Hafed Rhouma"
+
+  tasks_group:
+    - task_group_name: "vendor_ranking_training_qa"
+      gke_tasks:
+        - task_id: "vendor_ranking_prepare_data_gke_task_qa"
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "data_prepare.py"
+            - "--country=QA"
+        - task_id: "vendor_ranking_train_gke_task_qa"
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "main_train.py"
+            - "--country=QA"
+        - task_id: "vendor_ranking_promote_gke_task_qa"
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "model_selection/model_promotion.py"
+            - "--country=QA"
+
+vendor_ranking_training_om:
+  enable_dag: true
+  schedule_interval: "0 4 * * 1"
+  owner: "Algorithms, Hafed Rhouma"
+
+  tasks_group:
+    - task_group_name: "vendor_ranking_training_om"
+      gke_tasks:
+        - task_id: "vendor_ranking_prepare_data_gke_task_om"
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "data_prepare.py"
+            - "--country=OM"
+        - task_id: "vendor_ranking_train_gke_task_om"
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "main_train.py"
+            - "--country=OM"
+        - task_id: "vendor_ranking_promote_gke_task_om"
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "model_selection/model_promotion.py"
+            - "--country=OM"
+
+vendor_ranking_training_bh:
+  enable_dag: true
+  schedule_interval: "0 4 * * 1"
+  owner: "Algorithms, Hafed Rhouma"
+
+  tasks_group:
+    - task_group_name: "vendor_ranking_training_bh"
+      gke_tasks:
+        - task_id: "vendor_ranking_prepare_data_gke_task_bh"
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "data_prepare.py"
+            - "--country=BH"
+        - task_id: "vendor_ranking_train_gke_task_bh"
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "main_train.py"
+            - "--country=BH"
+        - task_id: "vendor_ranking_promote_gke_task_bh"
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "model_selection/model_promotion.py"
+            - "--country=BH"
+
+vendor_ranking_training_iq:
+  enable_dag: true
+  schedule_interval: "0 4 * * 1"
+  owner: "Algorithms, Hafed Rhouma"
+
+  tasks_group:
+    - task_group_name: "vendor_ranking_training_iq"
+      gke_tasks:
+        - task_id: "vendor_ranking_prepare_data_gke_task_iq"
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "data_prepare.py"
+            - "--country=IQ"
+        - task_id: "vendor_ranking_train_gke_task_iq"
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "main_train.py"
+            - "--country=IQ"
+        - task_id: "vendor_ranking_promote_gke_task_iq"
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "model_selection/model_promotion.py"
+            - "--country=IQ"
+
+vendor_ranking_training_jo:
+  enable_dag: true
+  schedule_interval: "0 4 * * 1"
+  owner: "Algorithms, Hafed Rhouma"
+
+  tasks_group:
+    - task_group_name: "vendor_ranking_training_jo"
+      gke_tasks:
+        - task_id: "vendor_ranking_prepare_data_gke_task_jo"
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "data_prepare.py"
+            - "--country=JO"
+        - task_id: "vendor_ranking_train_gke_task_jo"
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "main_train.py"
+            - "--country=JO"
+        - task_id: "vendor_ranking_promote_gke_task_jo"
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "model_selection/model_promotion.py"
+            - "--country=JO"

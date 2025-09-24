@@ -1,0 +1,17 @@
+default:
+  just --list
+
+
+init:
+    poetry init
+    poetry config --local virtualenvs.in-project true
+
+install-dependencies:
+    poetry install --no-root --with ml,utils
+
+generate-requirements-txt:
+    poetry export --with ml,utils -f requirements.txt --output requirements.txt --without-hashes
+
+add-tensorflow version="2.15.0":
+    poetry add tensorflow={{version}} --group ml --platform linux
+    poetry add tensorflow-macos={{version}} --group ml --platform darwin

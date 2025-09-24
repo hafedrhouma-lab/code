@@ -1,0 +1,8 @@
+name: vendor_ranking_hf_transformers
+channels:
+  - defaults
+dependencies:
+  - python==3.9.18
+  - pip
+  - pip:
+      - -r requirements.txt

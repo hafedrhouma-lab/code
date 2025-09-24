@@ -1,0 +1,18 @@
+SELECT
+    chain.chain_id,
+    chain.country_code,
+    chain.feature_timestamp AS event_timestamp
+FROM {{ chain_profile_table }} chain
+INNER JOIN
+(
+    SELECT
+        DISTINCT chain_id
+    FROM
+        {{ orders_profile_table }}
+    WHERE feature_timestamp BETWEEN "{{ start_date }}" AND "{{ end_date }}"
+    AND country_code = "{{ country_code }}"
+) order_subquery
+ON chain.chain_id = order_subquery.chain_id
+WHERE chain.feature_timestamp = "{{ end_date }}"
+AND chain.country_code = "{{ country_code }}"
+AND (chain.vertical = 'food' OR chain.secondary_verticals LIKE '%Food%')

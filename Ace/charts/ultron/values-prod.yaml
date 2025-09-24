@@ -1,0 +1,166 @@
+service: # HTTP API
+  istio:
+    ingress:
+      routes:
+        match:
+          - host: ace.talabat.com
+            prefix: "/ultron/"
+
+  environmentVars:
+    NEW_RELIC_APP_NAME:
+      value: ace-ultron-prod
+    ACE_LOGS_SQS_QUEUE_URL:
+      value: https://sqs.eu-west-2.amazonaws.com/457710302499/talabat-prod-ace-api-logs-request
+    ACE_LOGS_SAMPLE_PERCENTAGE:
+      value: "50"
+
+  externalSecret:
+    vaultMountPoint: kubernetes-talabat-prod-main-cluster
+    data:
+      - name: NEW_RELIC_LICENSE_KEY
+        key: secret/data/shared/newrelic/prod
+        property: license_key
+      - name: OPENAI_API_KEY
+        key: secret/data/datascience/ace/openai/prod
+        property: api_key
+      - name: PGHOST
+        key: secret/data/datascience/ace/db/ro/prod
+        property: hostname
+      - name: PGUSER
+        key: secret/data/datascience/ace/db/ro/prod
+        property: username
+      - name: PGPASSWORD
+        key: secret/data/datascience/ace/db/ro/prod
+        property: password
+      - name: PGDATABASE
+        key: secret/data/datascience/ace/db/ro/prod
+        property: dbname
+
+  serviceAccount:
+    annotations:
+      eks.amazonaws.com/role-arn: "arn:aws:iam::457710302499:role/talabat-prod-datascience-ace"
+
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: node
+                operator: In
+                values:
+                  - memory-optimized
+  tolerations:
+    - key: node
+      operator: Equal
+      value: memory-optimized
+      effect: NoSchedule
+
+  resources:
+    limits:
+      memory: 8Gi
+    requests:
+      cpu: 500m
+      memory: 8Gi
+
+  horizontalPodAutoscaler:
+    minReplicas: 3
+    maxReplicas: 15
+
+  podDisruptionBudget:
+    enabled: true
+
+  # An example: https://github.com/talabat-dhme/Nexus/blob/main/chart/nexus-state-api/values-prod.yaml
+  argoRollouts:
+    enabled: true
+    strategy: canary
+    autoPromotionEnabled: true
+    steps: |-
+      - setWeight: 50
+      - pause:
+          duration: 180s
+    preview:
+      enabled: true
+    rolloutAnalysis:
+      enabled: true
+      measurementDuration: 90 # seconds
+      latency: 60 # seconds
+      status4xx:
+        failurePercentageThreshold: 1
+      status5xx:
+        failurePercentageThreshold: 1
+      newRelicAnomalies:
+        appName: ace-ultron-prod
+
+observability:
+  apmName: "ace-ultron-prod"
+  alertPolicies:
+    alertPolicy1:
+      name: "ace-ultron-prod"
+      incidentPreference: PER_CONDITION
+      notification:
+        opsgenieTeams:
+          - Talabat_Ace
+        slackChannelIds:
+          - C053078HRLH # tlb_ace_alerts
+      conditions:
+        #------- INFRA Alerts---------#
+        condition1:
+          name: 'High CPU usage (Ultron)'
+          query: FROM Metric
+            SELECT max(k8s.container.cpuCoresUtilization)
+            WHERE k8s.containerName = 'ace-ultron'
+          thresholdCritical:
+            operator: ABOVE
+            thresholdDuration: 300  # 5 minutes
+            thresholdOccurrences: ALL
+            thresholdValue: 90
+          thresholdType: STATIC
+        condition2:
+          name: 'High Memory usage (Ultron)'
+          query: FROM Metric 
+            SELECT max(k8s.container.memoryWorkingSetBytes) / max(k8s.container.memoryLimitBytes) * 100
+            WHERE k8s.containerName = 'ace-ultron'
+          thresholdCritical:
+            operator: ABOVE
+            thresholdDuration: 300
+            thresholdOccurrences: ALL
+            thresholdValue: 80
+          thresholdType: STATIC
+      goldenSignals:
+        #------- Golden Signals Alerts -------#
+        apdex:
+          enabled: true
+          thresholdCritical:
+            operator: BELOW
+            thresholdValue: 0.8
+            thresholdDuration: 300
+            thresholdOccurrences: AT_LEAST_ONCE
+          thresholdWarning:
+            operator: BELOW
+            thresholdValue: 0.9
+            thresholdDuration: 300
+            thresholdOccurrences: AT_LEAST_ONCE
+        responseTime:
+          enabled: false # Enable later, when it is more clear how to monitor SSE endpoints
+          thresholdCritical:
+            operator: ABOVE
+            thresholdValue: 5000
+            thresholdDuration: 300
+            thresholdOccurrences: AT_LEAST_ONCE
+          thresholdWarning:
+            operator: ABOVE
+            thresholdValue: 2000
+            thresholdDuration: 300
+            thresholdOccurrences: AT_LEAST_ONCE
+        errorRate:
+          enabled: true
+          thresholdCritical:
+            operator: ABOVE
+            thresholdValue: 2
+            thresholdDuration: 300
+            thresholdOccurrences: ALL
+          thresholdWarning:
+            operator: ABOVE
+            thresholdValue: 1
+            thresholdDuration: 300
+            thresholdOccurrences: ALL

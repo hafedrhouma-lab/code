@@ -1,0 +1,16 @@
+service: "item_lifecycle.service:app.bentoml_service"  # Same as the argument passed to `bentoml serve`
+include:
+  - "ace/**/*.py"
+  - "ace/configs/*.yaml"
+  - "item_lifecycle/**/*.py"
+  - "item_lifecycle/newrelic-agent.ini"
+  - "item_lifecycle/config/*.yaml"
+  - "bentoml_configuration.yaml"
+python:
+  requirements_txt: "item_lifecycle/requirements.txt"
+  # We did this already by using pip-tools
+  lock_packages: false
+docker:
+  dockerfile_template: Dockerfile.jinja2
+  distro: debian
+  python_version: "3.10"

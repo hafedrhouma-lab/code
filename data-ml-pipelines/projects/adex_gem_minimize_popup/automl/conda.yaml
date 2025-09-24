@@ -1,0 +1,8 @@
+name: adex_gem_minimize_popup_automl
+channels:
+  - defaults
+dependencies:
+  - python=3.11
+  - pip
+  - pip:
+    - -r requirements.txt

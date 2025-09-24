@@ -1,0 +1,13 @@
+WITH words AS (
+  SELECT
+    LOWER(tlabel) AS cuisine
+  FROM
+    `tlb-data-dev.data_platform_personalization.training_data_two_tower_egypt`
+    WHERE
+        order_time_utc BETWEEN "{{ start_date }}" AND "{{ end_date }}"
+)
+
+SELECT
+    DISTINCT cuisine
+FROM
+    words

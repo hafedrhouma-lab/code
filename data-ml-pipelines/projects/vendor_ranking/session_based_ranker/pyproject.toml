@@ -1,0 +1,43 @@
+[tool.poetry]
+name = "session-based-ranker"
+version = "0.1.0"
+description = ""
+authors = ["zexxonn <zexxonn@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.9.18"
+tenacity = "8.5.0"
+accelerate = "0.33.0"
+altair = "5.3.0"
+blinker = "1.8.2"
+gitdb = "4.0.11"
+gitpython = "3.1.43"
+jsonschema = "4.23.0"
+jsonschema-specifications = "2023.12.1"
+markdown-it-py = "3.0.0"
+mdurl = "0.1.2"
+pydeck = "0.9.1"
+referencing = "0.35.1"
+rich = "13.7.1"
+rpds-py = "0.19.0"
+smmap = "5.0.1"
+streamlit = "1.36.0"
+toml = "0.10.2"
+toolz = "0.12.1"
+mlflow = "2.16.0"
+structlog = "24.1.0"
+python-dotenv = "1.0.1"
+transformers = "4.43.3"
+tokenizers = "0.19.1"
+torch = "2.4.0"
+torchaudio = "2.4.0"
+torchvision = "0.19.0"
+datasets = "2.20.0"
+mlserver = "1.6.0"
+newrelic = "9.13.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

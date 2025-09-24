@@ -1,0 +1,72 @@
+--aggregate are precomputed in created table
+
+SELECT
+  query_entered,
+  COUNT(DISTINCT session_id) AS number_sessions,
+  SUM(
+    CASE
+        WHEN search_result_clicked IS TRUE THEN 1
+        ELSE 0 END
+     )
+     AS number_sessions_that_clicked,
+  SUM(
+    CASE
+        WHEN placed_order IS TRUE THEN 1
+        ELSE 0 END
+     )
+     AS number_query_sessions_that_placed_order,
+  SUM(
+    CASE
+        WHEN session_placed_order IS TRUE THEN 1
+        ELSE 0 END
+     )
+     AS number_sessions_that_placed_order,
+  SUM(number_search) AS number_search,
+  SUM(search_zero_results) AS search_zero_results,
+  CAST(
+    AVG(avg_search_results_count) AS INT
+    )
+    AS avg_search_results_count
+FROM
+  `tlb-data-dev.data_playground_grocery.queries_performances_session_level`
+WHERE
+    date >= '{{user_selected_values.get("date_start")}}'
+AND
+    user_selected_country='{{user_selected_values.get("country")}}'
+{% if user_selected_values.get("meta").get("city") %}
+AND
+    user_selected_city='{{user_selected_values.get("meta").get("city")}}'
+{% endif %}
+{% if user_selected_values.get("meta").get("area") %}
+AND
+    area_name='{{user_selected_values.get("meta").get("area")}}'
+{% endif %}
+AND
+    (
+    {%- for os in user_selected_values.get("os") %}
+    OS='{{os}}'
+    {%- if not loop.last -%}
+        OR
+    {%- endif -%}
+    {%- endfor %}
+    )
+AND
+    (
+    {%- for language in user_selected_values.get("language") %}
+    search_query_lang='{{language}}'
+    {%- if not loop.last -%}
+        OR
+    {%- endif -%}
+    {%- endfor %}
+    )
+AND
+    (
+    {%- for search_type in user_selected_values.get("search_type") %}
+    search_type='{{search_type}}'
+    {%- if not loop.last -%}
+        OR
+    {%- endif -%}
+    {%- endfor %}
+    )
+GROUP BY
+  query_entered

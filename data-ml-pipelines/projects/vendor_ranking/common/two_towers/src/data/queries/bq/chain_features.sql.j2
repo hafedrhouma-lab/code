@@ -1,0 +1,10 @@
+SELECT
+    DISTINCT
+    {% for col in columns %}
+        {{ col }},
+    {% endfor %}
+    brand_id
+FROM
+    `tlb-data-dev.data_platform_personalization.training_data_two_tower_egypt`
+WHERE
+    order_time_utc BETWEEN "{{ start_date }}" AND "{{ end_date }}"

@@ -1,0 +1,582 @@
+version: 2.1
+
+orbs:
+  devx: malsimi/newrelic-orb@1.4.0
+  aws-cli: circleci/aws-cli@3.1.1
+
+executors:
+  python:
+    docker:
+      # Better to keep in line with other places (bentofile.yaml, .envrc)
+      - image: cimg/python:3.10-node
+  talabat-aws:
+    shell: /bin/bash -eo pipefail
+    docker:
+      - image: public.ecr.aws/talabat/talabat/aws-kubectl:latest
+
+parameters:
+  build-nba:
+    type: boolean
+    default: false
+  build-ultron:
+    type: boolean
+    default: false
+  build-vendor-ranking:
+    type: boolean
+    default: false
+  build-menu-item-ranking:
+    type: boolean
+    default: false
+  build-item-lifecycle:
+    type: boolean
+    default: false
+  build-shared:
+    type: boolean
+    default: false
+
+commands:
+  bentoml-build-push:
+    description: "Build and push a Docker image for a part of the app"
+    parameters:
+      service_name:
+        type: string
+    steps:
+      - checkout
+      - run:
+          name: Prepare service environment
+          # See https://circleci.com/docs/env-vars/#example-configuration-of-environment-variables
+          command: |
+            PYTHON_MODULE_NAME=$(echo "<< parameters.service_name >>" | tr '-' '_')
+            SERVICE_REQUIREMENTS_FILE="${PYTHON_MODULE_NAME}/requirements.txt"
+            echo "export PYTHON_PACKAGE_NAME='${PYTHON_MODULE_NAME}'" >> "$BASH_ENV"
+            echo "export SERVICE_REQUIREMENTS_FILE='${SERVICE_REQUIREMENTS_FILE}'" >> "$BASH_ENV"
+            echo "export OPENAI_API_KEY=''" >> "$BASH_ENV"
+            # Just "alias" this file with a well known name, to use freely in other places (cache keys, etc.) 
+            cp "$SERVICE_REQUIREMENTS_FILE" "service-requirements.txt"
+      - aws-cli/setup
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - restore_cache:
+          keys:
+            - &serviceCacheKey python-<< parameters.service_name >>-packages-{{ checksum "service-requirements.txt" }}
+#            - python-packages-{{ checksum "requirements-all.txt" }}
+      - run:
+          name: Install Python deps
+          command: |
+            pip install --upgrade pip wheel keyring keyrings.google-artifactregistry-auth
+            echo $GCP_SERVICE_ACCOUNT > /tmp/gcp_service_account.json
+            export GOOGLE_APPLICATION_CREDENTIALS=/tmp/gcp_service_account.json
+            pip install --disable-pip-version-check -r service-requirements.txt
+      - run:
+          name: Login to AWS ECR
+          command: aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin "$ECR_REPO"
+      - run:
+          name: Init the model store
+          command: find ./models -name '*.bentomodel' -exec bentoml models import {} \;
+      - run:
+          name: Build "<< parameters.service_name >>" Bento
+          command: |
+            bentoml build -f "$PYTHON_PACKAGE_NAME/bentofile.yaml" --version $CIRCLE_SHA1 --verbose .
+      # bentoml containerize is broken, see https://github.com/bentoml/BentoML/issues/4154
+      # Anyway we should implement our own build process in the future...
+#      - run:
+#          name: Build and publish "<< parameters.service_name >>" Docker image
+#          command: |
+#            DOCKER_IMAGE=$ECR_REPO/ace/api
+#            DOCKER_IMAGE_TAG="<< parameters.service_name >>-$CIRCLE_SHA1"
+#            bentoml containerize "$PYTHON_PACKAGE_NAME:latest" \
+#              --build-arg COMMIT_SHA="$CIRCLE_SHA1" \
+#              --build-arg GITHUB_USER="$GITHUB_USER" --build-arg GITHUB_TOKEN="$GITHUB_TOKEN" \
+#              --build-arg ACE_SERVICE_NAME="$PYTHON_PACKAGE_NAME" \
+#              --backend=buildx --opt progress=plain \
+#              --opt push --image-tag "${DOCKER_IMAGE}:${DOCKER_IMAGE_TAG}"
+      - run:
+          name: Build and publish "<< parameters.service_name >>" Docker image
+          command: |
+            # Python just inserts newlines if the output is longer than the terminal width... That breaks everything!
+            # Like:
+            #   /bin/bash: line 5: cd: $'/home/circleci/bentoml/bentos/vendor_ranking/94e09b5655660d8acf973d4af83ca48349c\nc363e': No such file or directory
+            #cd "$(bentoml get "${PYTHON_PACKAGE_NAME}:latest" -o path)"
+            cd /home/circleci/bentoml/bentos/$PYTHON_PACKAGE_NAME/$CIRCLE_SHA1
+            # Copy the models (if any), this is also a part of "bentoml containerize"
+            mkdir -p ./models/$PYTHON_PACKAGE_NAME
+            [ -d "../../../models/$PYTHON_PACKAGE_NAME" ] && \
+              cp -r ../../../models/$PYTHON_PACKAGE_NAME/. ./models/$PYTHON_PACKAGE_NAME
+            # Finally, build the image
+            DOCKER_IMAGE=$ECR_REPO/ace/api
+            DOCKER_IMAGE_TAG="<< parameters.service_name >>-$CIRCLE_SHA1"
+            docker buildx build --file env/docker/Dockerfile \
+            --build-arg COMMIT_SHA="$CIRCLE_SHA1" \
+            --build-arg GITHUB_USER="$GITHUB_USER" --build-arg GITHUB_TOKEN="$GITHUB_TOKEN" \
+            --build-arg ACE_SERVICE_NAME="$PYTHON_PACKAGE_NAME" \
+            --secret id=GOOGLE_APPLICATION_CREDENTIALS,env=GCP_SERVICE_ACCOUNT \
+            --progress=plain \
+            --push --tag "${DOCKER_IMAGE}:${DOCKER_IMAGE_TAG}" \
+            .
+      - save_cache:
+          key: *serviceCacheKey
+          paths:
+            # The whole virtual environment
+            - /home/circleci/.pyenv
+            # Just the PIP download cache
+#            - /home/circleci/.cache/pip
+
+  k8s-deploy:
+    description: "Generalized k8s deployment command"
+    parameters:
+      service_name:
+        type: string
+      values_file:
+        type: string
+        default: values.yaml
+    steps:
+      - checkout
+      - run:
+          name: Deploy << parameters.service_name >> Helm chart
+          # TODO Take Github repository from the context
+          # TODO Why ArgoCD does not take the name from the Chart.yaml? Maybe it can, we need to check...
+          command: |
+            export DOCKER_IMAGE_TAG="<< parameters.service_name >>-$CIRCLE_SHA1"
+            export VERSION=$CIRCLE_SHA1
+            argo-deploy ace-<< parameters.service_name >> \
+              --repo https://github.com/talabat-dhme/Ace \
+              --path charts/<< parameters.service_name >> \
+              -e $STAGE \
+              --namespace datascience \
+              --values values.yaml \
+              --values << parameters.values_file >> \
+              --set service.env=$STAGE \
+              --set service.environmentVars.STAGE.value=$STAGE \
+              --set service.image.tag=$DOCKER_IMAGE_TAG \
+              --revision $VERSION \
+              --timeout 30m \
+              --enable-monitor=true
+
+  k8s-rollback:
+    description: "Generalized k8s rollback command"
+    parameters:
+      service_name:
+        type: string
+        default: ace-api
+    steps:
+      - checkout
+      - run:
+          name: Rollback Helm chart (<< parameters.service_name >>)
+          # TODO Take Github repository from the context
+          command: |
+            # "--rollback-id 1" means just one STEP back
+            argo-deploy ace-<< parameters.service_name >> \
+              --repo https://github.com/talabat-dhme/Ace \
+              --path charts/<< parameters.service_name >> \
+              -e $STAGE \
+              --namespace datascience \
+              --rollback --rollback-id 1 \
+              --timeout 30m
+
+  newrelic-record-deployment:
+    description: "Record a deployment in New Relic"
+    parameters:
+      app_id:
+        type: string
+      description:
+        type: string
+        default: $CIRCLE_BUILD_URL
+      user:
+        type: string
+        default: $CIRCLE_USERNAME
+    steps:
+      - run:
+          name: New Relic deployment marker
+          # Pay attention to quotes, CircleCI does not expand variable in parameters, it passes them as is to Bash!
+          # See: https://superuser.com/a/1650339
+          command: |
+            curl -i --fail --location "https://api.newrelic.com/v2/applications/<< parameters.app_id >>/deployments.json" \
+              --header "Api-Key: $NEWRELIC_REST_API_KEY" \
+              --header 'Content-Type: application/json' \
+              --data-raw '{ "deployment": { 
+                "revision": << pipeline.number >>,
+                "description": "'"<< parameters.description >>"'",
+                "user": "'"<< parameters.user >>"'"
+              }}'
+
+jobs:
+  build_api:
+    parameters:
+      service_name:
+        type: string
+    executor:
+      name: python
+    environment:
+      BENTOML_DO_NOT_TRACK: "True"
+    steps:
+      - bentoml-build-push:
+          service_name: << parameters.service_name >>
+
+  deploy:
+    executor: talabat-aws
+    parameters:
+      service_name:
+        type: string
+      nr_app_id:
+        type: string
+    steps:
+      - k8s-deploy:
+          service_name: << parameters.service_name >>
+          # See talabat-* contexts for the variable
+          values_file: values-${STAGE}.yaml
+      - newrelic-record-deployment:
+          app_id: << parameters.nr_app_id >>
+      - devx/send_deployment_insights:
+          # See DevX-* contexts for these variables
+          account_id: ${new_relic_account_id}
+          insert_key: ${new_relic_insert_key}
+          environment: ${deployment_environment}
+  rollback:
+    executor: talabat-aws
+    parameters:
+      service_name:
+        type: string
+      nr_app_id:
+        type: string
+    steps:
+      - k8s-rollback:
+          service_name: << parameters.service_name >>
+      - newrelic-record-deployment:
+          app_id: << parameters.nr_app_id >>
+      - devx/send_deployment_insights:
+          # See DevX-* contexts for these variables
+          account_id: ${new_relic_account_id}
+          insert_key: ${new_relic_insert_key}
+          environment: ${deployment_environment}
+
+workflows:
+  "[nba] Build":
+    when:
+      or:
+        - << pipeline.parameters.build-nba >>
+        - << pipeline.parameters.build-shared >>
+    jobs:
+      - build_api:
+          service_name: nba
+          context: talabat-prod
+
+  "[nba] Deploy (QA)":
+    when:
+      or:
+        - << pipeline.parameters.build-nba >>
+        - << pipeline.parameters.build-shared >>
+    jobs:
+      - deploy_approval:
+          type: approval
+      - deploy:
+          service_name: nba
+          nr_app_id: $NEW_RELIC_APP_ID_qa
+          context:
+            - talabat-qa
+            - DevX-qa
+          requires:
+            - deploy_approval
+
+  "[nba] Deploy (Production)":
+    when:
+      and:
+        - equal: [ main, << pipeline.git.branch >> ]
+        - or:
+            - << pipeline.parameters.build-nba >>
+            - << pipeline.parameters.build-shared >>
+    jobs:
+      - deploy_approval:
+          type: approval
+      - deploy:
+          service_name: nba
+          nr_app_id: $NEW_RELIC_APP_ID_prod
+          context:
+            - talabat-prod
+            - DevX
+          requires:
+            - deploy_approval
+
+  "[nba] Rollback (Production)":
+    when:
+      and:
+        - equal: [ main, << pipeline.git.branch >> ]
+        - or:
+            - << pipeline.parameters.build-nba >>
+            - << pipeline.parameters.build-shared >>
+    jobs:
+      - rollback_approval:
+          type: approval
+      - rollback:
+          service_name: nba
+          nr_app_id: $NEW_RELIC_APP_ID_prod
+          context:
+            - talabat-prod
+            - DevX
+          requires:
+            - rollback_approval
+
+
+
+  "[ultron] Build":
+    when:
+      or:
+        - << pipeline.parameters.build-ultron >>
+        - << pipeline.parameters.build-shared >>
+    jobs:
+      - build_api:
+          service_name: ultron
+          context: talabat-prod
+
+  "[ultron] Deploy (QA)":
+    when:
+      or:
+        - << pipeline.parameters.build-ultron >>
+        - << pipeline.parameters.build-shared >>
+    jobs:
+      - deploy_approval:
+          type: approval
+      - deploy:
+          service_name: ultron
+          nr_app_id: $NEW_RELIC_APP_ID_qa
+          context:
+            - talabat-qa
+            - DevX-qa
+          requires:
+            - deploy_approval
+
+  "[ultron] Deploy (Production)":
+    when:
+      and:
+        - equal: [ main, << pipeline.git.branch >> ]
+        - or:
+            - << pipeline.parameters.build-ultron >>
+            - << pipeline.parameters.build-shared >>
+    jobs:
+      - deploy_approval:
+          type: approval
+      - deploy:
+          service_name: ultron
+          nr_app_id: $NEW_RELIC_APP_ID_prod
+          context:
+            - talabat-prod
+            - DevX
+          requires:
+            - deploy_approval
+
+  "[ultron] Rollback (Production)":
+    when:
+      and:
+        - equal: [ main, << pipeline.git.branch >> ]
+        - or:
+            - << pipeline.parameters.build-ultron >>
+            - << pipeline.parameters.build-shared >>
+    jobs:
+      - rollback_approval:
+          type: approval
+      - rollback:
+          service_name: ultron
+          nr_app_id: $NEW_RELIC_APP_ID_prod
+          context:
+            - talabat-prod
+            - DevX
+          requires:
+            - rollback_approval
+
+
+
+  "[vendor_ranking] Build":
+    when:
+      or:
+        - << pipeline.parameters.build-vendor-ranking >>
+        - << pipeline.parameters.build-shared >>
+    jobs:
+      - build_api:
+          service_name: vendor-ranking
+          context: talabat-prod
+
+  "[vendor_ranking] Deploy (QA)":
+    when:
+      or:
+        - << pipeline.parameters.build-vendor-ranking >>
+        - << pipeline.parameters.build-shared >>
+    jobs:
+      - deploy_approval:
+          type: approval
+      - deploy:
+          service_name: vendor-ranking
+          nr_app_id: $NEW_RELIC_APP_ID_qa
+          context:
+            - talabat-qa
+            - DevX-qa
+          requires:
+            - deploy_approval
+
+  "[vendor_ranking] Deploy (Production)":
+    when:
+      and:
+        - equal: [ main, << pipeline.git.branch >> ]
+        - or:
+            - << pipeline.parameters.build-vendor-ranking >>
+            - << pipeline.parameters.build-shared >>
+    jobs:
+      - deploy_approval:
+          type: approval
+      - deploy:
+          service_name: vendor-ranking
+          nr_app_id: $NEW_RELIC_APP_ID_prod
+          context:
+            - talabat-prod
+            - DevX
+          requires:
+            - deploy_approval
+
+  "[vendor_ranking] Rollback (Production)":
+    when:
+      and:
+        - equal: [ main, << pipeline.git.branch >> ]
+        - or:
+            - << pipeline.parameters.build-vendor-ranking >>
+            - << pipeline.parameters.build-shared >>
+    jobs:
+      - rollback_approval:
+          type: approval
+      - rollback:
+          service_name: vendor-ranking
+          nr_app_id: $NEW_RELIC_APP_ID_prod
+          context:
+            - talabat-prod
+            - DevX
+          requires:
+            - rollback_approval
+
+
+  "[menu_item_ranking] Build":
+    when:
+      or:
+        - << pipeline.parameters.build-menu-item-ranking >>
+        - << pipeline.parameters.build-shared >>
+    jobs:
+      - build_api:
+          service_name: menu-item-ranking
+          context: talabat-prod
+
+  "[menu_item_ranking] Deploy (QA)":
+    when:
+      or:
+        - << pipeline.parameters.build-menu-item-ranking >>
+        - << pipeline.parameters.build-shared >>
+    jobs:
+      - deploy_approval:
+          type: approval
+      - deploy:
+          service_name: menu-item-ranking
+          nr_app_id: $NEW_RELIC_APP_ID_qa
+          context:
+            - talabat-qa
+            - DevX-qa
+          requires:
+            - deploy_approval
+
+  "[menu_item_ranking] Deploy (Production)":
+    when:
+      and:
+        - equal: [ main, << pipeline.git.branch >> ]
+        - or:
+            - << pipeline.parameters.build-menu-item-ranking >>
+            - << pipeline.parameters.build-shared >>
+    jobs:
+      - deploy_approval:
+          type: approval
+      - deploy:
+          service_name: menu-item-ranking
+          nr_app_id: $NEW_RELIC_APP_ID_prod
+          context:
+            - talabat-prod
+            - DevX
+          requires:
+            - deploy_approval
+
+  "[menu_item_ranking] Rollback (Production)":
+    when:
+      and:
+        - equal: [ main, << pipeline.git.branch >> ]
+        - or:
+            - << pipeline.parameters.build-menu-item-ranking >>
+            - << pipeline.parameters.build-shared >>
+    jobs:
+      - rollback_approval:
+          type: approval
+      - rollback:
+          service_name: menu-item-ranking
+          nr_app_id: $NEW_RELIC_APP_ID_prod
+          context:
+            - talabat-prod
+            - DevX
+          requires:
+            - rollback_approval
+
+
+  "[item_lifecycle] Build":
+    when:
+      or:
+        - << pipeline.parameters.build-item-lifecycle >>
+        - << pipeline.parameters.build-shared >>
+    jobs:
+      - build_api:
+          service_name: item-lifecycle
+          context: talabat-prod
+
+  "[item_lifecycle] Deploy (QA)":
+    when:
+      or:
+        - << pipeline.parameters.build-item-lifecycle >>
+        - << pipeline.parameters.build-shared >>
+    jobs:
+      - deploy_approval:
+          type: approval
+      - deploy:
+          service_name: item-lifecycle
+          nr_app_id: $NEW_RELIC_APP_ID_qa
+          context:
+            - talabat-qa
+            - DevX-qa
+          requires:
+            - deploy_approval
+
+  "[item_lifecycle] Deploy (Production)":
+    when:
+      and:
+        - equal: [ main, << pipeline.git.branch >> ]
+        - or:
+            - << pipeline.parameters.build-item-lifecycle >>
+            - << pipeline.parameters.build-shared >>
+    jobs:
+      - deploy_approval:
+          type: approval
+      - deploy:
+          service_name: item-lifecycle
+          nr_app_id: $NEW_RELIC_APP_ID_prod
+          context:
+            - talabat-prod
+            - DevX
+          requires:
+            - deploy_approval
+
+  "[item_lifecycle] Rollback (Production)":
+    when:
+      and:
+        - equal: [ main, << pipeline.git.branch >> ]
+        - or:
+            - << pipeline.parameters.build-item-lifecycle >>
+            - << pipeline.parameters.build-shared >>
+    jobs:
+      - rollback_approval:
+          type: approval
+      - rollback:
+          service_name: item-lifecycle
+          nr_app_id: $NEW_RELIC_APP_ID_prod
+          context:
+            - talabat-prod
+            - DevX
+          requires:
+            - rollback_approval

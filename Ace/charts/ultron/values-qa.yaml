@@ -1,0 +1,77 @@
+service:  # HTTP API
+  istio:
+    ingress:
+      routes:
+        match:
+          - host: ace-qa.dhhmena.com
+            prefix: "/ultron/"
+
+  environmentVars:
+    NEW_RELIC_APP_NAME:
+      value: ace-ultron-qa
+    ACE_LOGS_SQS_QUEUE_URL:
+      value: https://sqs.eu-west-2.amazonaws.com/690772145391/talabat-qa-ace-api-logs-request
+    ACE_LOGS_SAMPLE_PERCENTAGE:
+      value: "100"
+
+  externalSecret:
+    vaultMountPoint: kubernetes-talabat-qa-main-cluster
+    data:
+      - name: NEW_RELIC_LICENSE_KEY
+        key: secret/data/shared/newrelic/qa
+        property: license_key
+      - name: OPENAI_API_KEY
+        key: secret/data/datascience/ace/openai/qa
+        property: api_key
+      - name: PGHOST
+        key: secret/data/datascience/ace/db/ro/qa
+        property: hostname
+      - name: PGUSER
+        key: secret/data/datascience/ace/db/ro/qa
+        property: username
+      - name: PGPASSWORD
+        key: secret/data/datascience/ace/db/ro/qa
+        property: password
+      - name: PGDATABASE
+        key: secret/data/datascience/ace/db/ro/qa
+        property: dbname
+
+  serviceAccount:
+    annotations:
+      eks.amazonaws.com/role-arn: "arn:aws:iam::690772145391:role/talabat-qa-datascience-ace"
+
+observability:
+  apmName: "ace-ultron-qa"
+  alertPolicies:
+    alertPolicy1:
+      name: "ace-ultron-qa"
+      incidentPreference: PER_CONDITION
+      notification:
+        slackChannelIds:
+          - C05AZQ9JML6 # tlb-ace-alerts-qa
+      goldenSignals:
+        #------- Golden Signals Alerts -------#
+        apdex:
+          enabled: true
+          thresholdCritical:
+            operator: BELOW
+            thresholdValue: 0.8
+            thresholdDuration: 300
+            thresholdOccurrences: AT_LEAST_ONCE
+          thresholdWarning:
+            operator: BELOW
+            thresholdValue: 0.9
+            thresholdDuration: 300
+            thresholdOccurrences: AT_LEAST_ONCE
+        errorRate:
+          enabled: true
+          thresholdCritical:
+            operator: ABOVE
+            thresholdValue: 2
+            thresholdDuration: 300
+            thresholdOccurrences: ALL
+          thresholdWarning:
+            operator: ABOVE
+            thresholdValue: 1
+            thresholdDuration: 300
+            thresholdOccurrences: ALL

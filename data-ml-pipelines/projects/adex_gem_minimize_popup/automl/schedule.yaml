@@ -1,0 +1,84 @@
+# Configure each DAG under a unique key
+# ex: adex_gem_minimize_popup_automl_train, adex_gem_minimize_popup_automl_predict, ...
+
+# DAG #2: training DAG
+adex_gem_minimize_popup_automl_train: # should follow the pattern: <project_name>_<model_name>_<script_name>
+  # REQUIRED: enable_dag - Boolean indicating if the DAG should be enabled in Airflow. Default is false if not specified.
+  enable_dag: False
+
+  # REQUIRED: schedule_interval - Defines how often the DAG should run, using a cron-like string format.
+  # Example: "0 3 * * Fri" means every Friday at 3:00 AM. There is no default; this must be explicitly set.
+  schedule_interval: "0 3 * * Fri"
+
+  # REQUIRED: owner - Specifies the owner of the DAG, typically the team or developer responsible.
+  # Helps with accountability and maintenance. Default is "Algorithms" if not specified.
+  owner: "Algorithms, Fadi Nader"
+
+  # OPTIONAL: node_pool - The Kubernetes node pool where the DAG's tasks should run.
+  # Should match the node pool configured in your Kubernetes environment.
+  # Default: "algo_generic_node_pool"
+  node_pool: "ese_node_pool"
+
+  # REQUIRED: commands - List of commands the DAG will execute, usually pointing to a script or entrypoint.
+  # Example: ["python", "main.py"] runs 'main.py' with Python.
+  commands:
+    - "python"
+    - "main.py"
+
+  # OPTIONAL: sql_sensors - Configuration for setting up an SQL-based sensor in Airflow.
+  # This is a List of sensors that checks for certain conditions in a SQL database before running the DAG.
+  sql_sensors:
+    - 1:
+        # REQUIRED: sensor_priority - Boolean indicating if the sensor is critical for the DAG execution.
+        sensor_priority: False
+
+        # REQUIRED: table_name - Name of the SQL table to check.
+        table_name: "fct_order_info"
+
+        # REQUIRED: dataset_name - The dataset or database where the table is located.
+        dataset_name: "data_platform"
+
+        # REQUIRED: sensor_properties - Properties or conditions for the sensor.
+        sensor_properties:
+          # REQUIRED: event_date_column - Column in the SQL table that contains date information.
+          event_date_column: "order_date"
+
+          # OPTIONAL: event_date - Specific date or date calculation to check against.
+          # Can use SQL expressions like "current_date()-1". Default is "current_date()-1".
+          event_date: "current_date()-1"
+
+          # OPTIONAL: lower_bound - Minimum number of rows required for the specified date.
+          # If the rows are below this threshold, the DAG won't run. Default: 10
+          lower_bound: 5
+  # OPTIONAL: trigger_dag - List of DAGs to trigger after the current sql_sensors are successful.
+  trigger_dags:
+    - 1:
+        # Required: trigger_dag_id - The DAG ID to trigger.
+        # Must be a valid DAG ID in the Airflow Algo environment.
+        trigger_dag_id: "example_dag_id"
+
+# DAG #2: Prediction DAG
+adex_gem_minimize_popup_automl_predict:  # Key for the prediction DAG. Duplicate or similar keys like 'predict1', 'predict2' are valid for additional prediction DAGs.
+  schedule_interval: "0 4 * * Mon"
+  owner: "Algorithms, Fadi Nader"
+  node_pool: "ese_node_pool"
+  commands:
+    - "python"
+    - "predict.py"
+  sql_sensors:
+    - 1:
+        sensor_priority: false
+        table_name: "fct_order_info"
+        dataset_name: "data_platform"
+        sensor_properties:
+          event_date_column: "order_date"
+          event_date: "current_date()-1"
+          lower_bound: 10
+    - 2:
+        sensor_priority: true
+        table_name: "fct_order"
+        dataset_name: "data_platform"
+        sensor_properties:
+          event_date_column: "order_date"
+          event_date: "current_date()-1"
+          lower_bound: 10

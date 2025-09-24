@@ -1,0 +1,248 @@
+example_iris_classifier_v1_train:
+  # REQUIRED: enable_dag - Boolean indicating if the DAG should be enabled in Airflow. Default is false if not specified.
+  enable_dag: true
+  schedule_interval: "0 3 * * Fri"
+  owner: "Algorithms, Fadi Nader"
+
+  # REQUIRED: a list of one or multiple parallel task group to run in the DAG. Each group can represent alogical case. ex: country, city, etc.
+  # You can have one task group for simple use cases.
+  # OR Multiple task groups for complex use cases.
+  tasks_group:
+    - task_group_name: "iris_classifier_v1_task_group"
+      # OPTIONAL: sql_sensors - Configuration for setting up an SQL-based sensor in Airflow.
+      # This is a List of sensors that checks for certain conditions in a SQL database before running the DAG.
+      # List of tasks to run in the DAG. Each task is a separate step in the DAG that start GKE pods
+      gke_tasks:
+        - task_id: "iris_classifier_v1_train" # Give your task a unique name
+          node_pool: "ese_node_pool"
+          commands:
+            - "python"
+            - "main.py"
+
+
+example_iris_classifier_v1_predict:
+  # REQUIRED: enable_dag - Boolean indicating if the DAG should be enabled in Airflow. Default is false if not specified.
+  enable_dag: true
+  schedule_interval: "0 4 * * Mon"
+  owner: "Algorithms, Fadi Nader"
+  # REQUIRED: a list of one or multiple parallel task group to run in the DAG. Each group can represent alogical case. ex: country, city, etc.
+  # You can have one task group for simple use cases.
+  # OR Multiple task groups for complex use cases.
+  tasks_group:
+    # task_group_name - Name of the task group. Can be any descriptive name and should be unique within the DAG.
+    - task_group_name: "iris_classifier_egypt"
+      # OPTIONAL: sql_sensors - Configuration for setting up an SQL-based sensor in Airflow.
+      # This is a List of sensors that checks for certain conditions in a SQL database before running the DAG.
+
+      sql_sensors:
+        - task_id: "data_platform_fct_order_info_sensor_egypt" # Unique ID for the sensor. Must be unique within the DAG/ All tasks groups.
+          # REQUIRED: enable - Boolean indicating if the sensor should be enabled. Default is false if not specified.
+          enable: True
+          # REQUIRED: table_name - Name of the SQL table to check.
+          table_name: "fct_order_info"
+
+          # REQUIRED: dataset_name - The dataset or database where the table is located.
+          dataset_name: "data_platform"
+
+          # REQUIRED: sensor_properties - Properties or conditions for the sensor.
+          sensor_properties:
+            # REQUIRED: event_date_column - Column in the SQL table that contains date information.
+            event_date_column: "order_date"
+
+            # OPTIONAL: event_date - Specific date or date calculation to check against.
+            # Can use SQL expressions like "current_date()-1". Default is "current_date()-1".
+            event_date: "current_date()-1"
+
+            # OPTIONAL: lower_bound - Minimum number of rows required for the specified date.
+            # If the rows are below this threshold, the DAG won't run. Default: 10
+            lower_bound: 10
+        - task_id: "data_platform_fct_order_rank_sensor_egypt" # Unique ID for the sensor. Must be unique within the DAG.
+          # REQUIRED: enable - Boolean indicating if the sensor should be enabled. Default is false if not specified.
+          enable: True
+          # REQUIRED: table_name - Name of the SQL table to check.
+          table_name: "fct_order_rank"
+
+          # REQUIRED: dataset_name - The dataset or database where the table is located.
+          dataset_name: "data_platform"
+
+          # REQUIRED: sensor_properties - Properties or conditions for the sensor.
+          sensor_properties:
+            # REQUIRED: event_date_column - Column in the SQL table that contains date information.
+            event_date_column: "order_date"
+
+            # OPTIONAL: event_date - Specific date or date calculation to check against.
+            # Can use SQL expressions like "current_date()-1". Default is "current_date()-1".
+            event_date: "current_date()-1"
+
+            # OPTIONAL: lower_bound - Minimum number of rows required for the specified date.
+            # If the rows are below this threshold, the DAG won't run. Default: 10
+            lower_bound: 10
+      # OPTIONAL: trigger_dag - List of DAGs to trigger after the current sql_sensors are successful.
+      trigger_dags:
+        - trigger_dag_id: "example_dag_id" # Required: trigger_dag_id - The DAG ID to trigger, Must be a valid DAG ID in the Airflow Algo environment.
+      # List of tasks to run in the DAG. Each task is a separate step in the DAG that start GKE pods
+      gke_tasks:
+        - task_id: "iris_classifier_v1_predict_egypt" # Give your task a unique name
+          # OPTIONAL: node_pool - The Kubernetes node pool where the DAG's tasks should run.
+          # Should match the node pool configured in your Kubernetes environment.
+          # Default: "algo_generic_node_pool"
+          node_pool: "ese_node_pool"
+
+          # REQUIRED: commands - List of commands the DAG will execute, usually pointing to a script or entrypoint.
+          # Example: ["python", "main.py"] runs 'main.py' with Python.
+          commands:
+            - "python"
+            - "predict.py" # Set here your arguments for the script. ex: "main.py egy" or "train.py UAE"
+    - task_group_name: "iris_classifier_uae"
+      # OPTIONAL: sql_sensors - Configuration for setting up an SQL-based sensor in Airflow.
+      # This is a List of sensors that checks for certain conditions in a SQL database before running the DAG.
+      # List of tasks to run in the DAG. Each task is a separate step in the DAG that start GKE pods
+      sql_sensors:
+        - task_id: "data_platform_fct_order_info_sensor_uae" # Unique ID for the sensor. Must be unique within the DAG.
+          # REQUIRED: enable - Boolean indicating if the sensor should be enabled. Default is false if not specified.
+          enable: True
+          # REQUIRED: table_name - Name of the SQL table to check.
+          table_name: "fct_order_info"
+
+          # REQUIRED: dataset_name - The dataset or database where the table is located.
+          dataset_name: "data_platform"
+
+          # REQUIRED: sensor_properties - Properties or conditions for the sensor.
+          sensor_properties:
+            # REQUIRED: event_date_column - Column in the SQL table that contains date information.
+            event_date_column: "order_date"
+
+            # OPTIONAL: event_date - Specific date or date calculation to check against.
+            # Can use SQL expressions like "current_date()-1". Default is "current_date()-1".
+            event_date: "current_date()-1"
+
+            # OPTIONAL: lower_bound - Minimum number of rows required for the specified date.
+            # If the rows are below this threshold, the DAG won't run. Default: 10
+            lower_bound: 10
+        - task_id: "data_platform_fct_order_rank_sensor_uae" # Unique ID for the sensor. Must be unique within the DAG.
+          # REQUIRED: enable - Boolean indicating if the sensor should be enabled. Default is false if not specified.
+          enable: True
+          # REQUIRED: table_name - Name of the SQL table to check.
+          table_name: "fct_order_rank"
+
+          # REQUIRED: dataset_name - The dataset or database where the table is located.
+          dataset_name: "data_platform"
+
+          # REQUIRED: sensor_properties - Properties or conditions for the sensor.
+          sensor_properties:
+            # REQUIRED: event_date_column - Column in the SQL table that contains date information.
+            event_date_column: "order_date"
+
+            # OPTIONAL: event_date - Specific date or date calculation to check against.
+            # Can use SQL expressions like "current_date()-1". Default is "current_date()-1".
+            event_date: "current_date()-1"
+
+            # OPTIONAL: lower_bound - Minimum number of rows required for the specified date.
+            # If the rows are below this threshold, the DAG won't run. Default: 10
+            lower_bound: 10
+      # OPTIONAL: trigger_dag - List of DAGs to trigger after the current sql_sensors are successful.
+      trigger_dags:
+        - trigger_dag_id: "example_dag_id" # Required: trigger_dag_id - The DAG ID to trigger, Must be a valid DAG ID in the Airflow Algo environment.
+      # List of tasks to run in the DAG. Each task is a separate step in the DAG that start GKE pods
+      gke_tasks:
+        - task_id: "iris_classifier_v1_predict_uae" # Give your task a unique name
+          # OPTIONAL: node_pool - The Kubernetes node pool where the DAG's tasks should run.
+          # Should match the node pool configured in your Kubernetes environment.
+          # Default: "algo_generic_node_pool"
+          node_pool: "ese_node_pool"
+
+          # REQUIRED: commands - List of commands the DAG will execute, usually pointing to a script or entrypoint.
+          # Example: ["python", "main.py"] runs 'main.py' with Python.
+          commands:
+            - "python"
+            - "predict.py" # Set here your arguments for the script. ex: "main.py egy" or "train.py UAE"    - task_group_name: "iris_classifier_v1_task_group"
+        - task_id: "iris_classifier_v1_predict2_uae" # Give your task a unique name
+          # OPTIONAL: node_pool - The Kubernetes node pool where the DAG's tasks should run.
+          # Should match the node pool configured in your Kubernetes environment.
+          # Default: "algo_generic_node_pool"
+          node_pool: "ese_node_pool"
+
+          # REQUIRED: commands - List of commands the DAG will execute, usually pointing to a script or entrypoint.
+          # Example: ["python", "main.py"] runs 'main.py' with Python.
+          commands:
+            - "python"
+            - "predict.py" # Set here your arguments for the script. ex: "main.py egy" or "train.py UAE"    - task_group_name: "iris_classifier_v1_task_group"
+
+          # Optional resource specifications for Pod, this will allow you to
+          # set both cpu and memory limits and requirements.
+          container_resources:
+            requests:
+              memory: "1Gi"
+              cpu: "1"
+            limits:
+              memory: "3Gi"
+              cpu: "3"
+
+  # OPTIONAL: online store materialization - List of tables to materialize in the online feature store after the DAG is successful.
+  # The tables should be already registered in the feature store registry before you can materialize them to the online store.
+  online_store_materialization:
+    # Required: List of BigQuery tables to materialize to the online feature store
+    tables:
+      - "chain_menu_2t_v3_fv" # Set here your BigQuery table ID to be materialized to the online feature store.
+    # Optional - Additional environment variables to pass to the container
+    additional_env_vars:
+      # Only KEY NUM_CHUNKS is allowed
+      NUM_CHUNKS: 5
+    # Optional - Resources to allocate to the container
+    container_resources:
+      requests:
+        memory: "1Gi"
+        cpu: "1"
+      limits:
+        memory: "3Gi"
+        cpu: "3"
+
+example_iris_classifier_v1_predict2:
+  # REQUIRED: enable_dag - Boolean indicating if the DAG should be enabled in Airflow. Default is false if not specified.
+  enable_dag: true
+  schedule_interval: "0 4 * * Mon"
+  owner: "Algorithms, Fadi Nader"
+  # REQUIRED: a list of one or multiple parallel task group to run in the DAG. Each group can represent alogical case. ex: country, city, etc.
+  # You can have one task group for simple use cases.
+  # OR Multiple task groups for complex use cases.
+  tasks_group:
+    # task_group_name - Name of the task group. Can be any descriptive name and should be unique within the DAG.
+    - task_group_name: "iris_classifier_v1_task_group"
+      # OPTIONAL: sql_sensors - Configuration for setting up an SQL-based sensor in Airflow.
+      # This is a List of sensors that checks for certain conditions in a SQL database before running the DAG.
+      # List of tasks to run in the DAG. Each task is a separate step in the DAG that start GKE pods
+      sql_sensors:
+        - task_id: "fct_order_info_sensor" # Unique ID for the sensor. Must be unique within the DAG.
+          # REQUIRED: enable - Boolean indicating if the sensor should be enabled. Default is false if not specified.
+          enable: True
+          # REQUIRED: table_name - Name of the SQL table to check.
+          table_name: "fct_order_info"
+
+          # REQUIRED: dataset_name - The dataset or database where the table is located.
+          dataset_name: "data_platform"
+
+          # REQUIRED: sensor_properties - Properties or conditions for the sensor.
+          sensor_properties:
+            # REQUIRED: event_date_column - Column in the SQL table that contains date information.
+            event_date_column: "order_date"
+
+            # OPTIONAL: event_date - Specific date or date calculation to check against.
+            # Can use SQL expressions like "current_date()-1". Default is "current_date()-1".
+            event_date: "current_date()-1"
+
+            # OPTIONAL: lower_bound - Minimum number of rows required for the specified date.
+            # If the rows are below this threshold, the DAG won't run. Default: 10
+            lower_bound: 10
+      # List of tasks to run in the DAG. Each task is a separate step in the DAG that start GKE pods
+      gke_tasks:
+        - task_id: "iris_classifier_v1_predict" # Give your task a unique name
+          # OPTIONAL: node_pool - The Kubernetes node pool where the DAG's tasks should run.
+          # Should match the node pool configured in your Kubernetes environment.
+          # Default: "algo_generic_node_pool"
+          node_pool: "ese_node_pool"
+
+          # REQUIRED: commands - List of commands the DAG will execute, usually pointing to a script or entrypoint.
+          # Example: ["python", "main.py"] runs 'main.py' with Python.
+          commands:
+            - "python"
+            - "predict_test.py" # Set here your arguments for the script. ex: "main.py egy" or "train.py UAE"

@@ -1,0 +1,42 @@
+bentoml~=1.1
+
+# fastapi_rfc7807 has some issues with Pydantic 2, so cap FastAPI for now...
+fastapi~=0.93, <0.100
+fastapi_rfc7807
+uvicorn[standard]
+pydantic~=1.10
+rocketry~=2.5 # Background tasks
+tenacity~=8.2 # Retries
+
+# starting from Anyio=4.0 NewRelic can't detect exception properly,
+# all exceptions will be represented as "unhandled errors in a TaskGroup" regardless of its type
+anyio~=3.7.1
+
+# The lib is very alpha, we will commit our custom code back when ready
+#starlette-oauth2-api~=0.2.6
+#python-jose~=3.0
+
+orjson~=3.9
+
+pandas~=2.1
+
+# Faster Pandas.
+# Do not upgrade to version 19.0 as there is a bug in method with_columns(),
+# which causes unexpected exceptions and broken back compatibility with version 18.0
+polars[numpy,pandas,pyarrow]~=0.18.15
+
+asyncpg~=0.28
+pgvector~=0.1
+
+aioboto3~=11.2
+
+starlette-context~=0.3.6
+
+# 8.9.0 has a bug with background tasks, the decorator overrides the parent (web) transaction...
+newrelic~=8.8.1
+structlog~=23.1
+
+# TODO Come up with one approach
+python-dotenv~=1.0 # To replace python-decouple eventually
+python-decouple~=3.8
+omegaconf~=2.3

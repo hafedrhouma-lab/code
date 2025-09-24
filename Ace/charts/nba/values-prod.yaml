@@ -1,0 +1,134 @@
+service:  # HTTP API
+  istio:
+    ingress:
+      routes:
+        match:
+          - host: ace.talabat.com
+            prefix: "/nba/"
+
+  environmentVars:
+    NEW_RELIC_APP_NAME:
+      value: ace-nba-prod
+    ACE_LOGS_SQS_QUEUE_URL:
+      value: https://sqs.eu-west-2.amazonaws.com/457710302499/talabat-prod-ace-api-logs-request
+    ACE_LOGS_SAMPLE_PERCENTAGE:
+      value: "10"
+    LOG_LEVEL:
+      value: "INFO"
+
+  externalSecret:
+    dataVars:
+      NEW_RELIC_LICENSE_KEY:
+        key: /sre/nr/prod/license_key
+
+  serviceAccount:
+    annotations:
+      eks.amazonaws.com/role-arn: "arn:aws:iam::457710302499:role/talabat-prod-datascience-ace"
+
+  resources:
+    limits:
+      memory: 2Gi
+    requests:
+      # It looks like that "predict" function is a bottleneck,
+      # so we need to decrease CPU to keep the number of concurrent
+      # requests low per pod (but spawn many pods, see HPA below)
+      cpu: 500m
+      memory: 1Gi
+
+  horizontalPodAutoscaler:
+    minReplicas: 5 # Scale down at night
+    maxReplicas: 150 # Max 200, as per current SRE's limits (but remember that we have 2 clusters)
+
+  podDisruptionBudget:
+    enabled: true
+
+  # An example: https://github.com/talabat-dhme/Nexus/blob/main/chart/nexus-state-api/values-prod.yaml
+  argoRollouts:
+    enabled: true
+    strategy: canary
+    autoPromotionEnabled: true
+    steps: |-
+      - setWeight: 25
+      - pause:
+          duration: 150s
+      - setWeight: 50
+      - pause:
+          duration: 150s
+      - setWeight: 75
+      - pause:
+          duration: 150s
+    preview:
+      enabled: true
+    rolloutAnalysis:
+      enabled: true
+      measurementDuration: 90
+      latency: 5
+      status4xx:
+        failurePercentageThreshold: 1
+      status5xx:
+        failurePercentageThreshold: 1
+      newRelicAnomalies:
+        appName: ace-nba-prod
+
+observability:
+  apmName: "ace-nba-prod"
+  alertPolicies:
+    alertPolicy1:
+      name: "ace-nba-prod"
+      incidentPreference: PER_CONDITION
+      notification:
+        opsgenieTeams:
+          - Talabat_Ace
+        slackChannelIds:
+          - C053078HRLH # tlb_ace_alerts
+      conditions:
+        #------- INFRA Alerts---------#
+        condition2:
+          name: 'High Memory usage (NBA)'
+          query: FROM Metric 
+            SELECT max(k8s.container.memoryWorkingSetBytes) / max(k8s.container.memoryLimitBytes) * 100
+            WHERE k8s.containerName = 'ace-nba'
+          thresholdCritical:
+            operator: ABOVE
+            thresholdDuration: 300
+            thresholdOccurrences: ALL
+            thresholdValue: 80
+          thresholdType: STATIC
+      goldenSignals:
+        #------- Golden Signals Alerts -------#
+        apdex:
+          enabled: true
+          thresholdCritical:
+            operator: BELOW
+            thresholdValue: 0.8
+            thresholdDuration: 300
+            thresholdOccurrences: AT_LEAST_ONCE
+          thresholdWarning:
+            operator: BELOW
+            thresholdValue: 0.9
+            thresholdDuration: 300
+            thresholdOccurrences: AT_LEAST_ONCE
+        responseTime:
+          enabled: true
+          thresholdCritical:
+            operator: ABOVE
+            thresholdValue: 300
+            thresholdDuration: 300
+            thresholdOccurrences: AT_LEAST_ONCE
+          thresholdWarning:
+            operator: ABOVE
+            thresholdValue: 150
+            thresholdDuration: 300
+            thresholdOccurrences: AT_LEAST_ONCE
+        errorRate:
+          enabled: true
+          thresholdCritical:
+            operator: ABOVE
+            thresholdValue: 2
+            thresholdDuration: 300
+            thresholdOccurrences: ALL
+          thresholdWarning:
+            operator: ABOVE
+            thresholdValue: 1
+            thresholdDuration: 300
+            thresholdOccurrences: ALL

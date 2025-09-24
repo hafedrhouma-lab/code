@@ -1,0 +1,126 @@
+country_code: "AE"
+device: "gpu"
+
+data_points: 15000000
+nmb_train_samples: 15000000
+nmb_train_val_samples: 10240
+nmb_val_samples: 2560
+nmb_test_samples: 5120
+
+freq_eval: 300
+test_batch_size: 1024
+val_batch_size: 1024
+
+dropout_rate: 0.1
+compressed_dim: 512
+
+order_hour_dim: 64
+order_weekday_dim: 24
+area_id_dim: 64
+geohash_dim: 64
+
+# T5 model configuration for chain id
+t5_config_chain_id:
+  d_model: 512
+  d_ff: 2048
+  num_layers: 6
+  num_heads: 8
+  dropout_rate: 0.1
+
+# T5 model configuration for search
+t5_config_text:
+  d_model: 128
+  d_ff: 512
+  num_layers: 3
+  num_heads: 4
+  dropout_rate: 0.1
+
+numerical_features:
+  - 'account_log_order_cnt'
+  - 'account_log_avg_gmv_eur'
+  - 'account_incentives_pct'
+  - 'account_is_tpro'
+  - 'account_discovery_pct'
+
+# Tokenized Feature configurations
+tokenized_features:
+  - name: "prev_chains"
+    tokenizer: "chain_id"
+    max_length: 10
+    model_type: "T5"
+  - name: "freq_chains"
+    tokenizer: "chain_id"
+    max_length: 10
+    model_type: "T5"
+  - name: "prev_clicks"
+    tokenizer: "chain_id"
+    max_length: 10
+    model_type: "T5"
+  - name: "freq_clicks"
+    tokenizer: "chain_id"
+    max_length: 15
+    model_type: "T5"
+  - name: "frequent_neg_impressions"
+    tokenizer: "chain_id"
+    max_length: 15
+    model_type: "T5"
+#  - name: "prev_searches"
+#    tokenizer: "text"
+#    max_length: 10
+#    model_type: "T5"
+
+other_features:
+  - 'delivery_area_id'
+  - 'geohash6'
+  - 'order_hour'
+  - 'chain_id'
+
+training_args_gpu:
+  save_total_limit: 1
+  save_steps: 300
+  eval_steps: 300
+  evaluation_strategy: "steps"
+  learning_rate: 0.0002
+  per_device_train_batch_size: 512
+  per_device_eval_batch_size: 1024
+  gradient_accumulation_steps: 4
+  num_train_epochs: 10
+  weight_decay: 0.01
+  dataloader_num_workers: 8
+  logging_steps: 300
+  fp16: true
+  warmup_steps: 200
+  remove_unused_columns: false
+#  tf32: false
+#  load_best_model_at_end: true
+#  greater_is_better: true
+#  patience: 4
+#  improvement_threshold: 0.10
+#  save_strategy: "steps"
+#  metric_for_best_model: "eval_recall_at_10"
+
+# Training Args for Mac training
+training_args_cpu:
+  save_total_limit: 1
+  save_steps: 1500
+  eval_steps: 1500
+  evaluation_strategy: "steps"
+  learning_rate: 0.0002
+  per_device_train_batch_size: 512
+  per_device_eval_batch_size: 1024
+  gradient_accumulation_steps: 1
+  num_train_epochs: 10
+  weight_decay: 0.01
+  dataloader_num_workers: 8
+  logging_steps: 1500
+  fp16: false
+  warmup_steps: 500
+  remove_unused_columns: false
+#  tf32: false
+#  load_best_model_at_end: true
+#  greater_is_better: true
+#  patience: 2
+#  improvement_threshold: 0.10
+#  save_strategy: "steps"
+#  metric_for_best_model: "eval_recall_at_10"
+

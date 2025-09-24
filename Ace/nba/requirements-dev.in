@@ -1,0 +1,5 @@
+# See https://cloud.google.com/artifact-registry/docs/python/authentication
+# On a local machine please use gcloud CLI tool to authenticate,
+# in CI pipeline export a service account key as GOOGLE_APPLICATION_CREDENTIALS env variable.
+keyring
+keyrings.google-artifactregistry-auth

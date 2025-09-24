@@ -1,0 +1,151 @@
+{
+  "timestamp": "2023-04-11T08:37:13.4311680+00:00",
+  "device_source": 4,
+  "app_version": "0002",
+  "customer_id": 867073,
+  "locale": "en-US",
+  "fwf": {
+    "active_experiments": {
+      "exp_holdout_vl_q1": {
+        "variation": "Control",
+        "abTest": false,
+        "explanation": {
+          "kind": "DEFAULT_RULE"
+        },
+        "fallbackOverride": null,
+        "trackInfo": {
+          "variationName": "Control",
+          "flagType": "abntest",
+          "flagEnabled": true,
+          "trackerServices": [
+            "FWF_GTM_DATA_LAYER_TRACKER"
+          ]
+        },
+        "relevantContext": ""
+      },
+      "exp_ranking_api_ab_test_v2": {
+        "variation": "PersonalizedRanking",
+        "abTest": true,
+        "explanation": {
+          "kind": "RULE"
+        },
+        "fallbackOverride": null,
+        "trackInfo": {
+          "variationName": "Variation1",
+          "flagType": "abntest",
+          "flagEnabled": true,
+          "trackerServices": [
+            "FWF_GTM_DATA_LAYER_TRACKER"
+          ]
+        },
+        "relevantContext": "email"
+      }
+    }
+  },
+  "location": {
+    "country_id": 4,
+    "country_code": "ae",
+    "city_id": 35,
+    "area_id": 1305,
+    "latitude": "25.07882225624494",
+    "longitude": "55.1359507713213"
+  },
+  "vendors_df": {
+    "chain_id": [
+      679355,
+      1165,
+      33849,
+      680511,
+      51717,
+      679358,
+      1520,
+      663512,
+      12989,
+      679588
+    ],
+    "vendor_id": [
+      679355,
+      1165,
+      33849,
+      680511,
+      51717,
+      679358,
+      1520,
+      663512,
+      12989,
+      679588
+    ],
+    "delivery_fee": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      5.0,
+      6.0,
+      30.0,
+      5.0,
+      4.0,
+      0.0
+    ],
+    "vendor_rating": [
+      0.0,
+      0.0,
+      4.4,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      3.0,
+      3.7,
+      3.5
+    ],
+    "delivery_time": [
+      31,
+      27,
+      26,
+      23,
+      60,
+      60,
+      60,
+      90,
+      60,
+      60
+    ],
+    "status": [
+      "0",
+      "0",
+      "0",
+      "0",
+      "1",
+      "1",
+      "1",
+      "1",
+      "1",
+      "1"
+    ],
+    "min_order_amount": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      30.0,
+      40.0,
+      175.0,
+      32.0,
+      0.0
+    ],
+    "has_promotion": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  }
+}

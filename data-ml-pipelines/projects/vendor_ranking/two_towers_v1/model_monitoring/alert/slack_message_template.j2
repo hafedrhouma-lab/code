@@ -1,0 +1,19 @@
+{
+    channel: {{ group_name_param }},
+    text: Vendor Ranking - Two Tower,
+    attachments: [
+        {% for row in data %}
+        {
+            Test Date: {{ row.test_date }} | Country Code: {{ row.country_code }},
+            Drift Columns:
+                - Number of Drift Columns: {{ row.num_drift_columns }}
+                - Drift Columns: {{ row.drift_columns | join(', ') }}
+            Target Drift:
+                - Target Drift Name: {{ row.target_drift_name or 'None' }}
+                - Target Drift Description: {{ row.target_drift_description or 'None' }}
+            RecallTopKMetric:
+                - {{ row.recall_top_k_metric }}
+        }{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ]
+}

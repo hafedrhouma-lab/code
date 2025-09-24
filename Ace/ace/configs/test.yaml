@@ -1,0 +1,11 @@
+stage: test
+
+logging:
+  level: ${oc.env:LOG_LEVEL,DEBUG}
+  add_console_renderer:  ${oc.env:ACE_ADD_CONSOLE_RENDERER,true}
+
+storage:
+  postgres:
+    database: ace_${stage}
+  s3:
+    bucket_name: ${oc.env:S3_BUCKET_NAME,ace-${stage}}

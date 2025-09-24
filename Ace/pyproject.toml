@@ -1,0 +1,78 @@
+# https://docs.pytest.org/en/7.1.x/explanation/goodpractices.html
+# https://github.com/jazzband/pip-tools#requirements-from-pyprojecttoml
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ace"
+version = "1-dev"
+
+[tool.ruff]
+target-version = "py310"
+line-length = 120
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle
+    "F",    # Pyflakes
+    "W",    # pycodestyle
+]
+
+
+[tool.mypy] # https://mypy.readthedocs.io/en/stable/config_file.html#using-a-pyproject-toml-file
+mypy_path = "$MYPY_CONFIG_FILE_DIR/stubs"
+python_version = "3.10"
+# See https://mypy.readthedocs.io/en/stable/config_file.html#confval-exclude
+exclude = [
+    '^\.direnv'
+]
+
+# See https://mypy.readthedocs.io/en/stable/config_file.html#using-a-pyproject-toml
+# and also https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-library-stubs-or-py-typed-marker
+[[tool.mypy.overrides]]
+module = "newrelic.*"
+ignore_missing_imports = true
+
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests/integration",
+    "tests/apis",
+    "tests/units",
+]
+markers = ["integration"]
+filterwarnings = [
+    "ignore:.* Create unlinked descriptors is going to go away:DeprecationWarning", # New Relic Agent...
+    "ignore: Deprecated call to `pkg_resources.declare_namespace.*"
+]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["*Test", "Test*"]
+python_functions = ["test_*"]
+timeout = 200  # seconds per test
+log_cli = false
+log_level = "INFO"
+
+#[tool.coverage.run]
+#source = ["functions", "lib"]
+
+[tool.coverage.report]
+#fail_under = 80
+exclude_lines = [
+    # Have to re-enable the standard pragma
+    "pragma: no cover",
+    # Don't complain about missing debug-only code:
+    "def __repr__",
+    "if self.debug",
+    # Don't complain if tests don't hit defensive assertion code:
+    "raise AssertionError",
+    "raise NotImplementedError",
+    # Don't complain if non-runnable code isn't run:
+    "if 0:",
+    "if __name__ == .__main__.:",
+    # Ignore runtime type checking
+    "if TYPE_CHECKING:",
+    # Ignore type function overload
+    "@overload",
+]

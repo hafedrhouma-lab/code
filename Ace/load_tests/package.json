@@ -1,0 +1,7 @@
+{
+  "name": "ace-load-tests",
+  "version": "0.1.0",
+  "dependencies": {
+    "@types/k6": "^0.41"
+  }
+}

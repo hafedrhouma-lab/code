@@ -1,0 +1,121 @@
+# This is a template for setting up Airflow DAG configurations for training and prediction tasks.
+# Configure each DAG under a unique key (like 'train', 'predict', 'train1', etc.).
+
+sku_forecasting_tft_train:  # Key for the training DAG. Use 'train1', 'train2', etc., for additional training DAGs if needed.
+  # REQUIRED: enable_dag - Boolean indicating if the DAG should be enabled in Airflow. Default is false if not specified.
+  enable_dag: true
+
+  # REQUIRED: schedule_interval - Defines how often the DAG should run, using a cron-like string format.
+  # Example: "0 3 * * Fri" means every Friday at 3:00 AM. There is no default; this must be explicitly set.
+  schedule_interval: "0 0 * * Mon"
+
+  # REQUIRED: owner - Specifies the owner of the DAG, typically the team or developer responsible.
+  # Helps with accountability and maintenance. Default is "Algorithms" if not specified.
+  owner: "Algorithms, Fadi Nader"
+
+  # REQUIRED: a list of one or multiple parallel task group to run in the DAG. Each group can represent alogical case. ex: country, city, etc.
+  # You can have one task group for simple use cases.
+  # OR Multiple task groups for complex use cases.
+  tasks_group:
+    # task_group_name - Name of the task group. Can be any descriptive name and should be unique within the DAG.
+    - task_group_name: "sku_forecasting_tft_train_task_group"
+
+      # OPTIONAL: sql_sensors - Configuration for setting up an SQL-based sensor in Airflow.
+      # This is a List of sensors that checks for certain conditions in a SQL database before running the DAG.
+      sql_sensors:
+        - task_id: "data_platform_fct_order_info_sensor" # Unique ID for the sensor. Must be unique within the DAG.
+          # task_id to follow the pattern: <table_name>_<dataset_name>_sensor
+
+          # REQUIRED: enable - Boolean indicating if the sensor should be enabled. Default is false if not specified.
+          enable: False
+          # REQUIRED: table_name - Name of the SQL table to check.
+          table_name: "fct_order_info"
+
+          # REQUIRED: dataset_name - The dataset or database where the table is located.
+          dataset_name: "data_platform"
+
+          # REQUIRED: sensor_properties - Properties or conditions for the sensor.
+          sensor_properties:
+            # REQUIRED: event_date_column - Column in the SQL table that contains date information.
+            event_date_column: "order_date"
+
+            # OPTIONAL: event_date - Specific date or date calculation to check against.
+            # Can use SQL expressions like "current_date()-1". Default is "current_date()-1".
+            event_date: "current_date()-1"
+
+            # OPTIONAL: lower_bound - Minimum number of rows required for the specified date.
+            # If the rows are below this threshold, the DAG won't run. Default: 10
+            lower_bound: 5
+
+      # List of tasks to run in the DAG. Each task is a separate step in the DAG that start GKE pods
+      gke_tasks:
+        - task_id: "task_id_1" # Give your task a unique name
+
+          # OPTIONAL: node_pool - The Kubernetes node pool where the DAG's tasks should run.
+          # Should match the node pool configured in your Kubernetes environment.
+          # Default: "algo_generic_node_pool"
+          node_pool: "ese_node_pool"
+
+          # REQUIRED: commands - List of commands the DAG will execute, usually pointing to a script or entrypoint.
+          # Example: ["python", "main.py"] runs 'main.py' with Python.
+          commands:
+            - "python"
+            - "main.py" # Set here your arguments for the script. ex: "main.py egy" or "train.py UAE"
+
+
+sku_forecasting_tft_run_forecast:  # Key for the prediction DAG. Duplicate or similar keys like 'predict1', 'predict2' are valid for additional prediction DAGs.
+  schedule_interval: "0 12 * * *" #
+  owner: "Algorithms, Fadi Nader"
+
+  # REQUIRED: a list of one or multiple parallel task group to run in the DAG. Each group can represent alogical case. ex: country, city, etc.
+  # You can have one task group for simple use cases.
+  # OR Multiple task groups for complex use cases.
+  tasks_group:
+    # task_group_name - Name of the task group. Can be any descriptive name and should be unique within the DAG.
+    - task_group_name: "sku_forecasting_tft_run_forecast_task_group"
+      # OPTIONAL: sql_sensors - Configuration for setting up an SQL-based sensor in Airflow.
+      # This is a List of sensors that checks for certain conditions in a SQL database before running the DAG.
+      sql_sensors:
+        - task_id: "data_platform_fct_order_info_sensor" # Unique ID for the sensor. Must be unique within the DAG.
+          # task_id to follow the pattern: <table_name>_<dataset_name>_sensor
+
+          # REQUIRED: enable - Boolean indicating if the sensor should be enabled. Default is false if not specified.
+          enable: False
+          # REQUIRED: table_name - Name of the SQL table to check.
+          table_name: "fct_order_info"
+
+          # REQUIRED: dataset_name - The dataset or database where the table is located.
+          dataset_name: "data_platform"
+
+          # REQUIRED: sensor_properties - Properties or conditions for the sensor.
+          sensor_properties:
+            # REQUIRED: event_date_column - Column in the SQL table that contains date information.
+            event_date_column: "order_date"
+
+            # OPTIONAL: event_date - Specific date or date calculation to check against.
+            # Can use SQL expressions like "current_date()-1". Default is "current_date()-1".
+            event_date: "current_date()-1"
+
+            # OPTIONAL: lower_bound - Minimum number of rows required for the specified date.
+            # If the rows are below this threshold, the DAG won't run. Default: 10
+            lower_bound: 5
+
+      # List of tasks to run in the DAG. Each task is a separate step in the DAG that start GKE pods
+      gke_tasks:
+        - task_id: "task_id_1" # Give your task a unique name
+
+          # OPTIONAL: node_pool - The Kubernetes node pool where the DAG's tasks should run.
+          # Should match the node pool configured in your Kubernetes environment.
+          # Default: "algo_generic_node_pool"
+          node_pool: "ese_node_pool"
+
+          # REQUIRED: commands - List of commands the DAG will execute, usually pointing to a script or entrypoint.
+          # Example: ["python", "main.py"] runs 'main.py' with Python.
+          commands:
+            - "python"
+            - "run_tft_forecast.py" # Set here your arguments for the script. ex: "main.py egy" or "train.py UAE"
+
+# Duplicate Keys Handling:
+# If multiple entries with the same key (e.g., 'train', 'predict') are defined in a single YAML file,
+# the last entry will overwrite the earlier ones. Ensure each DAG has a unique key within the file
+# to develop multiple distinct DAGs if needed. This avoids unintentional overwriting and confusion.

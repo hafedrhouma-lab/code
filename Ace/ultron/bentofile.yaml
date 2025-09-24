@@ -1,0 +1,19 @@
+service: "ultron.service:app.bentoml_service"  # Same as the argument passed to `bentoml serve`
+include:
+  - "ace/**/*.py"
+  - "ace/configs/*.yaml"
+  - "ultron/**/*.py"
+  - "ultron/prompts/*"
+  - "ultron/configs/*"
+  - "ultron/config/*.yaml"
+  - "ultron/data/*"
+  - "ultron/newrelic-agent.ini"
+  - "bentoml_configuration.yaml"
+python:
+  requirements_txt: "ultron/requirements.txt"
+  # We did this already by using pip-tools
+  lock_packages: false
+docker:
+  dockerfile_template: Dockerfile.jinja2
+  distro: debian
+  python_version: "3.10"

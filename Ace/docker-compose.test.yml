@@ -1,0 +1,83 @@
+# TEST configuration
+# don't store DB state between different test runs
+# tests must not influence each other
+
+services:
+  postgres:
+    # See https://github.com/pgvector/pgvector#docker
+    image: ankane/pgvector:v0.4.4
+    environment:
+      - POSTGRES_USER=${PGUSER:-postgres}
+      - POSTGRES_PASSWORD=${PGPASSWORD:-secret}
+      - POSTGRES_DB=ace_${STAGE:-test}
+    volumes:
+      - ./fixtures/db:/docker-entrypoint-initdb.d
+    ports:
+      - "127.0.0.1:5432:5432"
+
+  pgadmin:
+    container_name: pgadmin4
+    image: dpage/pgadmin4:2023-03-08-1
+    restart: always
+    read_only: false
+    environment:
+      PGADMIN_DEFAULT_EMAIL: root@root.com
+      PGADMIN_DEFAULT_PASSWORD: root
+      PGADMIN_CONFIG_CONSOLE_LOG_LEVEL: 10
+    ports:
+      - "127.0.0.1:5050:80"
+    depends_on:
+      - postgres
+    volumes:
+      - ./_mounts/pgadmin:/var/lib/pgadmin:rw
+
+  minio:
+    image: minio/minio:RELEASE.2023-08-09T23-30-22Z
+    container_name: s3-ace-storage
+    expose:
+      - ${S3_SERVER_PORT:-9002}
+      - ${S3_CONSOLE_PORT:-9003}
+    ports:
+      - "127.0.0.1:${S3_SERVER_PORT:-9002}:9002"
+      - "127.0.0.1:${S3_CONSOLE_PORT:-9003}:9003"
+    environment:
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY:-s3_access_key}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_KEY:-s3_secret_key}
+      MINIO_HTTP_TRACE: /dev/stdout
+    command:
+      [
+        "server",
+        "--address",
+        ":${S3_SERVER_PORT:-9002}",
+        "--console-address",
+        ":${S3_CONSOLE_PORT:-9003}",
+        "/data",
+      ]
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://${S3_SERVER_HOST:-localhost}:${S3_SERVER_PORT:-9002}/minio/health/live",
+        ]
+      interval: 30s
+      timeout: 20s
+      retries: 5
+
+  create_s3_buckets:
+    image: minio/mc:RELEASE.2023-08-18T21-57-55Z
+    depends_on:
+      - minio
+    volumes:
+      - ${S3_BUCKET_CONTENT_LOCAL_PATH:-./tests/fixtures/s3}:/tmp/data
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc config host add myminio http://minio:${S3_SERVER_PORT:-9002} s3_access_key s3_secret_key;
+      /usr/bin/mc rm -r --force myminio/${S3_BUCKET_NAME:-ace-test};
+      /usr/bin/mc mb myminio/${S3_BUCKET_NAME:-ace-test};
+      /usr/bin/mc mb myminio/mlflow;
+      /usr/bin/mc policy download myminio/${S3_BUCKET_NAME:-ace-test};
+      /usr/bin/mc cp --recursive /tmp/data/ myminio/${S3_BUCKET_NAME:-ace-test};
+      exit 0;
+      "

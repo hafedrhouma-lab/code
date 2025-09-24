@@ -1,0 +1,24 @@
+{
+  "timestamp": "2023-08-21T01:39:05.2306478+00:00",
+  "device_source": 0,
+  "app_version": "",
+  "customer_id": 33965741,
+  "model_nickname": "hugging_face_v1",
+  "locale": "en-US",
+  "location": {
+    "country_id": 4,
+    "country_code": "ae",
+    "city_id": 35,
+    "area_id": 7569,
+    "latitude": "25.2048493",
+    "longitude": "55.270782800000006"
+  },
+  "vendors_df": {
+    "chain_id": [
+    ],
+    "vendor_id": [
+    ],
+    "status": [
+    ]
+  }
+}

@@ -1,0 +1,2 @@
+ese_talabat --extra-index-url https://europe-west2-python.pkg.dev/PROJECT_ID/content-optimization/simple/
+tutils_talabat --extra-index-url https://europe-west2-python.pkg.dev/PROJECT_ID/content-optimization/simple/

@@ -1,0 +1,30 @@
+# Configure each DAG under a unique key
+# ex: item_tagging_ese_embeddings_train, item_tagging_ese_embeddings_predict, ...
+
+# DAG #2: Prediction DAG
+item_tagging_ese_embeddings_predict:  # Key for the prediction DAG. Duplicate or similar keys like 'predict1', 'predict2' are valid for additional prediction DAGs.
+  enable_dag: true
+  schedule_interval: "0 4 * * Mon"
+  owner: "Algorithms, Fadi Nader"
+
+  # REQUIRED: a list of one or multiple parallel task group to run in the DAG. Each group can represent alogical case. ex: country, city, etc.
+  # You can have one task group for simple use cases.
+  # OR Multiple task groups for complex use cases.
+  tasks_group:
+    # task_group_name - Name of the task group. Can be any descriptive name and should be unique within the DAG.
+    - task_group_name: "item_tagging_ese_embeddings"
+
+      # List of tasks to run in the DAG. Each task is a separate step in the DAG that start GKE pods
+      gke_tasks:
+        - task_id: "predict_gke_task" # Give your task a unique name
+
+          # OPTIONAL: node_pool - The Kubernetes node pool where the DAG's tasks should run.
+          # Should match the node pool configured in your Kubernetes environment.
+          # Default: "algo_generic_node_pool"
+          node_pool: "ese_node_pool"
+
+          # REQUIRED: commands - List of commands the DAG will execute, usually pointing to a script or entrypoint.
+          # Example: ["python", "main.py"] runs 'main.py' with Python.
+          commands:
+            - "python"
+            - "predict.py" # Set here your arguments for the script. ex: "main.py egy" or "train.py UAE"

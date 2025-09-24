@@ -1,0 +1,9 @@
+setup:
+  url: https://ace-qa.dhhmena.com/v2/vendor_ranking/sort
+
+  assertions:
+    status_code: 200
+
+    optional:
+      headers:
+        - ["Content-Type", "application/json"]

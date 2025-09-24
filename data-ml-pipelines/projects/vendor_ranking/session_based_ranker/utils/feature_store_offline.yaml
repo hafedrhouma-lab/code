@@ -1,0 +1,18 @@
+project: tlb_feature_store
+
+registry:
+  path: gs://${PROJECT_ID}-data-algorithms-content-optimization/feature_store/registry/registry.pb
+  #path: gs://tlb-data-dev-data-algorithms-content-optimization/feature_store/registry/registry.pb
+  cache_ttl_seconds: 120
+
+provider: gcp
+
+
+offline_store:
+  type: projects.vendor_ranking.session_based_ranker.utils.bigquery_custom_offline_store.BigQueryCustomOfflineStore
+  #type: bigquery
+  project_id: ${PROJECT_ID}
+  #project_id: tlb-data-dev
+
+
+entity_key_serialization_version: 2

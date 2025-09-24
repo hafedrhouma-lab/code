@@ -1,0 +1,16 @@
+stage: test_prod
+
+logging:
+  level: ${oc.env:LOG_LEVEL,DEBUG}
+
+storage:
+  postgres:
+    database: ace_prod
+    host: localhost
+    port: ${oc.env:PGPORT,5533}
+    user: ${oc.env:PGUSER,pgsrv_ace_prod_app}
+    password: ${oc.env:PGPASSWORD}
+    connection_timeout: 10
+
+  s3:
+    bucket_name: ${oc.env:S3_BUCKET_NAME,ace-${stage}}

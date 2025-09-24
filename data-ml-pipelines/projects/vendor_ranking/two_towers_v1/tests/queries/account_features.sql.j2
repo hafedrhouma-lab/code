@@ -1,0 +1,8 @@
+SELECT
+    ao.account_id,
+    ao.country_code,
+    ao.feature_timestamp AS event_timestamp
+FROM {{ account_orders }} ao
+WHERE ao.feature_timestamp BETWEEN "{{ start_date }}" AND "{{ end_date }}"
+AND ao.country_code = "{{ country_code }}"
+AND ao.account_id = {{ account_id }}

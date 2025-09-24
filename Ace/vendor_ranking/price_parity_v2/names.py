@@ -1,0 +1,15 @@
+import polars as pl
+
+VENDOR_ID = "vendor_id"
+RANK_COL = "rank"
+PENALTY_BIN_COL = "penalty_bin"
+BIN_1 = "bin_1"
+BIN_2 = "bin_2"
+BIN_3 = "bin_3"
+BIN_4 = "bin_4"
+BIN_5 = "bin_5"
+BIN_6 = "bin_6"
+BIN_7 = "bin_7"
+BIN_8 = "bin_8"
+BIN_9 = "bin_9"
+BIN_10 = "bin_10"

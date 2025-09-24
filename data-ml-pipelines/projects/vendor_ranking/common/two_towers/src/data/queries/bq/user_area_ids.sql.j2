@@ -1,0 +1,14 @@
+WITH user_area_ids AS (
+  SELECT
+    DISTINCT CAST(delivery_area_id AS STRING) AS area_id
+  FROM `tlb-data-dev.data_platform_personalization.training_orders_features`
+  WHERE
+    order_time_utc BETWEEN "{{ start_date }}" AND "{{ end_date }}"
+)
+
+SELECT ARRAY(
+  SELECT area_id
+  FROM (
+    SELECT area_id FROM user_area_ids
+  )
+) AS unique_area_ids;

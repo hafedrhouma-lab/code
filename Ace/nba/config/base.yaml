@@ -1,0 +1,4 @@
+storage:
+  postgres:
+    background_query_timeout: ${oc.env:PG_BG_QUERY_TIMEOUT,120000}  # millisecond
+    main_query_timeout: ${oc.env:PG_MAIN_QUERY_TIMEOUT,250}  # millisecond

@@ -1,0 +1,84 @@
+WITH active_chains AS (
+    SELECT DISTINCT
+        chain_id
+    FROM `tlb-data-prod.data_platform.fct_order_info` f
+    JOIN `tlb-data-prod.data_platform.dim_chain` c USING(chain_id)
+    WHERE (vertical = 'food' OR secondary_verticals LIKE '%Food%')
+      AND is_successful
+      AND NOT is_guest
+      AND NOT is_test
+      AND order_date BETWEEN CURRENT_DATE() - INTERVAL 30 DAY AND CURRENT_DATE()
+      AND f.country_code = '{{ country }}'
+),
+new_chains AS (
+    WITH base AS (
+        SELECT
+            v.vendor_id,
+            v.chain_id,
+            IF(vendor_grade__c IS NULL, 'Ungraded', vendor_grade__c) AS vendor_grade,
+            DATE(ch.chain_activation_date) AS chain_activation_date,
+            DATE_DIFF(CURRENT_DATE(), DATE(ch.chain_activation_date), DAY) AS active_days
+        FROM `tlb-data-prod.data_platform.dim_vendor_info` v
+        LEFT JOIN `tlb-data-prod.data_platform.dim_chain` ch
+            ON v.chain_id = ch.chain_id
+        LEFT JOIN `fulfillment-dwh-production.curated_data_shared_salesforce.account` a
+            ON v.salesforce_id = a.grid__c
+        LEFT JOIN `fulfillment-dwh-production.curated_data_shared_salesforce.contract` c
+            ON a.id = c.accountid
+        LEFT JOIN `fulfillment-dwh-production.curated_data_shared_salesforce.opportunity` o
+            ON a.id = o.accountid
+        WHERE TRUE
+            AND o.business_type__c IN ('New Business', 'Win Back', 'Franchise Extension')
+            AND o.stagename = 'Closed Won'
+            AND c.status = 'Activated'
+            AND (ch.vertical = 'food' OR ch.secondary_verticals LIKE '%Food%')
+            AND LOWER(ch.chain_name) NOT LIKE ('%test%')
+            AND ch.country_code = '{{ country }}'
+        GROUP BY 1,2,3,4,5
+        HAVING active_days <= {{ NEW_CHAIN_TIMEFRAME }}
+        AND vendor_grade IN {{ INCLUDED_VENDOR_GRADES }}
+        ORDER BY 5
+    ),
+    impressions AS (
+        SELECT vendor_id,
+            COUNT(*) AS impressions
+        FROM `tlb-data-prod.data_platform.fct_sub_session_item_vendor_list`
+        WHERE date BETWEEN CURRENT_DATE() - INTERVAL {{ NEW_CHAIN_TIMEFRAME }} DAY AND CURRENT_DATE() - INTERVAL 1 DAY
+            AND found_via_feature IN ('collection', 'organic_list')
+            AND event_action = 'shop_impressions.loaded'
+        GROUP BY 1
+        ORDER BY 1, 2
+    )
+    SELECT a.chain_id
+    FROM base a
+    LEFT JOIN impressions b
+        ON a.vendor_id = b.vendor_id
+    GROUP BY 1
+    HAVING SUM(b.impressions) <= {{ IMPRESSIONS_THRESHOLD }}
+),
+ese_embeddings AS (
+    SELECT chain_id,
+        embeddings,
+        ROW_NUMBER() OVER (PARTITION BY chain_id ORDER BY dwh_entry_timestamp DESC) AS rn
+    FROM `tlb-data-prod.data_platform.ese_chain_embeddings_history` ese
+    WHERE TIMESTAMP_TRUNC(ese.dwh_entry_timestamp, DAY) >= TIMESTAMP(CURRENT_DATE() - INTERVAL 15 DAY)
+)
+SELECT t.chain_id,
+    t.country_code,
+    t.chain_name,
+    DATE(t.chain_activation_date) AS chain_activation_date,
+    t.rating,
+    t.rating_count,
+    CASE WHEN nc.chain_id IS NOT NULL THEN "new chain" ELSE "existing chain" END AS chain_type,
+    MAX(ese.embeddings) AS ese_embeddings,
+    ARRAY_AGG(DISTINCT l.city_id) AS city_id
+FROM `tlb-data-prod.data_platform.dim_chain` t
+LEFT JOIN `tlb-data-prod.data_platform.dim_vendor_info` v ON t.chain_id = v.chain_id
+LEFT JOIN `tlb-data-prod.data_platform.dim_location` l ON v.location_id = l.location_id
+LEFT JOIN ese_embeddings ese ON ese.chain_id = t.chain_id AND ese.rn = 1
+LEFT JOIN active_chains ac ON ac.chain_id = t.chain_id
+LEFT JOIN new_chains nc ON nc.chain_id = t.chain_id
+WHERE (ac.chain_id IS NOT NULL OR nc.chain_id IS NOT NULL)
+    AND t.country_code = '{{ country }}'
+    AND l.city_id IS NOT NULL
+GROUP BY 1,2,3,4,5,6,7

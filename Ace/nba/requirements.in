@@ -1,0 +1,20 @@
+-r ../requirements.in
+
+--extra-index-url https://europe-west2-python.pkg.dev/tlb-data-dev/content-optimization/simple/
+ipm-talabat==2.1.5
+
+# Lock some IPM deps, as their versions ranges are too wide in https://github.com/talabat-dhme/data-in-product-marketing/blob/main/pyproject.toml#L15
+
+# PyTorch is packed differently for different platforms (MacOS is CPU only, Linux is GPU (CUDA) by default, which
+# results in a 2,5Gb Docker image). See https://pytorch.org/get-started/locally/.
+# To combat this and use the CPU version for Docker also, we need to install it from a different source.
+#
+# Poetry: unfortunately, CPU repo have the same package, but with "+cpu" suffix, which breaks version resolution.
+# See:
+#  - https://github.com/python-poetry/poetry/issues/6409#issuecomment-1562640835
+#  - https://github.com/pytorch/builder/issues/1347
+#  - https://stackoverflow.com/questions/59158044/poetry-and-pytorch
+#
+# Overall PyTorch is a madness to install / upgrade on multiple different platforms, so upgrade with caution.
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.0.1

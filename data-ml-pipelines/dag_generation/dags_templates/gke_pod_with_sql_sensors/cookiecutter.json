@@ -1,0 +1,13 @@
+{
+  "dag_id": "",
+  "owner": "",
+  "schedule_interval": "",
+  "project_name": "",
+  "model_name": "",
+  "tasks_group": {
+
+  },
+  "online_store_materialization": {
+
+  }
+}

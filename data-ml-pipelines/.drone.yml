@@ -1,0 +1,181 @@
+#kind: pipeline
+#
+#name: build-base-server-image
+#trigger:
+#  event:
+#    - push
+#    - custom
+#  branch:
+#    - main
+#    - feat/tt_v1_EG_deployment
+#  paths:
+#    include:
+#      - "build/mlops/mlflow/Dockerfile.base.mlflow"
+#
+#steps:
+#  - name: build-base-server-image
+#    image: plugins/ecr
+#    depends_on:
+#      - clone
+#    environment:
+#      GITHUB_TOKEN:
+#        from_secret: GITHUB_TOKEN
+#    when:
+#      paths:
+#        include:
+#          - "build/mlops/mlflow/Dockerfile.base.mlflow"
+#    settings:
+#      tags:
+#        - base_mlflow_${MLFLOW_VERSION:-2.16}_python_${PY_VERSION:-3.9.18}
+#      repo: ${AWS_ERC_MODELS_REGISTRY}ace/models
+#      registry:
+#        from_secret: AWS_ERC_MODELS_REGISTRY
+#      dockerfile: ./build/mlops/mlflow/Dockerfile.base.mlflow
+#      context: ./build/
+#      # Use PROD AWS creds as ECR is in PROD
+#      # and used to store images for both QA and PROD envs
+#      access_key:
+#        from_secret: PROD_AWS_ACCESS_KEY_ID
+#      secret_key:
+#        from_secret: PROD_AWS_SECRET_ACCESS_KEY
+#      region:
+#        from_secret: AWS_MODEL_REGION
+#      build_args:
+#        - DOCKER_BUILDKIT=1
+#        - PY_VERSION=${PY_VERSION:-3.9.18}
+#        - MLFLOW_VERSION=${MLFLOW_VERSION:-2.16}
+#
+#---
+
+kind: pipeline
+name: inference-server-build-and-deploy
+#depends_on:
+#  - build-base-server-image
+
+trigger:
+  event:
+    - custom
+  branch:
+    - main
+
+GIT_CREDS: &GIT_CREDS
+  GITHUB_APP_ID:
+    from_secret: GITHUB_APP_ID
+  GITHUB_APP_PRIVATE_KEY:
+    from_secret: GITHUB_APP_PRIVATE_KEY
+  GITHUB_TOKEN:
+    from_secret: GITHUB_TOKEN
+
+ARGO_TOKEN_CREDS: &ARGO_TOKEN_CREDS
+  ARGO_TOKEN_DEFAULT:
+    from_secret: ARGO_TOKEN_DEFAULT
+  ARGO_TOKEN_WALLET_QA:
+    from_secret: ARGO_TOKEN_WALLET_QA
+  ARGO_TOKEN_WALLET_PROD:
+    from_secret: ARGO_TOKEN_WALLET_PROD
+
+DEPLOYMENT_CMDS: &DEPLOYMENT_CMDS
+  commands:
+    - >
+      argo-deploy models-${SERVICE_NAME}-${COUNTRY}
+      --repo https://github.com/talabat-dhme/${DRONE_REPO_NAME}.git
+      --path build/charts/${SERVICE_PATH}/${COUNTRY}
+      -e ${STAGE}
+      --namespace datascience
+      --values values.yaml
+      --values values-${STAGE}.yaml
+      --set env=${STAGE}
+      --set global.env=${STAGE}
+      --set service.env=${STAGE}
+      --set service.environmentVars.STAGE.value=${STAGE}
+      --set image.tag=${MLFLOW_EXPERIMENT_NAME}_id_${MLFLOW_MODEL_ID}_build_${DRONE_BUILD_NUMBER}
+      --set global.image.tag=${MLFLOW_EXPERIMENT_NAME}_id_${MLFLOW_MODEL_ID}_build_${DRONE_BUILD_NUMBER}
+      --set service.image.tag=${MLFLOW_EXPERIMENT_NAME}_id_${MLFLOW_MODEL_ID}_build_${DRONE_BUILD_NUMBER}
+      --set cron-jobs.image.tag=${MLFLOW_EXPERIMENT_NAME}_id_${MLFLOW_MODEL_ID}_build_${DRONE_BUILD_NUMBER}
+      --revision ${DRONE_COMMIT_SHA}
+      --timeout 30m
+      --enable-monitor=true
+      --deploy-sequentially=false
+
+steps:
+  - name: Info
+    image: python:3.9
+    environment:
+      SECRET_KEY:
+        from_secret: secret_key
+      MLFLOW_TRACKING_URI:
+        from_secret: MLFLOW_TRACKING_URI
+    commands:
+      - echo "COUNTRY = '${COUNTRY}',MODEL_ID = '${MLFLOW_MODEL_ID}', EXPERIMENT_NAME = '${MLFLOW_EXPERIMENT_NAME}', MLFLOW_TRACKING_URI = '$MLFLOW_TRACKING_URI', STAGE = '${STAGE}', SERVICE_NAME = '${SERVICE_NAME}', SERVICE_PATH = '${SERVICE_PATH}', PY_VERSION = '${PY_VERSION:-3.9.18}', MLFLOW_VERSION = '${MLFLOW_VERSION:-2.16}', WORKERS_NUM='${WORKERS_NUM:-2}'"
+  - name: build-inference-server-image
+    image: plugins/ecr
+    depends_on:
+      - clone
+    environment:
+      GITHUB_TOKEN:
+        from_secret: GITHUB_TOKEN
+      GCP_SERVICE_ACCOUNT:
+        from_secret: GCP_SERVICE_ACCOUNT
+      MLFLOW_TRACKING_URI:
+        from_secret: MLFLOW_TRACKING_URI
+    settings:
+      tags:
+        - ${MLFLOW_EXPERIMENT_NAME}_id_${MLFLOW_MODEL_ID}_build_${DRONE_BUILD_NUMBER}
+      repo: ${AWS_ERC_MODELS_REGISTRY}ace/models
+      registry:
+        from_secret: AWS_ERC_MODELS_REGISTRY
+      dockerfile: ./build/mlops/mlflow/Dockerfile.infer.server
+      context: ./build
+      # Use PROD AWS creds as ECR is in PROD
+      # and used to store images for both QA and PROD envs
+      access_key:
+        from_secret: PROD_AWS_ACCESS_KEY_ID
+      secret_key:
+        from_secret: PROD_AWS_SECRET_ACCESS_KEY
+      region:
+        from_secret: AWS_MODEL_REGION
+      build_args:
+        - DOCKER_BUILDKIT=1
+        - EXPERIMENT_NAME=${MLFLOW_EXPERIMENT_NAME}
+        - MODEL_ID=${MLFLOW_MODEL_ID}
+        - SERVICE_NAME=${SERVICE_NAME}
+        - PY_VERSION=${PY_VERSION:-3.9.18}
+        - MLFLOW_VERSION=${MLFLOW_VERSION:-2.16}
+        - WORKERS_NUM=${WORKERS_NUM:-2}
+      build_args_from_env:
+        - GCP_SERVICE_ACCOUNT
+        - MLFLOW_TRACKING_URI
+  - name: deploy-inference-server
+    image: public.ecr.aws/talabat/talabat/aws-kubectl
+    depends_on:
+      - build-inference-server-image
+    <<: *DEPLOYMENT_CMDS
+    environment:
+      <<: *GIT_CREDS
+      <<: *ARGO_TOKEN_CREDS
+  - name: send-newrelic-marker
+    image: curlimages/curl:8.00.1
+    depends_on:
+      - deploy-inference-server
+    environment:
+      NEWRELIC_ACCOUNT_ID:
+        from_secret: PROD_NEWRELIC_ACCOUNT_ID
+      NEWRELIC_INSERT_KEY:
+        from_secret: PROD_NEWRELIC_INSERT_KEY
+      NEWRELIC_REST_API_KEY:
+        from_secret: PROD_NEWRELIC_REST_API_KEY
+    commands:
+      - >
+        curl --show-error --silent
+        -H "Content-Type: application/json"
+        -H "X-Api-Key: $NEWRELIC_REST_API_KEY"
+        -d '{
+        "deployment": {
+        "revision": "${DRONE_COMMIT_SHA}",
+        "changelog": "'"${DRONE_PULL_REQUEST_TITLE}"'",
+        "description": "Pull Request URL: ${DRONE_COMMIT_LINK}",
+        "user": "${DRONE_COMMIT_AUTHOR}",
+        "model_id": "${MLFLOW_MODEL_ID}",
+        "experiment_name": "${MLFLOW_EXPERIMENT_NAME}"
+        }}'
+        --request POST "https://api.newrelic.com/v2/applications/ace-2-model-${SERVICE_NAME}-${STAGE}/deployments.json"

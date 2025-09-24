@@ -1,0 +1,815 @@
+{
+  "timestamp": "2022-10-20T10:33:47.8257578+00:00",
+  "device_source": 4,
+  "app_version": "9.1.2",
+  "locale": "en_US",
+  "location": {
+    "country_id": 4,
+    "city_id": 35,
+    "area_id": 385,
+    "latitude": "25.080980930801203",
+    "longitude": "55.145182437293734"
+  },
+  "vendors": [
+    {
+      "vendor_id": 15011,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 34657,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 38054,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 2175,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 20758,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 14197,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 11535,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 33849,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 37105,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 35421,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 35570,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 37108,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 643549,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 47302,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 47300,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 2644,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 15229,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 11992,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 34063,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 4665,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 21495,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 22839,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 604229,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 21821,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 24126,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 8919,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 656646,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 45492,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 667944,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 633298,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 20783,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 602508,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 9249,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 42130,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 2392,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 2728,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 636914,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 40770,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 673596,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 643327,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 635615,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 645274,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 15158,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 49717,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 28343,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 615588,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 14825,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 688836,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 693712,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 693710,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 29752,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 669020,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 2978,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 669016,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 673047,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 23393,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 679355,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 20375,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 679588,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 679631,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 640137,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 678764,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 679358,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 38061,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 38741,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 634699,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 608232,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 620215,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 611614,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 669937,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 31217,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 8524,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 1284,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 15124,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 11407,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 25142,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 12989,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 43912,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 13143,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 36995,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 459,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 20890,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 38963,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 600057,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 601235,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 17392,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 623741,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 47286,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 652726,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 663893,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 636084,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 642015,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 36623,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 611002,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 621135,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 627553,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 1165,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 638497,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 13021,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    },
+    {
+      "vendor_id": 6581,
+      "delivery_fee": 5,
+      "delivery_time": 33,
+      "status": "0",
+      "min_order_amount": 10,
+      "has_promotion": false
+    }
+  ]
+}

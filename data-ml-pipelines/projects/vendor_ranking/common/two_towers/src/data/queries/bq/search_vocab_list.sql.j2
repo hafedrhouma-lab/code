@@ -1,0 +1,8 @@
+SELECT
+    unique_weekly_searches AS search_words
+FROM
+    `tlb-data-dev.data_platform_personalization.training_orders_features`
+WHERE
+    order_time_utc BETWEEN "{{ start_date }}" AND "{{ end_date }}"
+AND
+    unique_weekly_searches IS NOT NULL

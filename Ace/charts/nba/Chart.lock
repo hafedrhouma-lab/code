@@ -1,0 +1,6 @@
+dependencies:
+- name: service
+  repository: https://talabat-dhme.github.io/helm-charts
+  version: 1.18.0
+digest: sha256:6056b7bad93a9fef92f8c5c0f7c49528c1542dd3d4d576a532cabfb45e79496e
+generated: "2023-10-12T10:46:59.14949+04:00"

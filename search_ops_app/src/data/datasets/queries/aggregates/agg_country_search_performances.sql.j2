@@ -1,0 +1,15 @@
+SELECT
+  user_selected_country,
+  search_query_lang,
+  search_type,
+  COUNT(DISTINCT session_id) AS number_sessions,
+  SUM(CASE WHEN search_result_clicked IS TRUE THEN 1 ELSE 0 END) AS number_sessions_that_clicked,
+  SUM(CASE WHEN placed_order IS TRUE THEN 1 ELSE 0 END) AS number_query_sessions_that_placed_order
+FROM
+  `tlb-data-dev.data_playground_grocery.queries_performances_session_level`
+WHERE
+    date >= '{{user_selected_values.get("date_start")}}'
+GROUP BY
+  user_selected_country,
+  search_query_lang,
+  search_type

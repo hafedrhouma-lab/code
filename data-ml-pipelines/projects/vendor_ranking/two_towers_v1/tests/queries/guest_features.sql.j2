@@ -1,0 +1,8 @@
+SELECT
+    t1.account_id,
+    t1.country_code,
+    t1.model_name,
+    t1.feature_timestamp AS event_timestamp
+FROM {{ account_guest_features }} t1
+WHERE country_code = "{{ country_code }}"
+AND feature_timestamp = "{{ test_date }}"

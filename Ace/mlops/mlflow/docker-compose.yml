@@ -1,0 +1,36 @@
+services:
+    mlflow:
+        restart: always
+        build: ./mlops/mlflow
+        image: mlflow_server
+        container_name: mlflow_server
+        volumes:
+          - ./_mounts/mlflow_server:/mlops:rw
+          - ./mlops/mlflow/example:/mlops/example:rw
+        depends_on:
+            - minio
+            - create_s3_buckets
+            - postgres
+        expose:
+            - 5000
+        ports:
+            # MLFlow
+            - "127.0.0.1:5000:5000"
+            # Jupiter
+            - "127.0.0.1:8888:8888"
+        environment:
+            # Address of S3 MinIO server
+            - MLFLOW_S3_ENDPOINT_URL=http://minio:${S3_SERVER_PORT:-9002}
+            # S3 credentials
+            - AWS_ACCESS_KEY_ID=${S3_ACCESS_KEY:-s3_access_key}
+            - AWS_SECRET_ACCESS_KEY=${S3_SECRET_KEY:-s3_secret_key}
+            # Address of MLFlow tracking server
+            - MLFLOW_TRACKING_URI=http://localhost:5000
+        command:
+          - /bin/bash
+          - -c
+          - |
+            jupyter notebook --allow-root --ip=0.0.0.0 --port=8888 --no-browser --NotebookApp.token='' &
+            mlflow server --backend-store-uri postgresql+psycopg2://${PGUSER:-postgres}:${PGPASSWORD:-secret}@postgres:5432/ace_${STAGE:-test} --default-artifact-root s3://mlflow/ --host 0.0.0.0 --port 5000 --gunicorn-opts "--log-level DEBUG --timeout 60"
+          
+          

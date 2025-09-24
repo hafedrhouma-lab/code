@@ -1,0 +1,14 @@
+SELECT
+    {% for col in columns %}
+        {{ col }},
+    {% endfor %}
+    chain_id,
+    account_id,
+    prev_searches,
+    order_time_utc,
+    order_date,
+    geohash
+FROM
+    `tlb-data-dev.data_platform_personalization.training_data_two_tower_egypt`
+WHERE
+    order_time_utc BETWEEN "{{ start_date }}" AND "{{ end_date }}"

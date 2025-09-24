@@ -1,0 +1,3 @@
+storage:
+  postgres:
+    main_query_timeout: ${oc.env:PG_MAIN_QUERY_TIMEOUT,250}  # millisecond

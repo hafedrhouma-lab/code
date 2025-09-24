@@ -1,0 +1,7 @@
+SELECT
+    chain_id,
+    country_code,
+    feature_timestamp AS event_timestamp
+FROM {{ chain_profile_table }} op
+WHERE op.feature_timestamp BETWEEN "{{ start_date }}" AND "{{ end_date }}"
+AND op.country_code = "{{ country_code }}"

@@ -1,0 +1,8 @@
+name: vendor_ranking_session_based_ranker
+channels:
+  - defaults
+dependencies:
+  - python==3.9.18
+  - pip
+  - pip:
+      - -r requirements.txt

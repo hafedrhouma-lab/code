@@ -1,0 +1,43 @@
+[
+  {
+    "original_search": "fish",
+    "similar_items": [
+      {
+        "item_id": 3233698,
+        "content": "Item name: Adriana White Fish Fillet 1 kg Category: Frozen Food Sub category: Seafood & Fish*",
+        "chain_id": 25065,
+        "chain_name": "talabat mart",
+        "order_count": 57,
+        "unique_order_dates": 14,
+        "vertical": "grocery",
+        "avg_original_item_price_lc": 28.3,
+        "is_promotional_category": null,
+        "distance": -0.44572604723839526
+      },
+      {
+        "item_id": 186536368,
+        "content": "Item name: Freshly Foods Japanese Panko Crumbed Fish Fillet 250 g Category: Frozen Food Sub category: Seafood & Fish*",
+        "chain_id": 25065,
+        "chain_name": "talabat mart",
+        "order_count": 208,
+        "unique_order_dates": 30,
+        "vertical": "grocery",
+        "avg_original_item_price_lc": 15.989,
+        "is_promotional_category": null,
+        "distance": -0.4471094522513116
+      },
+      {
+        "item_id": 39688643459,
+        "content": "Item name: Al Alali Yellowfin Fancy Tuna in Water From The Arabian Sea Solid Pack, 170g Category: Canned Food Sub category: Canned Seafood*",
+        "chain_id": 25065,
+        "chain_name": "talabat mart",
+        "order_count": 103,
+        "unique_order_dates": 31,
+        "vertical": "grocery",
+        "avg_original_item_price_lc": 9.95,
+        "is_promotional_category": null,
+        "distance": -0.4469874915309905
+      }
+    ]
+  }
+]

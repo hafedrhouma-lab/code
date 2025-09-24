@@ -1,0 +1,625 @@
+# DAG #1: account embeddings (initial)
+item_ranking_content_based_generate_account_embeddings_init:
+  enable_dag: true
+  schedule_interval: "@once"
+  owner: "Algorithms, Fadi Nader"
+
+  tasks_group:
+    - task_group_name: "last_digit_0"
+      gke_tasks:
+        - task_id: "encoding_last_digit_0"
+          node_pool: "ipm_node_pool"
+          commands:
+            - "python"
+            - "generate_account_embeddings.py"
+            - "--last_digit=0"
+            - "--days_lag=90"
+            - "--batch_size=3000"
+            - "--max_order_rank=15"
+            - "--max_workers=12"
+          container_resources:
+           requests:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+           limits:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+
+    - task_group_name: "last_digit_1"
+      gke_tasks:
+        - task_id: "encoding_last_digit_1"
+          node_pool: "ipm_node_pool"
+          commands:
+            - "python"
+            - "generate_account_embeddings.py"
+            - "--last_digit=1"
+            - "--days_lag=90"
+            - "--batch_size=3000"
+            - "--max_order_rank=15"
+            - "--max_workers=12"
+          container_resources:
+           requests:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+           limits:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+
+    - task_group_name: "last_digit_2"
+      gke_tasks:
+        - task_id: "encoding_last_digit_2"
+          node_pool: "ipm_node_pool"
+          commands:
+            - "python"
+            - "generate_account_embeddings.py"
+            - "--last_digit=2"
+            - "--days_lag=90"
+            - "--batch_size=3000"
+            - "--max_order_rank=15"
+            - "--max_workers=12"
+          container_resources:
+           requests:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+           limits:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+    - task_group_name: "last_digit_3"
+      gke_tasks:
+        - task_id: "encoding_last_digit_3"
+          node_pool: "ipm_node_pool"
+          commands:
+            - "python"
+            - "generate_account_embeddings.py"
+            - "--last_digit=3"
+            - "--days_lag=90"
+            - "--batch_size=3000"
+            - "--max_order_rank=15"
+            - "--max_workers=12"
+          container_resources:
+           requests:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+           limits:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+    - task_group_name: "last_digit_4"
+      gke_tasks:
+        - task_id: "encoding_last_digit_4"
+          node_pool: "ipm_node_pool"
+          commands:
+            - "python"
+            - "generate_account_embeddings.py"
+            - "--last_digit=4"
+            - "--days_lag=90"
+            - "--batch_size=3000"
+            - "--max_order_rank=15"
+            - "--max_workers=12"
+          container_resources:
+           requests:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+           limits:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+    - task_group_name: "last_digit_5"
+      gke_tasks:
+        - task_id: "encoding_last_digit_5"
+          node_pool: "ipm_node_pool"
+          commands:
+            - "python"
+            - "generate_account_embeddings.py"
+            - "--last_digit=5"
+            - "--days_lag=90"
+            - "--batch_size=3000"
+            - "--max_order_rank=15"
+            - "--max_workers=12"
+          container_resources:
+           requests:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+           limits:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+    - task_group_name: "last_digit_6"
+      gke_tasks:
+        - task_id: "encoding_last_digit_6"
+          node_pool: "ipm_node_pool"
+          commands:
+            - "python"
+            - "generate_account_embeddings.py"
+            - "--last_digit=6"
+            - "--days_lag=90"
+            - "--batch_size=3000"
+            - "--max_order_rank=15"
+            - "--max_workers=12"
+          container_resources:
+           requests:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+           limits:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+    - task_group_name: "last_digit_7"
+      gke_tasks:
+        - task_id: "encoding_last_digit_7"
+          node_pool: "ipm_node_pool"
+          commands:
+            - "python"
+            - "generate_account_embeddings.py"
+            - "--last_digit=7"
+            - "--days_lag=90"
+            - "--batch_size=3000"
+            - "--max_order_rank=15"
+            - "--max_workers=12"
+          container_resources:
+           requests:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+           limits:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+    - task_group_name: "last_digit_8"
+      gke_tasks:
+        - task_id: "encoding_last_digit_8"
+          node_pool: "ipm_node_pool"
+          commands:
+            - "python"
+            - "generate_account_embeddings.py"
+            - "--last_digit=8"
+            - "--days_lag=90"
+            - "--batch_size=3000"
+            - "--max_order_rank=15"
+            - "--max_workers=12"
+          container_resources:
+           requests:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+           limits:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+
+    - task_group_name: "last_digit_9"
+      gke_tasks:
+        - task_id: "encoding_last_digit_9"
+          node_pool: "ipm_node_pool"
+          commands:
+            - "python"
+            - "generate_account_embeddings.py"
+            - "--last_digit=9"
+            - "--days_lag=90"
+            - "--batch_size=3000"
+            - "--max_order_rank=15"
+            - "--max_workers=12"
+          container_resources:
+           requests:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+           limits:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+
+# DAG #2: account embeddings (incremental)
+item_ranking_content_based_generate_account_embeddings_inc:
+  enable_dag: true
+  schedule_interval: "0 4 * * *"
+  owner: "Algorithms, Fadi Nader"
+
+  tasks_group:
+    - task_group_name: "last_digit_0"
+      sql_sensors:
+        - task_id: "ese_orders_token_sensor"
+          enable: true
+          table_name: "ese_orders_token"
+          dataset_name: "data_platform"
+          sensor_properties:
+            event_date_column: "order_time"
+            event_date: "current_date()-1"
+            lower_bound: 5
+      gke_tasks:
+        - task_id: "encoding_last_digit_0"
+          node_pool: "ipm_node_pool"
+          commands:
+            - "python"
+            - "generate_account_embeddings.py"
+            - "--last_digit=0"
+            - "--days_lag=2"
+            - "--batch_size=300"
+            - "--max_order_rank=15"
+            - "--max_workers=12"
+          container_resources:
+           requests:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+           limits:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+
+    - task_group_name: "last_digit_1"
+      sql_sensors:
+        - task_id: "ese_orders_token_sensor"
+          enable: true
+          table_name: "ese_orders_token"
+          dataset_name: "data_platform"
+          sensor_properties:
+            event_date_column: "order_time"
+            event_date: "current_date()-1"
+            lower_bound: 5
+      gke_tasks:
+        - task_id: "encoding_last_digit_1"
+          node_pool: "ipm_node_pool"
+          commands:
+            - "python"
+            - "generate_account_embeddings.py"
+            - "--last_digit=1"
+            - "--days_lag=2"
+            - "--batch_size=300"
+            - "--max_order_rank=15"
+            - "--max_workers=12"
+          container_resources:
+           requests:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+           limits:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+
+    - task_group_name: "last_digit_2"
+      sql_sensors:
+        - task_id: "ese_orders_token_sensor"
+          enable: true
+          table_name: "ese_orders_token"
+          dataset_name: "data_platform"
+          sensor_properties:
+            event_date_column: "order_time"
+            event_date: "current_date()-1"
+            lower_bound: 5
+      gke_tasks:
+        - task_id: "encoding_last_digit_2"
+          node_pool: "ipm_node_pool"
+          commands:
+            - "python"
+            - "generate_account_embeddings.py"
+            - "--last_digit=2"
+            - "--days_lag=2"
+            - "--batch_size=300"
+            - "--max_order_rank=15"
+            - "--max_workers=12"
+          container_resources:
+           requests:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+           limits:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+
+    - task_group_name: "last_digit_3"
+      sql_sensors:
+        - task_id: "ese_orders_token_sensor"
+          enable: true
+          table_name: "ese_orders_token"
+          dataset_name: "data_platform"
+          sensor_properties:
+            event_date_column: "order_time"
+            event_date: "current_date()-1"
+            lower_bound: 5
+      gke_tasks:
+        - task_id: "encoding_last_digit_3"
+          node_pool: "ipm_node_pool"
+          commands:
+            - "python"
+            - "generate_account_embeddings.py"
+            - "--last_digit=3"
+            - "--days_lag=2"
+            - "--batch_size=300"
+            - "--max_order_rank=15"
+            - "--max_workers=12"
+          container_resources:
+           requests:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+           limits:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+
+    - task_group_name: "last_digit_4"
+      sql_sensors:
+        - task_id: "ese_orders_token_sensor"
+          enable: true
+          table_name: "ese_orders_token"
+          dataset_name: "data_platform"
+          sensor_properties:
+            event_date_column: "order_time"
+            event_date: "current_date()-1"
+            lower_bound: 5
+      gke_tasks:
+        - task_id: "encoding_last_digit_4"
+          node_pool: "ipm_node_pool"
+          commands:
+            - "python"
+            - "generate_account_embeddings.py"
+            - "--last_digit=4"
+            - "--days_lag=2"
+            - "--batch_size=300"
+            - "--max_order_rank=15"
+            - "--max_workers=12"
+          container_resources:
+           requests:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+           limits:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+
+    - task_group_name: "last_digit_5"
+      sql_sensors:
+        - task_id: "ese_orders_token_sensor"
+          enable: true
+          table_name: "ese_orders_token"
+          dataset_name: "data_platform"
+          sensor_properties:
+            event_date_column: "order_time"
+            event_date: "current_date()-1"
+            lower_bound: 5
+      gke_tasks:
+        - task_id: "encoding_last_digit_5"
+          node_pool: "ipm_node_pool"
+          commands:
+            - "python"
+            - "generate_account_embeddings.py"
+            - "--last_digit=5"
+            - "--days_lag=2"
+            - "--batch_size=300"
+            - "--max_order_rank=15"
+            - "--max_workers=12"
+          container_resources:
+           requests:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+           limits:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+
+    - task_group_name: "last_digit_6"
+      sql_sensors:
+        - task_id: "ese_orders_token_sensor"
+          enable: true
+          table_name: "ese_orders_token"
+          dataset_name: "data_platform"
+          sensor_properties:
+            event_date_column: "order_time"
+            event_date: "current_date()-1"
+            lower_bound: 5
+      gke_tasks:
+        - task_id: "encoding_last_digit_6"
+          node_pool: "ipm_node_pool"
+          commands:
+            - "python"
+            - "generate_account_embeddings.py"
+            - "--last_digit=6"
+            - "--days_lag=2"
+            - "--batch_size=300"
+            - "--max_order_rank=15"
+            - "--max_workers=12"
+          container_resources:
+           requests:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+           limits:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+
+    - task_group_name: "last_digit_7"
+      sql_sensors:
+        - task_id: "ese_orders_token_sensor"
+          enable: true
+          table_name: "ese_orders_token"
+          dataset_name: "data_platform"
+          sensor_properties:
+            event_date_column: "order_time"
+            event_date: "current_date()-1"
+            lower_bound: 5
+      gke_tasks:
+        - task_id: "encoding_last_digit_7"
+          node_pool: "ipm_node_pool"
+          commands:
+            - "python"
+            - "generate_account_embeddings.py"
+            - "--last_digit=7"
+            - "--days_lag=2"
+            - "--batch_size=300"
+            - "--max_order_rank=15"
+            - "--max_workers=12"
+          container_resources:
+           requests:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+           limits:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+
+    - task_group_name: "last_digit_8"
+      sql_sensors:
+        - task_id: "ese_orders_token_sensor"
+          enable: true
+          table_name: "ese_orders_token"
+          dataset_name: "data_platform"
+          sensor_properties:
+            event_date_column: "order_time"
+            event_date: "current_date()-1"
+            lower_bound: 5
+      gke_tasks:
+        - task_id: "encoding_last_digit_8"
+          node_pool: "ipm_node_pool"
+          commands:
+            - "python"
+            - "generate_account_embeddings.py"
+            - "--last_digit=8"
+            - "--days_lag=2"
+            - "--batch_size=300"
+            - "--max_order_rank=15"
+            - "--max_workers=12"
+          container_resources:
+           requests:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+           limits:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+
+    - task_group_name: "last_digit_9"
+      sql_sensors:
+        - task_id: "ese_orders_token_sensor"
+          enable: true
+          table_name: "ese_orders_token"
+          dataset_name: "data_platform"
+          sensor_properties:
+            event_date_column: "order_time"
+            event_date: "current_date()-1"
+            lower_bound: 5
+      gke_tasks:
+        - task_id: "encoding_last_digit_9"
+          node_pool: "ipm_node_pool"
+          commands:
+            - "python"
+            - "generate_account_embeddings.py"
+            - "--last_digit=9"
+            - "--days_lag=2"
+            - "--batch_size=300"
+            - "--max_order_rank=15"
+            - "--max_workers=12"
+          container_resources:
+           requests:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+           limits:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+
+# DAG #3: account embeddings (avg market)
+item_ranking_content_based_generate_guest_embeddings:
+  enable_dag: true
+  schedule_interval: "0 21 * * *"
+  owner: "Algorithms, Fadi Nader"
+  tasks_group:
+    - task_group_name: "guest_users"
+      gke_tasks:
+        - task_id: "encoding_last_digit_0"
+          node_pool: "ipm_node_pool"
+          commands:
+            - "python"
+            - "generate_guest_embeddings.py"
+            - "--days_lag=2"
+          container_resources:
+           requests:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+           limits:
+              memory: "32000Mi"
+              cpu: "10000m"
+              ephemeral-storage: "20Gi"
+
+  online_store_materialization:
+    # Required: List of BigQuery tables to materialize to the online feature store
+    tables:
+      - "items_ranking_account_content_embedding_v1_fv" # Set here your BigQuery table ID to be materialized to the online feature store
+    additional_env_vars:
+      NUM_CHUNKS: 5
+      AUTO_SCALING: FALSE
+    container_resources:
+      requests:
+        memory: "32000Mi"
+        cpu: "10000m"
+        ephemeral-storage: "20Gi"
+      limits:
+        memory: "32000Mi"
+        cpu: "10000m"
+        ephemeral-storage: "20Gi"
+
+# DAG #3: item embeddings
+item_ranking_content_based_generate_item_embeddings_inc:
+  enable_dag: true
+  schedule_interval: "0 12 * * *"
+  owner: "Algorithms, Fadi Nader"
+
+  tasks_group:
+    - task_group_name: "AE"
+      gke_tasks:
+        - task_id: "encoding_ae_items"
+          node_pool: "ipm_node_pool"
+          commands:
+            - "python"
+            - "generate_item_embeddings.py"
+            - "--country_code=AE"
+            - "--batch_size=300"
+            - "--float_precision=8"
+          container_resources:
+           requests:
+              memory: "10000Mi"
+              cpu: "4000m"
+              ephemeral-storage: "20Gi"
+           limits:
+              memory: "10000Mi"
+              cpu: "4000m"
+              ephemeral-storage: "20Gi"
+
+    - task_group_name: "KW"
+      gke_tasks:
+        - task_id: "encoding_kw_items"
+          node_pool: "ipm_node_pool"
+          commands:
+            - "python"
+            - "generate_item_embeddings.py"
+            - "--country_code=KW"
+            - "--batch_size=300"
+            - "--float_precision=8"
+          container_resources:
+           requests:
+              memory: "10000Mi"
+              cpu: "4000m"
+              ephemeral-storage: "20Gi"
+           limits:
+              memory: "10000Mi"
+              cpu: "4000m"
+              ephemeral-storage: "20Gi"
