@@ -9,3 +9,7 @@
 *data-00000-of-00001
 # optional: large screenshots
 search_ops_app/docs/img/ppt*.png
+
+# never commit secrets
+*.env
+.env
