@@ -17,3 +17,6 @@ search_ops_app/docs/img/ppt*.png
 # Allow contents of these demo folders (override broad ignores)
 !kaggle_competition/**
 !data-timeseries-forecast-tool/**
+
+# large local data
+kaggle_competition/data/datasets/
