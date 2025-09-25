@@ -27,6 +27,22 @@ It is **not a production system** – just a showcase of past projects and imple
 
 ---
 
+### 🏅 `kaggle_competition`
+- **Goal**: Predict whether a session belongs to `user_id = 0`.
+- **Imbalance**: ~800 positives out of ~160k sessions.
+- **Why accuracy/ROC-AUC can mislead**: With so few positives, a model can “look good” while missing the target entirely.
+- **Optimization focus**: maximize **recall** (catch user-0) while also maximizing **precision** (limit false alerts).
+
+---
+
+### 📈 `data-timeseries-forecast-tool`
+- **Goal**: Forecast using a **mix** of calendar and reactive (year-to-year) components.
+- **Calendar component**: captures seasonality, holidays, special events; uses **exponential smoothing** to produce a baseline level.
+- **Reactive component**: year-to-year changes to remain adaptable.
+- **Mixing strategy**: final forecast is a **weighted combination**; prediction is baseline × effect, balancing stability (calendar) and adaptability (reactive).
+
+---
+
 ## Notes
-- Code provided here is for **demonstration purposes only**.  
-- Some data, configs, and artifacts have been removed or replaced to keep the repo lightweight and free of secrets.
+- Code here is for **demonstration** only.
+- Large artifacts and secrets are removed/ignored to keep the repo lightweight and safe.
