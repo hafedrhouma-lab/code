@@ -1,0 +1,69 @@
+{
+  "cutoff": "2019-01-01",
+  "mode": "manual",
+  "thresholds_evaluated": [
+    0.25,
+    0.26
+  ],
+  "thr_aggregation": "manual",
+  "recall_target": null,
+  "metrics": {
+    "train": {
+      "0.250000": {
+        "threshold": 0.25,
+        "ap": 1.0,
+        "roc_auc": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "tp": 721,
+        "fp": 0,
+        "tn": 143799,
+        "fn": 0
+      },
+      "0.260000": {
+        "threshold": 0.26,
+        "ap": 1.0,
+        "roc_auc": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "tp": 721,
+        "fp": 0,
+        "tn": 143799,
+        "fn": 0
+      }
+    },
+    "test": {
+      "0.250000": {
+        "threshold": 0.25,
+        "ap": 0.9819058639992554,
+        "roc_auc": 0.9998873984017149,
+        "precision": 0.6724137931034483,
+        "recall": 0.9873417721518988,
+        "f1": 0.8,
+        "accuracy": 0.9974806201550388,
+        "tp": 78,
+        "fp": 38,
+        "tn": 15363,
+        "fn": 1
+      },
+      "0.260000": {
+        "threshold": 0.26,
+        "ap": 0.9819058639992554,
+        "roc_auc": 0.9998873984017149,
+        "precision": 0.6782608695652174,
+        "recall": 0.9873417721518988,
+        "f1": 0.8041237113402062,
+        "accuracy": 0.9975452196382429,
+        "tp": 78,
+        "fp": 37,
+        "tn": 15364,
+        "fn": 1
+      }
+    }
+  },
+  "model_path": "/Users/hafed.rhouma/PycharmProjects/pythonProject10/artifacts/hpsearch_run_test/best_lgbm_20250917T230657Z.joblib"
+}

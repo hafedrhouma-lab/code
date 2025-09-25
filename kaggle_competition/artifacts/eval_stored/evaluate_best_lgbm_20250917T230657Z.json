@@ -1,0 +1,42 @@
+{
+  "cutoff": "2019-01-01",
+  "mode": "auto",
+  "thresholds_evaluated": [
+    0.1414730955662661
+  ],
+  "thr_aggregation": "stored",
+  "recall_target": null,
+  "metrics": {
+    "train": {
+      "0.141473": {
+        "threshold": 0.1414730955662661,
+        "ap": 1.0,
+        "roc_auc": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "tp": 721,
+        "fp": 0,
+        "tn": 143799,
+        "fn": 0
+      }
+    },
+    "test": {
+      "0.141473": {
+        "threshold": 0.1414730955662661,
+        "ap": 0.9819058639992554,
+        "roc_auc": 0.9998873984017149,
+        "precision": 0.6076923076923076,
+        "recall": 1.0,
+        "f1": 0.7559808612440191,
+        "accuracy": 0.9967054263565891,
+        "tp": 79,
+        "fp": 51,
+        "tn": 15350,
+        "fn": 0
+      }
+    }
+  },
+  "model_path": "/Users/hafed.rhouma/PycharmProjects/pythonProject10/artifacts/hpsearch_run_final2/best_lgbm_20250917T230657Z.joblib"
+}

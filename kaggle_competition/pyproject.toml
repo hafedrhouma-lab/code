@@ -1,0 +1,44 @@
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+skip-string-normalization = false
+exclude = "/(artifacts|.git|.venv|build|dist|__pycache__)/"
+
+[tool.isort]
+profile = "black"
+line_length = 100
+known_first_party = ["cli", "data", "model", "utils", "tests"]
+skip = ["artifacts", "__pycache__"]
+src_paths = ["cli", "data", "model", "utils", "tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+fix = true
+
+# Select a sane default rule set:
+select = [
+  "E",   # pycodestyle errors
+  "F",   # pyflakes
+  "I",   # isort (import order)
+  "UP",  # pyupgrade
+  "B",   # bugbear
+  "C4",  # comprehensions
+  "ARG", # unused arguments
+  "PL",  # pylint-ish (light)
+]
+ignore = [
+  "E203",  # Black-compatible slicing
+  "E266",  # too many leading '#' for block comments
+]
+exclude = ["artifacts", "__pycache__", "build", "dist", ".venv", ".mypy_cache"]
+
+[tool.ruff.per-file-ignores]
+"tests/**" = ["PLR2004"]  # magic numbers okay in tests
+
+[tool.mypy]
+explicit_package_bases = true
+ignore_missing_imports = true
+python_version = "3.11"
+packages = ["cli", "data", "model", "utils", "tests"]
+exclude = ["notebooks/"]

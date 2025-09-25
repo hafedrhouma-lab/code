@@ -1,0 +1,13 @@
+{
+  "best_prec_at_rec": 0.6184615129588648,
+  "best_cv_ap": 0.46491734410705243,
+  "best_params": {
+    "clf__colsample_bytree": 0.6399899663272012,
+    "clf__learning_rate": 0.013728250383906291,
+    "clf__min_child_samples": 126,
+    "clf__n_estimators": 1423,
+    "clf__num_leaves": 134,
+    "clf__reg_lambda": 0.679657809075816,
+    "clf__subsample": 0.608233797718321
+  }
+}

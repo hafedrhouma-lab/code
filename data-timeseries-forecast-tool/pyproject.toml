@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "timeseries-forecast-tool"
+version = "0.1.0"
+description = "A python package to forecast timeseries"
+authors = ["hafed rhouma"]
+
+[tool.poetry.dependencies]
+mkdocs = "^1.4.2"
+mkdocs-click = "^0.8.0"
+python = ">=3.8,<4.0"
+pandas = "^1.5.3"
+numpy = "^1.24.1"
+PyYAML = "^6.0"
+python-box = "^6.1.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

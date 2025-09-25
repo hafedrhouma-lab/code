@@ -13,3 +13,7 @@ search_ops_app/docs/img/ppt*.png
 # never commit secrets
 *.env
 .env
+
+# Allow contents of these demo folders (override broad ignores)
+!kaggle_competition/**
+!data-timeseries-forecast-tool/**

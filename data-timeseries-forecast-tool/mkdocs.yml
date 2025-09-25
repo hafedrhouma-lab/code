@@ -1,0 +1,18 @@
+site_name: Forecast Tool
+site_author: Hafed Rhouma
+
+theme:
+    name: readthedocs
+    highlightjs: true
+    hljs_languages:
+        - yaml
+        - rust
+nav:
+    - Home: 'index.md'
+    - 'Model':
+        - 'Calendar Forecast': 'calendar.md'
+        - 'Reactive Forecast': 'reactive.md'
+        - 'Mix Forecast': 'mix.md'
+    - About:
+        - 'License': 'license.md'
+        - 'Release Notes': 'release-notes.md'

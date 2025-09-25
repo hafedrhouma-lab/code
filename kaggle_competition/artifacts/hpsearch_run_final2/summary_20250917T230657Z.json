@@ -1,0 +1,18 @@
+{
+  "threshold": 0.1414730955662661,
+  "ap": 0.9819058639992554,
+  "roc_auc": 0.9998873984017149,
+  "precision": 0.6076923076923076,
+  "recall": 1.0,
+  "f1": 0.7559808612440191,
+  "accuracy": 0.9967054263565891,
+  "tp": 79,
+  "fp": 51,
+  "tn": 15350,
+  "fn": 0,
+  "chosen_threshold": 0.1414730955662661,
+  "model_type": "lgbm",
+  "cutoff": "2019-01-01",
+  "recall_target": 0.52,
+  "thr_aggregation": "median"
+}
