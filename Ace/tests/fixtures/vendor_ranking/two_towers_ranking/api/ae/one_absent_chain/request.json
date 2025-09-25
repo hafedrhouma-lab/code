@@ -1,0 +1,70 @@
+{
+  "timestamp": "2023-08-07T09:43:30.2129431+00:00",
+  "device_source": 4,
+  "app_version": "10.2.0",
+  "customer_id": -20,
+  "fwf": {
+    "active_experiments": {
+      "exp_personalized_ranking_v4": {
+        "variation": "Variation1",
+        "abTest": false,
+        "explanation": {
+          "kind": "RULE"
+        },
+        "fallbackOverride": null,
+        "trackInfo": {
+          "variationName": "two_tower_v4",
+          "flagType": "abntest",
+          "flagEnabled": true,
+          "trackerServices": [
+            "FWF_GTM_DATA_LAYER_TRACKER"
+          ]
+        },
+        "relevantContext": "googleClientId,userId,appVersion,email,country"
+      }
+    }
+  },
+  "locale": "en-US",
+  "location": {
+    "country_id": 4,
+    "country_code": "ae",
+    "city_id": 35,
+    "area_id": 1244,
+    "latitude": "25.208138",
+    "longitude": "55.261856"
+  },
+  "vendors_df": {
+    "chain_id": [
+      123456789,
+      11802
+    ],
+    "vendor_id": [
+      699709,
+      22613
+    ],
+    "delivery_fee": [
+      7.5,
+      9.0
+    ],
+    "vendor_rating": [
+      3.9,
+      2.5
+    ],
+    "delivery_time": [
+      45,
+      35
+    ],
+    "status": [
+      "0",
+      "0"
+    ],
+    "min_order_amount": [
+      30.0,
+      30.0
+    ],
+    "has_promotion": [
+      false,
+      false
+    ]
+  }
+}

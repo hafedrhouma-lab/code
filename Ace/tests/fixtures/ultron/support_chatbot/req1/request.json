@@ -1,0 +1,14 @@
+{
+    "dialog": [
+        {"role": "user", "content": "hi"},
+        {
+    "role": "assistant",
+    "content": "Hello! How can I assist you today?"
+},
+{
+    "role": "user",
+    "content": "healthy food ?"
+}
+    ],
+  "version": "v02"
+}

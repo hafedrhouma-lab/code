@@ -1,0 +1,47 @@
+[
+    {
+        "original_search": "fish",
+        "items": [
+            {
+                "name": "Adriana White Fish Fillet 1 kg",
+                "metadata": {
+                    "global_vendor_id": "f2a9da55-9bcb-4f16-a647-0952aff7f180",
+                    "global_product_id": "d36906b7-a8a7-4002-9c28-faeff8fd60b2",
+                    "product_sku": ""
+                }
+            },
+            {
+                "name": "Malabon Fish Sauce (Patis) 750 ml",
+                "metadata": {
+                    "global_vendor_id": "f2a9da55-9bcb-4f16-a647-0952aff7f180",
+                    "global_product_id": "7f1fbc0a-f025-4b62-ad70-e94bc83dbfcc",
+                    "product_sku": ""
+                }
+            },
+            {
+                "name": "Siblou Supreme Shrimps 250 g",
+                "metadata": {
+                    "global_vendor_id": "f2a9da55-9bcb-4f16-a647-0952aff7f180",
+                    "global_product_id": "26da37ec-86f7-48b7-a339-2259208dcafc",
+                    "product_sku": ""
+                }
+            },
+            {
+                "name": "Freshly Foods Premium Peeled Shrimps 800 g",
+                "metadata": {
+                    "global_vendor_id": "f2a9da55-9bcb-4f16-a647-0952aff7f180",
+                    "global_product_id": "bfc5648d-44e0-4cc4-b4e2-6e916e5c5c86",
+                    "product_sku": ""
+                }
+            },
+            {
+                "name": "Freshly Foods Premium Extra Large Peeled & Deveined Shrimps 400 g",
+                "metadata": {
+                    "global_vendor_id": "f2a9da55-9bcb-4f16-a647-0952aff7f180",
+                    "global_product_id": "3431d377-fdb0-402f-a7b4-786df89ac574",
+                    "product_sku": ""
+                }
+            }
+        ]
+    }
+]

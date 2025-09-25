@@ -1,0 +1,53 @@
+inference:
+  markets:
+    UAE:
+      model:
+        NeuralRegressor:
+          reward_column:
+            reward:
+              exploration_percentage: 0.05
+              blindness_check: 0
+              impressions_limit_3days: 5
+              addScoreNoise: True
+            iReward:
+              exploration_percentage: 0.05
+              blindness_check: 0
+              impressions_limit_3days: 5
+              addScoreNoise: True
+        CatboostRegressor:
+          reward_column:
+            reward:
+              exploration_percentage: 0.05
+              blindness_check: 0
+              impressions_limit_3days: 5
+              addScoreNoise: False
+            iReward:
+              exploration_percentage: 0.05
+              blindness_check: 0
+              impressions_limit_3days: 5
+              addScoreNoise: False
+train:
+  markets:
+    UAE:
+      mode: rolling_week #fixed #incremental #rolling_week
+      model:
+        NeuralRegressor:
+          reward_column:
+            reward:
+              alpha: 0
+              hidden_layers:
+                - 64
+                - 8
+            iReward:
+              alpha: 0
+              hidden_layers:
+                - 64
+                - 8
+        CatboostRegressor:
+          reward_column:
+            reward:
+              alpha: 0
+            iReward:
+              alpha: 0
+      start_date: 2023-09-25
+      end_date: 2023-10-25
