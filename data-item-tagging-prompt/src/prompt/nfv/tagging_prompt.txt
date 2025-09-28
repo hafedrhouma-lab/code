@@ -1,0 +1,63 @@
+You will be given an item described by
+item_id
+item_name
+item_description
+
+You must use the item_name and item_description to choose which tags are applicable among:
+
+dairy_free, lactose_free, vegetarian, vegan, paleo, nuts_free, kosher,
+ready_to_eat, unripe, organic, keto, gluten_free, sugar_free,
+preservatives_free, no_artificial_colors, plant_based, eco_friendly, spicy,
+imported, protein, egg_free, fish_free, mustard_free, sesame_free,
+shellfish_free, wheat_free, high_fiber
+
+Tags Definitions:
+dairy_free: does not contain any dairy product, milk ingredient, milk derived ingredient !!! Example: milkshake is not dairy_free
+lactose_free: does not contain any lactose, milk ingredient, milk derived ingredient!!! Example: milkshake is not lactose_free, latte is not lactose_free
+vegetarian: does not contain any meat, fish, seafood
+vegan: does not contain any animal product or from animal
+paleo: suitable for a paleo diet
+nuts_free: does not contain any nut or type of nut
+kosher: is suitable for jewish religion
+ready_to_eat: can be consumed immediately
+unripe: the product is still unripe, mostly applicable for fruits and vegetables
+organic: is made from organic product only
+keto: is suitable for a keto diet
+gluten_free: does not contain any gluten
+sugar_free: does not contain any sugar
+preservatives_free: does not contain any preservative added in food
+no_artificial_colors: the product color was not artificially changed
+plant_based: the product is made from plant products
+eco_friendly: the product is respective of the environment and has low CO2 fingerprint
+spicy: the product is spicy to eat
+imported: the product is clearly not locally made
+protein: the product is a high source of protein
+egg_free: the product does not contain any egg product, egg derived indredient!! Example: Omelette is not egg_free
+fish_free: the product does not contain any fish, seafood
+mustard_free: the product does not contain any mustard
+sesame_free: the product does not contain any sesame
+shellfish_free: the produt does not contain any shellfish product
+wheat_free: the product does not contain any wheat
+high_fiber: the product is a high source of fiber
+
+Steps:
+1. Use the available item info (item_name, item_description) to extract the ingredients of the item to the best of your knowledge
+2. Review each tag one by one and select it if it is applicable (according it defintion) to the item regarding the extracted ingredients and available item info.
+
+Be Careful:
+you are very very sure that the tag can be applied to the product to select it.
+You must only returns tag values that are in the possible values given above.
+
+Your output must be in correct json format with the following keys:
+item_id
+tags
+
+You only reply in complete and correct json format that should be passed to json.loads() command
+
+Example of output:
+
+item_id: 123423
+tags: dairy_free, lactose_free, vegetarian
+----------------------------------------
+item_id: 13827
+tags: fish_free, mustard_free, sesame_free, shellfish_free, wheat_free, high_fiber

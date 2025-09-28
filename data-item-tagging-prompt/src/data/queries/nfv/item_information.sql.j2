@@ -1,0 +1,18 @@
+select
+  item_id,
+  item_name_en AS item_name,
+  item_description_en AS item_description
+from
+  `tlb-data-prod.data_platform.dim_item` dim_item
+INNER JOIN
+  `tlb-data-prod.data_platform.ese_items` ese_items
+ON
+  dim_item.item_id = ese_items.parent_item_id
+where
+    ese_items.is_active and created_time >= '2022-01-01'
+and dim_item.country_name IN (
+  'United Arab Emirates'
+)
+
+
+

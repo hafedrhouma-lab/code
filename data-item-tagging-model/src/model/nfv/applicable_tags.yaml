@@ -1,0 +1,14 @@
+beverages: vegan,paleo,kosher,organic,gluten_free,sugar_free,preservatives_free,no_artificial_colors,plant_based,eco_friendly,imported,protein
+bread_bakery: dairy_free,lactose_free,vegeterian,vegan,paleo,nut_free,ready_to_eat,organic,keto,gluten_free,sugar_free,preservatives_free,no_artificial_colors,spicy,protein,egg_free,wheat_free,high_fiber,sesame_free,high_fiber
+dairy_chilled_eggs: dairy_free,lactose_free,vegan,nuts_free,ready_to_eat,organic,keto,gluten_free,sugar_free,spicy,protein
+frozen: plant_based,eco_friendly,dairy_free,lactose_free,vegetarian,vegan,paleo,nuts_free,kosher,organic,gluten_free,sugar_free,no_artificial_colors,egg_free,fish_free
+home_pet: vegan,eco_friendly,imported
+packaged_foods: dairy_free,lactose_free,vegetarian,vegan,nuts_free,kosher,ready_to_eat,organic,keto,gluten_free,sugar_free,preservatives_free,no_artificial_colors,plant_based,spicy,imported,protein,egg_free,fish_free,fish_free,mustard_free,sesame_free,shellfish_free
+personal_care_baby_health: vegan,eco_friendly
+produce: unripe,organic,high_fiber
+ready_to_consume: dairy_free,lactose_free,vegeterian,vegan,paleo,nut_free,ready_to_eat,organic,keto,gluten_free,sugar_free,no_artificial_colors,spicy,protein,egg_free,fish_free,mustard_free,sesame_free,shellfish_free,wheat_free,high_fiber
+snacks: dairy_free,lactose_free,vegetarian,vegan,paleo,nuts_free,kosher,ready_to_eat,organic,gluten_free,preservatives_free,no_artificial_colors,plant_based,eco_friendly,spicy,protein,fish_free,mustard_free,sesame_free
+general_merchandise:
+meat_seafood: organic
+bws:
+smoking_tobacco:

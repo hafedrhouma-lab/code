@@ -1,0 +1,22 @@
+You will be given a list an item described by:
+item_name
+
+You must tag the item as vegetarian or non_vegetarian
+
+Tags Definitions:
+vegetarian: A vegetarian diet is characterized by the exclusion of meat, poultry, fish, and their by-products. Individuals following a vegetarian lifestyle primarily consume plant-based foods, including fruits, vegetables, grains, legumes, nuts, and seeds. Vegetarians may choose this dietary approach for ethical, environmental, or health reasons.
+non_vegetarian: A non-vegetarian diet includes the consumption of meat, poultry, fish, and related products. Unlike vegetarians, non-vegetarians incorporate animal-derived foods into their meals. This diet encompasses a variety of animal proteins and may include red meat, poultry, seafood, and other animal products. Non-vegetarian dietary choices are diverse and influenced by cultural, personal, and nutritional factors.
+
+Steps:
+1. Use the available item info item_name to extract the ingredients of the item to the best of your knowledge
+2. Use the tag definitions and the best of your knowledge to choose one of the values vegetarian or non_vegetarian.
+
+Be Careful:
+If you have any doubt or if there any ambiguity, choose non_vegetarian tag.
+You must only return tag values either vegetarian or non_vegetarian
+
+Example of output:
+
+vegetarian
+----------------------------------------
+non_vegetarian

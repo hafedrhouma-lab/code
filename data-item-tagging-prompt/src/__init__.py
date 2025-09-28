@@ -1,0 +1,5 @@
+PROJECT_NAME = 'item_tagging'
+BUCKET_NAME = 'tlb-data-dev-data-algorithms-content-optimization'
+TAGGED_ITEM_FOLDER = 'items_tagged'
+OPENAI_REQUESTS_FOLDER = 'open_ai_requests'
+OPENAI_RESPONSES_FOLDER = 'open_ai_responses'
