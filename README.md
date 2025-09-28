@@ -23,6 +23,20 @@ It is **not a production system** – just a showcase of past projects and imple
 
 ---
 
+### 🏗️ `two_tower` (Vendor Ranking)
+- **Description**: Two-tower retrieval model (**user × candidate**) for vendor ranking with **TensorFlow Recommenders**; optimized for **Recall@10** and low-latency serving.
+- **Scope**:
+  - **User tower**: `account_id`, recent **clicks/searches/vendors** (TextVectorization→Embedding→**Self-Attention/GRU**→pool) + time/geo/order-source/numeric.
+  - **Candidate tower**: `chain_id`, **cuisine text**, **chain name**, rating/GMV/orders/area; **L2-norm** outputs + **cosine** scoring; **TFRecords** + hard negatives; export candidate vectors for ANN.
+- **Tech**:
+  - **TensorFlow/Keras**, **TFRS**, **DCN Cross** + MLP in both towers
+  - **GlobalSelfAttention**, shared embeddings (chains/keywords/areas), exposure-aware loss (`candidate_sampling_probability`)
+  - **TFRecords** pipeline; GCP/GKE + CI/CD ready
+  - **HP Search** on **VertexAI**
+- **GitHub**: [two_tower_v1](https://github.com/hafedrhouma-lab/code/tree/main/data-ml-pipelines/projects/vendor_ranking/two_tower_v1)
+
+---
+
 ### 📦 `data-ml-pipeline`
 - **Description**: Mono-repo scaffold for ML projects with **MLflow** tracking/registry, experiment logging, and paths to both **batch** (Airflow) and **online** serving (ACE).
 - **Scope**:
