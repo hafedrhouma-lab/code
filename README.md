@@ -43,6 +43,22 @@ It is **not a production system** – just a showcase of past projects and imple
 
 ---
 
+### 🏷️ `data-item-tagging-prompt`
+- **Description**: Designed prompts to enrich Food delivery app's taxonomy by generating item-level tags with OpenAI models.  
+- **Scope**: Tagging both **food** and **grocery** items to simplify search/discovery across thousands of SKUs.  
+- **Tech**: Prompt engineering, async OpenAI API calls, BigQuery integration.  
+- **GitHub**: [data-item-tagging-prompt](https://github.com/hafedrhouma-lab/code/tree/main/data-item-tagging-prompt)
+
+---
+
+### 🤖 `data-item-tagging-model`
+- **Description**: Trained a **RoBERTa classifier** to predict item tags using datasets labeled via LLM outputs (or human annotation).  
+- **Scope**: Automates item tagging at scale for the food and non-food categories.  
+- **Tech**: PyTorch, scikit-learn, BigQuery, model training & prediction CLI.  
+- **GitHub**: [data-item-tagging-model](https://github.com/hafedrhouma-lab/code/tree/main/data-item-tagging-model)
+
+---
+
 ## Notes
 - Code here is for **demonstration** only.
 - Large artifacts and secrets are removed/ignored to keep the repo lightweight and safe.
