@@ -127,6 +127,17 @@ It is **not a production system** – just a showcase of past projects and imple
 
 ---
 
+### 🗂️ `portfolio` (Case Studies)
+- Central hub for **PDF case studies** and write-ups to complement the code.
+- Includes:
+  - **Dynamic pricing (retail, DP + constraints)** — *Centric Pricing RL*. :contentReference[oaicite:0]{index=0}
+  - **Predictive pricing (real-estate packs, MNL)** — *Pricing Model Case Study*. :contentReference[oaicite:1]{index=1}
+  - **Uplift modeling (premium upsell, Qini/AUUC)** — *Leboncoin – Cars*. :contentReference[oaicite:2]{index=2}
+  - **Two-tower retrieval ranking (TFRS, Recall@10, debiasing)** — *Ranking model explained*. :contentReference[oaicite:3]{index=3}
+- Browse files in `portfolio/` and see related code under **Projects**.
+
+---
+
 ## Notes
 - Code here is for **demonstration** only.
 - Large artifacts and secrets are removed/ignored to keep the repo lightweight and safe.
